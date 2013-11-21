@@ -1,0 +1,25 @@
+<div class="container">
+  <h1>Sign up</h1>
+
+  <form role="form" {{action "signup" on="submit"}}>
+    <div {{bind-attr class=":panel errorMessage:panel-danger:panel-default"}}>
+      <div class="panel-body">
+        <h2>Your Details</h2>
+        {{input-text label="Name" placeholder="name" value=name
+          formController=controller required=true}}
+        {{input-password value=password formController=controller required=true}}
+      </div>
+      <div {{bind-attr class=":panel-footer errorMessage:panel-footer-danger"}}>
+        <div class="row">
+          <div class="col-md-10 text-right">
+            {{errorMessage}}
+          </div>
+          <div class="col-md-2 text-center">
+            {{#submit-button formController=controller}}<i class="fa fa-chevron-circle-right"></i> Sign up{{/submit-button}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+</div>

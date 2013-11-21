@@ -1,0 +1,39 @@
+<div class="login container">
+  <h1>Sign in</h1>
+</div>
+
+<div id="login-view">
+  <div class="login container">
+
+    <form class="form-signin" {{action "login" on="submit"}}>
+      <div {{bind-attr class=":panel errorMessage:panel-danger:panel-default"}}>
+        <div class="panel-body">
+          {{input-text
+            formController=controller showMessages=false
+            value=name autofocus=true required=true}}
+          {{input-text type="password" label="Password" placeholder="password"
+            formController=controller showMessages=false
+            value=password required=true}}
+          <label class="checkbox">
+            {{input type="checkbox" checked=rememberMe}} Remember me
+          </label>
+        </div>
+        <div {{bind-attr class=":panel-footer errorMessage:panel-footer-danger"}}>
+          <div class="row">
+            <div class="col-md-8 text-right">
+              {{errorMessage}}
+            </div>
+            <div class="col-md-4">
+              {{#submit-button formController=controller}}
+                <i class="fa fa-sign-in"></i> Sign in
+              {{/submit-button}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <p class="text-right">{{#link-to 'password-reset'}}Forgot Password{{/link-to}}</p>
+
+  </div>
+</div>

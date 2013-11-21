@@ -1,0 +1,56 @@
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed"
+        data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      {{#link-to 'index' class="navbar-brand"}}Command Post{{/link-to}}
+    </div>
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        {{#unless App.isLoggedIn}}
+          <li>{{#link-to 'index'}}<i class="fa fa-home"></i> Home{{/link-to}}</li>
+          <li>{{#link-to 'signup'}}<i class="fa fa-edit"></i> Sign up{{/link-to}}</li>
+        {{/if}}
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        {{#if App.isLoggedIn}}
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i>
+              {{App.user.fullName}} <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a {{action 'logout'}}><i class="fa fa-sign-out"></i> Sign out</a></li>
+            </ul>
+          </li>
+        {{else}}
+          <li>{{#link-to 'login'}}<i class="fa fa-sign-in"></i> Sign in{{/link-to}}</li>
+        {{/if}}
+      </ul>
+    </div>
+  </div>
+</div>
+
+{{#each flashMessage in flashMessages}}
+  <div class="container flash-message">
+    <div {{bind-attr class=":alert :alert-dismissable flashMessage.typeClass"}}>
+      <button type="button" class="close"
+        data-dismiss="alert" aria-hidden="true"><i class="fa fa-times"></i></button>
+      {{#if flashMessage.icon}}
+        <i {{bind-attr class="flashMessage.iconClass"}}></i>
+      {{/if}}
+      {{flashMessage.message}}
+    </div>
+  </div>
+{{/each}}
+
+{{outlet}}
+
+<div class="container">
+  <hr>
+  <footer class="text-center">
+    <p>&copy; Command Post 2013</p>
+  </footer>
+</div>

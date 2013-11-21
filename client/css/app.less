@@ -1,0 +1,24 @@
+// Setup bootstrap
+@import "bootstrap";
+@import "../../components/font-awesome/less/font-awesome";
+
+// Move down content because we have a fixed navbar that is 50px tall
+body {
+  padding-top: @navbar-height;
+  padding-bottom: 20px;
+}
+
+// Style the active menu items
+.nav > li > a.active, .nav > li > a.active:hover {
+  color: @navbar-inverse-link-active-color;
+  background-color: @navbar-inverse-link-active-bg;
+}
+
+// flash messages
+.container.flash-message {
+  max-width: 600px;
+  .alert {
+    margin-top: 8px;
+    margin-bottom: 0px;
+  }
+}
