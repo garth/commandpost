@@ -6,7 +6,7 @@ module.exports = function (app, config, db) {
   var authorise = require('../authorise')(config);
 
   app.get('/api/projects', authorise, function (req, res, next) {
-    Project.find(req.params || {}, function (err, projects) {
+    Project.find(req.query || {}, function (err, projects) {
       if (err) { return next(err); }
       res.send({ projects: projects });
     });

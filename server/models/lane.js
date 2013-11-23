@@ -6,9 +6,9 @@ module.exports = function (config, db) {
 
   // define lane
   var Lane = new Schema({
-    project: { type: ObjectId, ref: 'Project', required: true },
+    project: { type: ObjectId, ref: 'Project', index: true, required: true },
     name: { type: String, required: true },
-    order: { type: Number }
+    order: { type: Number, required: true, 'default': 0 }
   }, config.schemaOptions);
 
   // register lane with mongoose

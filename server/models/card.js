@@ -10,10 +10,10 @@ module.exports = function (config, db) {
     description: { type: String },
     points: { type: Number },
     createdByUser: { type: ObjectId, ref: 'User', required: true },
-    createdOn: { type: Date },
-    assignedToUser: { type: ObjectId, ref: 'User' },
-    lane: { type: ObjectId, ref: 'Lane', required: true },
-    order: { type: Number }
+    createdOn: { type: Date, required: true, 'default': Date.now },
+    assignedToUser: { type: ObjectId, ref: 'User', index: true },
+    lane: { type: ObjectId, ref: 'Lane', index: true, required: true },
+    order: { type: Number, required: true, 'default': 0 }
   }, config.schemaOptions);
 
   // register card with mongoose

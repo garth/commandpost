@@ -8,7 +8,7 @@ module.exports = function (config, db) {
   var Project = new Schema({
     name: { type: String, index: { unique: true, dropDups: true }, required: true },
     createdByUser: { type: ObjectId, ref: 'User', required: true },
-    createdOn: { type: Date }
+    createdOn: { type: Date, required: true, 'default': Date.now }
   }, config.schemaOptions);
 
   // register project with mongoose

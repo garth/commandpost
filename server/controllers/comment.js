@@ -6,7 +6,7 @@ module.exports = function (app, config, db) {
   var authorise = require('../authorise')(config);
 
   app.get('/api/comments', authorise, function (req, res, next) {
-    Comment.find(req.params || {}, function (err, comments) {
+    Comment.find(req.query || {}, function (err, comments) {
       if (err) { return next(err); }
       res.send({ comments: comments });
     });

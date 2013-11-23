@@ -6,7 +6,7 @@ module.exports = function (app, config, db) {
   var authorise = require('../authorise')(config);
 
   app.get('/api/lanes', authorise, function (req, res, next) {
-    Lane.find(req.params || {}, function (err, lanes) {
+    Lane.find(req.query || {}, function (err, lanes) {
       if (err) { return next(err); }
       res.send({ lanes: lanes });
     });

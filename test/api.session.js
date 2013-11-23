@@ -11,7 +11,8 @@ describe('sessions rest api', function () {
   it('can create a session', function (done) {
     superagent.post(root).send({
       user: { name: 'Garth', password: 'test' }
-    }).end(function (err, res) {
+    })
+    .end(function (err, res) {
       expect(err).to.equal(null);
       expect(res.status).to.equal(200);
       expect(res.headers['set-cookie']).to.exist;
@@ -22,7 +23,8 @@ describe('sessions rest api', function () {
   });
 
   it('can delete a session', function(done){
-    superagent.del(root).set('Cookie', 'session=62875455e3e2812b6e000001;')
+    superagent.del(root)
+    .set('Cookie', 'session=62875455e3e2812b6e000001;')
     .end(function (err, res) {
       expect(err).to.equal(null);
       expect(res.status).to.equal(200);
