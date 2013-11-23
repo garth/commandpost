@@ -34,6 +34,7 @@ describe('users rest api', function () {
 
   it('retrieves a user', function (done){
     superagent.get(root + '/12875455e3e2812b6e000001')
+    .set('Cookie', 'session=62875455e3e2812b6e000001;')
     .end(function (err, res) {
       expect(err).to.eql(null);
       expect(res.status).to.equal(200);
@@ -46,6 +47,7 @@ describe('users rest api', function () {
 
   it('retrieves a user collection', function(done){
     superagent.get(root)
+    .set('Cookie', 'session=62875455e3e2812b6e000001;')
     .end(function (err, res) {
       expect(err).to.eql(null);
       expect(res.status).to.equal(200);
@@ -61,6 +63,7 @@ describe('users rest api', function () {
     superagent.put(root + '/12875455e3e2812b6e000002').send({
       user: { name: 'George', password: 'password' }
     })
+    .set('Cookie', 'session=62875455e3e2812b6e000001;')
     .end(function (err, res) {
       expect(err).to.equal(null);
       expect(res.status).to.equal(200);
@@ -71,6 +74,7 @@ describe('users rest api', function () {
 
   it('removes a user', function(done){
     superagent.del(root + '/12875455e3e2812b6e000002')
+    .set('Cookie', 'session=62875455e3e2812b6e000001;')
     .end(function (err, res) {
       expect(err).to.equal(null);
       expect(res.status).to.equal(200);

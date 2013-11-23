@@ -12,8 +12,6 @@
     "underscore": "~1.5.2",
     "mongoose": "~3.8.0",
     "rsvp": "~2.0.4",
-    "passport": "~0.1.17",
-    "passport-local": "~0.1.6",
     "password-hash": "~1.2.1"
   },
   "devDependencies": {

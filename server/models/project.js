@@ -7,7 +7,7 @@ module.exports = function (config, db) {
   // define project
   var Project = new Schema({
     name: { type: String, index: { unique: true, dropDups: true }, required: true },
-    createdByUserId: { type: ObjectId, ref: 'User', required: true },
+    createdByUser: { type: ObjectId, ref: 'User', required: true },
     createdOn: { type: Date }
   }, config.schemaOptions);
 

@@ -7,7 +7,8 @@ module.exports = function(config) {
   // connect to the database
   mongoose.connect(config.db);
   var db = mongoose.connection;
-  db.on('error', function () {
+  db.on('error', function (error) {
+    console.log(error);
     throw new Error('unable to connect to database at ' + config.db);
   });
 

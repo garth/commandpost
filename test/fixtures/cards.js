@@ -6,10 +6,10 @@ module.exports = [
     title: 'Item 1',
     description: 'some details',
     points: 1,
-    createdByUserId: new ObjectId("12875455e3e2812b6e000001"),
+    createdByUser: new ObjectId("12875455e3e2812b6e000001"),
     createdOn: new Date('2013-11-20'),
-    assignedToUserId: null,
-    laneId: new ObjectId("32875455e3e2812b6e000001"),
+    assignedToUser: null,
+    lane: new ObjectId("32875455e3e2812b6e000001"),
     order: 1
   },
   {
@@ -17,10 +17,10 @@ module.exports = [
     title: 'Item 2',
     description: 'some details',
     points: 1,
-    createdByUserId: new ObjectId("12875455e3e2812b6e000001"),
+    createdByUser: new ObjectId("12875455e3e2812b6e000001"),
     createdOn: new Date('2013-11-20'),
-    assignedToUserId: null,
-    laneId: new ObjectId("32875455e3e2812b6e000001"),
+    assignedToUser: null,
+    lane: new ObjectId("32875455e3e2812b6e000001"),
     order: 2
   },
   {
@@ -28,10 +28,10 @@ module.exports = [
     title: 'Item 3',
     description: 'some details',
     points: 1,
-    createdByUserId: new ObjectId("12875455e3e2812b6e000001"),
+    createdByUser: new ObjectId("12875455e3e2812b6e000001"),
     createdOn: new Date('2013-11-20'),
-    assignedToUserId: null,
-    laneId: new ObjectId("32875455e3e2812b6e000001"),
+    assignedToUser: null,
+    lane: new ObjectId("32875455e3e2812b6e000001"),
     order: 3
   },
   {
@@ -39,10 +39,10 @@ module.exports = [
     title: 'Item 4',
     description: 'some details',
     points: 1,
-    createdByUserId: new ObjectId("12875455e3e2812b6e000001"),
+    createdByUser: new ObjectId("12875455e3e2812b6e000001"),
     createdOn: new Date('2013-11-20'),
-    assignedToUserId: null,
-    laneId: new ObjectId("32875455e3e2812b6e000001"),
+    assignedToUser: null,
+    lane: new ObjectId("32875455e3e2812b6e000001"),
     order: 4
   },
   {
@@ -50,10 +50,10 @@ module.exports = [
     title: 'Item 5',
     description: 'some details',
     points: 1,
-    createdByUserId: new ObjectId("12875455e3e2812b6e000001"),
+    createdByUser: new ObjectId("12875455e3e2812b6e000001"),
     createdOn: new Date('2013-11-20'),
-    assignedToUserId: null,
-    laneId: new ObjectId("32875455e3e2812b6e000001"),
+    assignedToUser: null,
+    lane: new ObjectId("32875455e3e2812b6e000001"),
     order: 5
   }
 ];

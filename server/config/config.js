@@ -30,6 +30,9 @@ module.exports = function (env) {
       }
     },
 
+    // sessions expire after 14 days
+    sessionTtl: 1000 * 60 * 60 * 24 * 14,
+
     // environment specific overrides
     development: {
       db: 'mongodb://localhost/commandpost-development'
