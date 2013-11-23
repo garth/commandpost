@@ -13,7 +13,9 @@ module.exports = function (app, config, db) {
   });
 
   app.post('/api/cards', authorise, function (req, res, next) {
-    (new Card(req.body.card)).save(function (err, card) {
+    var card = req.body.card;
+    card.createdByUser = req.user.id;
+    (new Card(card)).save(function (err, card) {
       if (err) { return next(err); }
       res.send({ card: card.toJSON() });
     });

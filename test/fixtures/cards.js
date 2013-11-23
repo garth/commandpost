@@ -53,7 +53,7 @@ module.exports = [
     createdByUser: new ObjectId("12875455e3e2812b6e000001"),
     createdOn: new Date('2013-11-20'),
     assignedToUser: null,
-    lane: new ObjectId("32875455e3e2812b6e000001"),
-    order: 5
+    lane: new ObjectId("32875455e3e2812b6e000002"),
+    order: 1
   }
 ];
