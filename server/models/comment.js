@@ -9,7 +9,7 @@ module.exports = function (config, db) {
     card: { type: ObjectId, ref: 'Card', index: true, required: true },
     text: { type: String, required: true },
     user: { type: ObjectId, ref: 'User', required: true },
-    createdOn: { type: Date, required: true }
+    createdOn: { type: Date, required: true, 'default': Date.now }
   }, config.schemaOptions);
 
   // register comment with mongoose

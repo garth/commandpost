@@ -14,5 +14,12 @@ module.exports = [
     text: 'I don\'t like it',
     user: new ObjectId("12875455e3e2812b6e000001"),
     createdOn: new Date('2013-11-21')
+  },
+  {
+    _id: new ObjectId("52875455e3e2812b6e000003"),
+    card: new ObjectId("42875455e3e2812b6e000002"),
+    text: 'Super',
+    user: new ObjectId("12875455e3e2812b6e000001"),
+    createdOn: new Date('2013-11-21')
   }
 ];

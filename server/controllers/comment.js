@@ -13,6 +13,8 @@ module.exports = function (app, config, db) {
   });
 
   app.post('/api/comments', authorise, function (req, res, next) {
+    var comment = req.body.comment;
+    comment.user = req.user.id;
     (new Comment(req.body.comment)).save(function (err, comment) {
       if (err) { return next(err); }
       res.send({ comment: comment.toJSON() });
