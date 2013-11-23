@@ -1,3 +1,33 @@
+Status
+------
+
+Command Post is currently in the early stages of development, at the
+moment only the API has been implemented and the UI is currently in
+progress.
+
+Install
+-------
+
+1. Install mongodb
+2. Install nodejs
+3. Clone this repository to your target machine
+4. `npm install`
+5. `npm install -g bower` & `bower install`
+6. `npm install -g grunt-cli` & `grunt`
+
+Test
+----
+
+To run the tests one time:
+
+`grunt test`
+
+To run the test automatically when files change:
+
+`grunt server`
+
+This will also start the app in development mode on port 3000.
+
 License
 -------
 
