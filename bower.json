@@ -1,19 +1,19 @@
 {
-  "name": "mogul",
-  "version": "0.0.1",
+  "name": "Command Post",
+  "version": "0.0.0",
   "ignore": [
     "**/.*",
     "node_modules",
     "components"
   ],
   "dependencies": {
-    "ember": "~1.1.2",
+    "ember": "~1.2.0",
     "bootstrap": "~3.0.2",
     "font-awesome": "~4.0.3",
     "ember-data-shim": "1.0.0-beta.3",
     "jquery": "~2.0.3"
   },
   "resolutions": {
-    "ember": "~1.1.2"
+    "ember": "~1.2.0"
   }
 }
