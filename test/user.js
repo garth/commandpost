@@ -13,11 +13,10 @@ describe('user', function () {
 
   it('can set password', function (done) {
     (new User({
-      name: 'Garth',
+      name: 'New Guy',
       password: 'test'
     })).save(function (err, user) {
       if (err) { return done(err); }
-      console.log(user.password);
       expect(user.password).to.not.equal('test');
       expect(user.password.length).to.equal(56);
       done();

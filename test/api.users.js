@@ -10,7 +10,7 @@ describe('users rest api', function () {
 
   it('can create users', function (done) {
     superagent.post(root).send({
-      user: { name: 'New Guy' }
+      user: { name: 'Greg', password: 'password' }
     }).end(function (err, res) {
       expect(err).to.equal(null);
       expect(res.status).to.equal(200);
@@ -23,7 +23,7 @@ describe('users rest api', function () {
 
   it('cannot create duplicate users', function (done) {
     superagent.post(root).send({
-      user: { name: 'Garth' }
+      user: { name: 'Garth', password: 'password' }
     }).end(function (err, res) {
       expect(err).to.equal(null);
       expect(res.status).to.equal(409);
@@ -57,7 +57,7 @@ describe('users rest api', function () {
 
   it('updates a user', function(done){
     superagent.put(root + '/12875455e3e2812b6e000002').send({
-      user: { name: 'George' }
+      user: { name: 'George', password: 'password' }
     })
     .end(function (err, res) {
       expect(err).to.equal(null);
