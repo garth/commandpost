@@ -33,4 +33,13 @@ describe('user', function () {
     done();
   });
 
+  it('does not expose the hashed password', function (done) {
+    User.findOne({ name: 'Garth' }, function (err, user) {
+      if (err) { return done(err); }
+      var json = user.toJSON();
+      expect(json.password).to.be.undefined;
+    });
+    done();
+  });
+
 });

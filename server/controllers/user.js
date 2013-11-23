@@ -13,7 +13,7 @@ module.exports = function (app, config, db) {
   app.post('/api/users', function (req, res, next) {
     (new User(req.body.user)).save(function (err, user) {
       if (err) { return next(err); }
-      res.send({ user: user.toJSON() });
+      res.send({ user: user });
     });
   });
 

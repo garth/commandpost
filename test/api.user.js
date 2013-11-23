@@ -17,6 +17,7 @@ describe('users rest api', function () {
       expect(res.body).to.exist;
       expect(res.body.user).to.exist;
       expect(res.body.user.id.length).to.equal(24);
+      expect(res.body.user.password).to.be.undefined;
       done();
     });
   });
@@ -48,9 +49,11 @@ describe('users rest api', function () {
     .end(function (err, res) {
       expect(err).to.eql(null);
       expect(res.status).to.equal(200);
+      console.log(res.body);
       expect(res.body).to.exist;
       expect(res.body.users).to.exist;
       expect(res.body.users.length).to.equal(2);
+      expect(res.body.users[0].password).to.be.undefined;
       done();
     });
   });

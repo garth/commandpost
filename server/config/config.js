@@ -24,7 +24,7 @@ module.exports = function (env) {
           delete ret.__v;
           delete ret._id;
           if (ret.password) {
-            delete ret.passowrd;
+            delete ret.password;
           }
         }
       }
