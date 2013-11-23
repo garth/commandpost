@@ -33,4 +33,24 @@ describe('sessions rest api', function () {
     });
   });
 
+
+  it('cannot delete a session when not authenticated', function(done){
+    superagent.del(root)
+    .end(function (err, res) {
+      expect(err).to.equal(null);
+      expect(res.status).to.equal(401);
+      done();
+    });
+  });
+
+  it('cannot delete a session with an invalid id', function(done){
+    superagent.del(root)
+    .set('Cookie', 'session=62875455e3e2812b6e0000xx;')
+    .end(function (err, res) {
+      expect(err).to.equal(null);
+      expect(res.status).to.equal(401);
+      done();
+    });
+  });
+
 });

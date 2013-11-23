@@ -11,7 +11,7 @@ module.exports = function (config) {
           console.log(err);
           res.send(500, { message: 'Unexpected error.' });
         }
-        else if (session.expiresOn < Date.now()) {
+        else if (!session || session.expiresOn < Date.now()) {
           res.clearCookie('session');
           res.send(401, { message: 'Session has expired.' });
         }
