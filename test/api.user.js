@@ -49,7 +49,6 @@ describe('users rest api', function () {
     .end(function (err, res) {
       expect(err).to.eql(null);
       expect(res.status).to.equal(200);
-      console.log(res.body);
       expect(res.body).to.exist;
       expect(res.body.users).to.exist;
       expect(res.body.users.length).to.equal(2);
