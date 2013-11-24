@@ -2,7 +2,7 @@ require('./routes/route');
 require('./routes/application_route');
 require('./routes/login_route');
 require('./routes/signup_route');
-require('./routes/project_route');
+require('./routes/index_route');
 
 App.Router = Ember.Router.extend({
   location: 'history'

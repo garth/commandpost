@@ -1,4 +1,5 @@
-App.ProjectRoute = Ember.Route.extend({
+App.IndexRoute = Ember.Route.extend({
+
   beforeModel: function(transition) {
     var applicationController = this.controllerFor('application');
 
@@ -7,4 +8,5 @@ App.ProjectRoute = Ember.Route.extend({
       this.transitionTo('login');
     }
   }
+
 });

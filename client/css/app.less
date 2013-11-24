@@ -2,6 +2,13 @@
 @import "bootstrap";
 @import "../../bower_components/font-awesome/less/font-awesome";
 
+// panel footer danger
+.panel-footer-danger {
+  background-color: @alert-danger-bg;
+  color: @alert-danger-text;
+  line-height: 35px;
+}
+
 // Move down content because we have a fixed navbar that is 50px tall
 body {
   padding-top: @navbar-height;
@@ -21,4 +28,9 @@ body {
     margin-top: 8px;
     margin-bottom: 0px;
   }
+}
+
+// signin form
+.login.container {
+  max-width: 400px;
 }

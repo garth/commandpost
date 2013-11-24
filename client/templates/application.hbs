@@ -11,10 +11,11 @@
     </div>
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        {{#unless App.isLoggedIn}}
+        {{#if App.isLoggedIn}}
           <li>{{#link-to 'index'}}<i class="fa fa-home"></i> Home{{/link-to}}</li>
+        {{else}}
           <li>{{#link-to 'signup'}}<i class="fa fa-edit"></i> Sign up{{/link-to}}</li>
-        {{/unless}}
+        {{/if}}
       </ul>
       <ul class="nav navbar-nav navbar-right">
         {{#if App.isLoggedIn}}

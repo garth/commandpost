@@ -140,8 +140,8 @@ module.exports = function (grunt) {
         tasks: ['emberTemplates']
       },
       browserify: {
-        files: ['client/**/*.js'],
-        tasks: ['browserify']
+        files: ['client/js/**/*.js'],
+        tasks: ['jshint', 'browserify']
       },
       server: {
         files: [
@@ -154,10 +154,11 @@ module.exports = function (grunt) {
       },
       client: {
         files: [
-          'public/js/*.js',
+          'client/js/**/*.js',
+          'public/js/**/*.js',
           'test/client/**/*.js'
         ],
-        tasks: ['jshint', 'delayed-livereload', 'exec:runClientTests']
+        tasks: ['delayed-livereload', 'exec:runClientTests']
       },
     },
     exec: {
