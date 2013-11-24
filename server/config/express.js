@@ -9,7 +9,7 @@ module.exports = function(app, config) {
     app.set('view engine', 'ejs');
     app.set('view options', { layout: false });
     app.use(express.favicon(config.root + '/public/img/favicon.ico'));
-    app.use(express.logger('dev'));
+    //app.use(express.logger('dev'));
     app.use(express.cookieParser());
     app.use(express.bodyParser());
     app.use(express.methodOverride());
