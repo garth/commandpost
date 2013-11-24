@@ -5,7 +5,7 @@ var root = 'http://localhost:3001/api/cards';
 describe('cards rest api', function () {
 
   beforeEach(function (done) {
-    require('./fixtures')(done);
+    require('../fixtures')(done);
   });
 
   it('can create cards', function (done) {

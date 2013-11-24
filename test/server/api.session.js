@@ -5,7 +5,7 @@ var root = 'http://localhost:3001/api/sessions';
 describe('sessions rest api', function () {
 
   beforeEach(function (done) {
-    require('./fixtures')(done);
+    require('../fixtures')(done);
   });
 
   it('can create a session', function (done) {

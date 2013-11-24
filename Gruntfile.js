@@ -2,6 +2,7 @@
 
 var request = require('request');
 var portscanner = require('portscanner');
+var _ = require('underscore');
 
 module.exports = function (grunt) {
 
@@ -97,7 +98,16 @@ module.exports = function (grunt) {
           reporter: 'spec',
           colors: true
         },
-        src: ['test/*.js']
+        src: ['test/server/*.js']
+      }
+    },
+    mocha_phantomjs: {
+      all: {
+        options: {
+          urls: [
+            'http://localhost:3001/test'
+          ]
+        }
       }
     },
     develop: {
@@ -133,26 +143,39 @@ module.exports = function (grunt) {
         files: ['client/**/*.js'],
         tasks: ['browserify']
       },
-      app: {
+      server: {
         files: [
-          'app.js',
+          '*.js',
           'server/**/*.js',
           'config/*.js',
-          'public/js/*.js',
-          'test/**/*.js'
+          'test/server/**/*.js'
         ],
-        tasks: ['jshint', 'delayed-livereload', 'exec:runTests']
-      }
+        tasks: ['jshint', 'delayed-livereload', 'exec:runServerTests']
+      },
+      client: {
+        files: [
+          'public/js/*.js',
+          'test/client/**/*.js'
+        ],
+        tasks: ['jshint', 'delayed-livereload', 'exec:runClientTests']
+      },
     },
     exec: {
       runTests: {
         cmd: 'grunt testWithoutBuild'
+      },
+      runServerTests: {
+        cmd: 'grunt testServerWithoutBuild'
+      },
+      runClientTests: {
+        cmd: 'grunt testClientWithoutBuild'
       }
     }
   });
 
-  grunt.config.requires('watch.app.files');
-  files = grunt.config('watch.app.files');
+  grunt.config.requires('watch.server.files');
+  grunt.config.requires('watch.client.files');
+  files = _.union(grunt.config('watch.server.files'), grunt.config('watch.client.files'));
   files = grunt.file.expand(files);
 
   grunt.registerTask('delayed-livereload', 'Live reload after the node server has restarted.',
@@ -197,6 +220,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-develop');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-mocha-test');
+  grunt.loadNpmTasks('grunt-mocha-phantomjs');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-exec');
 
@@ -206,7 +230,18 @@ module.exports = function (grunt) {
   grunt.registerTask('server', [
     'jshint', 'build', 'develop:server', 'exec:runTests', 'watch'
   ]);
-  grunt.registerTask('test', ['jshint', 'build', 'testWithoutBuild']);
-  grunt.registerTask('testWithoutBuild', ['develop:testServer', 'waitForPort', 'mochaTest']);
+  grunt.registerTask('test', [
+    'jshint', 'build', 'testWithoutBuild'
+  ]);
+  grunt.registerTask('testWithoutBuild', [
+    'develop:testServer', 'waitForPort', 'mochaTest', 'mocha_phantomjs'
+  ]);
+  grunt.registerTask('testClientWithoutBuild', [
+    'develop:testServer', 'waitForPort', 'mocha_phantomjs'
+  ]);
+  grunt.registerTask('testServerWithoutBuild', [
+    'develop:testServer', 'waitForPort', 'mochaTest'
+  ]);
+
   grunt.registerTask('default', ['test']);
 };

@@ -32,7 +32,8 @@ module.exports = {
     describe: true,
     it: true,
     before: true,
-    beforeEach: true
+    beforeEach: true,
+    chai: true
   },
   browser: true,
   rhino: false,

@@ -48,6 +48,11 @@ module.exports = function (env) {
     }
   };
 
+  // env flags
+  config.isProduction = config.env === 'production';
+  config.isTest = config.env === 'test';
+  config.isDevelopment = config.env === 'development';
+
   return _.extend({}, clientConfig, config, config[config.env]);
 
 };

@@ -5,7 +5,7 @@ var root = 'http://localhost:3001/api/projects';
 describe('projects rest api', function () {
 
   beforeEach(function (done) {
-    require('./fixtures')(done);
+    require('../fixtures')(done);
   });
 
   it('can create projects', function (done) {

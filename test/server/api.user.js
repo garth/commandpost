@@ -5,7 +5,7 @@ var root = 'http://localhost:3001/api/users';
 describe('users rest api', function () {
 
   beforeEach(function (done) {
-    require('./fixtures')(done);
+    require('../fixtures')(done);
   });
 
   it('can create users', function (done) {

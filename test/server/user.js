@@ -1,14 +1,14 @@
 var expect = require('chai').expect;
 var mongoose = require('mongoose');
 var ObjectId = mongoose.Types.ObjectId;
-var config = require('../server/config/config')('test');
-var db = require('../server/config/mongoose')(config);
+var config = require('../../server/config/config')('test');
+var db = require('../../server/config/mongoose')(config);
 var User = mongoose.model('User');
 
 describe('user', function () {
 
   beforeEach(function (done) {
-    require('./fixtures')(done);
+    require('../fixtures')(done);
   });
 
   it('can set password', function (done) {
