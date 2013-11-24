@@ -6,6 +6,10 @@ module.exports = function (app, config, db) {
 
   var authorise = require('../authorise')(config);
 
+  app.get('/api/sessions', authorise, function (req, res, next) {
+    res.send({ user: req.user });
+  });
+
   app.post('/api/sessions', function (req, res, next) {
     User.findOne({ name: req.body.user.name }, function (err, user) {
       if (err) { return next(err); }

@@ -22,6 +22,19 @@ describe('sessions rest api', function () {
     });
   });
 
+  it('gets the current session', function (done){
+    superagent.get(root)
+    .set('Cookie', 'session=62875455e3e2812b6e000001;')
+    .end(function (err, res) {
+      expect(err).to.eql(null);
+      expect(res.status).to.equal(200);
+      expect(res.body).to.exist;
+      expect(res.body.user).to.exist;
+      expect(res.body.user.name).to.equal('Garth');
+      done();
+    });
+  });
+
   it('can delete a session', function(done){
     superagent.del(root)
     .set('Cookie', 'session=62875455e3e2812b6e000001;')
