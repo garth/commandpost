@@ -12,7 +12,7 @@ module.exports = function(app, config) {
   app.set('views', config.root + '/server/views');
   app.set('view engine', 'ejs');
   app.set('view options', { layout: false });
-  app.use(express.favicon(config.root + '/public/img/favicon.ico'));
+  app.use(express.favicon(config.root + '/public/favicon.ico'));
   if (config.isDevelopment) {
     app.use(express.logger('dev'));
   }
