@@ -1,26 +1,24 @@
 require('../models/user');
 
 App.SignupRoute = Ember.Route.extend({
-
   redirect: function () {
-    if (App.get('isLoggedIn')) {
-      this.transitionTo('/', App.get('user.organisation'));
+    // if the user is already signed in send the along
+    if (App.get('isSignedIn')) {
+      this.transitionTo('index');
     }
   }
-
 });
-
 
 App.SignupController = Ember.Controller.extend({
   needs: ['application'],
-  name: null,
-  password: null,
-  rememberMe: true,
+
   errorMessage: '',
+  name: '',
+  password: '',
 
   actions: {
     signin: function() {
-      var user = this.getProperties('name', 'password', 'rememberMe');
+      var user = this.getProperties('name', 'password');
       var store = this.get('store');
       var applicationController = this.get('controllers.application');
       var self = this;
@@ -29,25 +27,20 @@ App.SignupController = Ember.Controller.extend({
         url: '/api/session',
         data: user
       }).then(function (data) {
-        // add the user and organisation to the store
-        store.pushPayload('user', data);
         // set the logged in user
-        store.find('user', data.user.id).then(function (user) {
-          App.set('user', user);
-          // navigate
-          var transition = applicationController.get('savedTransition');
-          applicationController.set('savedTransition', null);
-          // if the user was going somewhere, send them along, otherwise
-          // default to root
-          if (transition) {
-            transition.retry();
-          } else {
-            self.transitionToRoute('index');
-          }
-        });
+        App.set('user', store.push('user', data.user));
+        // navigate
+        var transition = applicationController.get('savedTransition');
+        applicationController.set('savedTransition', null);
+        // if the user was going somewhere, send them along, otherwise
+        // default to root
+        if (transition) {
+          transition.retry();
+        } else {
+          self.transitionToRoute('index');
+        }
       }, function (response) {
         self.set('errorMessage', App.getAjaxError(response));
-        self.set('showFieldValidation', true);
         $('#signin-view').effect('shake');
       });
     }

@@ -11,13 +11,11 @@ App.ApplicationRoute = Ember.Route.extend({
 
         // lookup the current user info
         App.ajaxGet({ url: '/api/session' }).then(function (data) {
+          console.log(data);
 
           // set the logged in user
-          store.pushPayload('user', data);
-          store.find('user', data.user.id).then(function (user) {
-            App.set('user', user);
-            resolve();
-          });
+          App.set('user', store.push('user', data.user));
+          resolve();
 
         }, function (error) {
           console.log('autologin failed: ', error);
@@ -33,22 +31,24 @@ App.ApplicationRoute = Ember.Route.extend({
 
 
 App.ApplicationController = Ember.Controller.extend({
+
   // when a user enters the app unauthenticated, the transition
   // to where they are going is saved off so it can be retried
   // when they have logged in.
   savedTransition: null,
+
+  // array of flash messages to display
   flashMessages: Ember.A(),
 
   actions: {
-    logout: function() {
+    signout: function() {
       // ask the server to drop the session
       App.ajaxDelete({ url: '/api/session' }).then(function (data) {
-        // remove the auth token from the browser
-        delete localStorage.auth_token;
         // reload the page to force drop all data
         document.location = '/';
       }, function (response) {
-        console.log('session destroy failed');
+        this.flash('Singout Failed');
+        console.log('Singout Failed', response);
       });
     }
   },

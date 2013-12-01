@@ -14,7 +14,7 @@ App = Ember.Application.extend({
 
   config: config,
 
-  isLoggedIn: function () {
+  isSignedIn: function () {
     return !!this.get('user');
   }.property('user')
 

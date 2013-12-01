@@ -21,9 +21,9 @@
         {{#if App.isLoggedIn}}
           <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i>
-              {{App.user.fullName}} <b class="caret"></b></a>
+              {{App.user.name}} <b class="caret"></b></a>
             <ul class="dropdown-menu">
-              <li><a {{action 'logout'}}><i class="fa fa-sign-out"></i> Sign out</a></li>
+              <li><a {{action 'signout'}}><i class="fa fa-sign-out"></i> Sign out</a></li>
             </ul>
           </li>
         {{else}}

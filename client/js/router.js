@@ -12,6 +12,6 @@ App.Router = Ember.Router.extend({
 App.Router.map(function() {
   this.route('signin');
   this.route('signup');
-  this.route('index', { path: '/' });
+  this.resource('index', { path: '/' });
   this.resource('project', { path: '/projects/:project_id' });
 });
