@@ -1,16 +1,17 @@
-require('./routes/route');
-require('./routes/application_route');
-require('./routes/login_route');
-require('./routes/signup_route');
-require('./routes/index_route');
+Ember.Route.reopen({
+  // close any open flash messages before a route loads
+  activate: function () {
+    this.controllerFor('application').clearFlash();
+  }
+});
 
 App.Router = Ember.Router.extend({
   location: 'history'
 });
 
 App.Router.map(function() {
-  this.resource('login');
-  this.resource('signup');
-  this.resource('index', { path: '/' });
+  this.route('signin');
+  this.route('signup');
+  this.route('index', { path: '/' });
   this.resource('project', { path: '/projects/:project_id' });
 });

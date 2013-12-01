@@ -1,5 +1,7 @@
 require('../models/user');
 
+App.SignupRoute = Ember.Route.extend({});
+
 App.SignupController = Ember.ObjectController.extend({
 
   errorMessage: '',
@@ -20,7 +22,7 @@ App.SignupController = Ember.ObjectController.extend({
           self.set('errorMessage', '');
           self.set('name', '');
           self.set('password', '');
-          self.transitionToRoute('login');
+          self.transitionToRoute('signin');
         }
       }, function (response) {
         self.set('errorMessage', App.getAjaxError(response));

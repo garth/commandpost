@@ -5,8 +5,10 @@ App.IndexRoute = Ember.Route.extend({
 
     if (!App.get('isLoggedIn')) {
       applicationController.set('savedTransition', transition);
-      this.transitionTo('login');
+      this.transitionTo('signin');
     }
   }
 
 });
+
+App.IndexController = Ember.Controller.extend({});

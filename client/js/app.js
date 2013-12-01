@@ -21,7 +21,7 @@ App = Ember.Application.extend({
 }).create();
 
 //load helpers
-require('./helpers/helper_methods');
+require('./helpers/helper-methods');
 
 // prepare the data store
 require('./store');
@@ -30,7 +30,7 @@ require('./store');
 require('./router');
 
 // controllers
-require('./controllers/application_controller');
-require('./controllers/login_controller');
-require('./controllers/signup_controller');
-require('./controllers/project_controller');
+require('./controllers/application');
+require('./controllers/signin');
+require('./controllers/signup');
+require('./controllers/project');
