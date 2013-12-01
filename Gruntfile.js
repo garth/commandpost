@@ -8,8 +8,6 @@ module.exports = function (grunt) {
 
   require('time-grunt')(grunt);
 
-  var reloadPort = 35729, files;
-
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     emberTemplates: {
@@ -18,7 +16,7 @@ module.exports = function (grunt) {
           templateBasePath: /client\/templates\//
         },
         files: {
-          "public/js/templates.js": ["client/templates/**/*.hbs"]
+          'public/js/templates.js': ['client/templates/**/*.hbs']
         }
       }
     },
@@ -64,9 +62,7 @@ module.exports = function (grunt) {
           compile: true
         },
         files: {
-          'public/css/app.css': [
-            'client/css/app.less'
-          ]
+          'public/css/app.css': ['client/css/app.less']
         }
       }
     },
@@ -76,7 +72,8 @@ module.exports = function (grunt) {
           {
             expand: true,
             flatten: true,
-            src: ['components/font-awesome/fonts/*'], // include all font files
+            // include all font files
+            src: ['components/font-awesome/fonts/*'],
             dest: 'public/fonts/',
             filter: 'isFile'
           }
@@ -104,9 +101,7 @@ module.exports = function (grunt) {
     mocha_phantomjs: {
       all: {
         options: {
-          urls: [
-            'http://localhost:3001/test'
-          ]
+          urls: ['http://localhost:3001/test']
         }
       }
     },
@@ -123,16 +118,14 @@ module.exports = function (grunt) {
     watch: {
       options: {
         nospawn: true,
-        livereload: reloadPort
+        livereload: 35729
       },
       css: {
         files: ['client/**/*.less'],
-        tasks: ['recess', 'delayed-livereload']
+        tasks: ['recess', 'develop:server']
       },
       vendor: {
-        files: [
-          'components/**/*.js'
-        ],
+        files: ['components/**/*.js'],
         tasks: ['concat']
       },
       templates: {
@@ -147,18 +140,16 @@ module.exports = function (grunt) {
         files: [
           '*.js',
           'server/**/*.js',
-          'config/*.js',
           'test/server/**/*.js'
         ],
-        tasks: ['jshint', 'delayed-livereload', 'exec:runServerTests']
+        tasks: ['jshint', 'develop:server', 'exec:runServerTests']
       },
       client: {
         files: [
-          'client/js/**/*.js',
           'public/js/**/*.js',
           'test/client/**/*.js'
         ],
-        tasks: ['delayed-livereload', 'exec:runClientTests']
+        tasks: ['develop:server', 'exec:runClientTests']
       },
     },
     exec: {
@@ -172,29 +163,6 @@ module.exports = function (grunt) {
         cmd: 'grunt testClientWithoutBuild'
       }
     }
-  });
-
-  grunt.config.requires('watch.server.files');
-  grunt.config.requires('watch.client.files');
-  files = _.union(grunt.config('watch.server.files'), grunt.config('watch.client.files'));
-  files = grunt.file.expand(files);
-
-  grunt.registerTask('delayed-livereload', 'Live reload after the node server has restarted.',
-    function () {
-    var done = this.async();
-    setTimeout(function () {
-      request.get('http://localhost:' + reloadPort + '/changed?files=' + files.join(','),
-        function(err, res) {
-        var reloaded = !err && res.statusCode === 200;
-        if (reloaded) {
-          grunt.log.ok('Delayed live reload successful.');
-        }
-        else {
-          grunt.log.error('Unable to make a delayed live reload.');
-        }
-        done(reloaded);
-      });
-    }, 500);
   });
 
   grunt.registerTask('waitForPort', 'Waits until a port is open', function() {
