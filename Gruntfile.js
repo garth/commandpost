@@ -51,7 +51,8 @@ module.exports = function (grunt) {
           'bower_components/bootstrap/js/affix.js',
           'bower_components/handlebars/handlebars.js',
           'bower_components/ember/ember.js',
-          'bower_components/ember-data-shim/ember-data.js'
+          'bower_components/ember-data-shim/ember-data.js',
+          'bower_components/showdown/src/showdown.js'
         ],
         dest: 'public/js/vendor.js',
       },
