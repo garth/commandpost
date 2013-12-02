@@ -10,8 +10,7 @@ App.ApplicationRoute = Ember.Route.extend({
       if (App.readCookie('session')) {
 
         // lookup the current user info
-        App.ajaxGet({ url: '/api/session' }).then(function (data) {
-          console.log(data);
+        App.ajaxGet({ url: '/api/sessions' }).then(function (data) {
 
           // set the logged in user
           App.set('user', store.push('user', data.user));
@@ -43,7 +42,7 @@ App.ApplicationController = Ember.Controller.extend({
   actions: {
     signout: function() {
       // ask the server to drop the session
-      App.ajaxDelete({ url: '/api/session' }).then(function (data) {
+      App.ajaxDelete({ url: '/api/sessions' }).then(function (data) {
         // reload the page to force drop all data
         document.location = '/';
       }, function (response) {

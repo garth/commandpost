@@ -20,7 +20,7 @@ module.exports = function (app, config, db) {
         (new Session({ user: user.id })).save(function (err, session) {
           if (err) { return next(err); }
           res.cookie('session', session.id, { maxAge: config.sessionTtl });
-          res.end();
+          res.send({ user: user });
         });
       }
     });

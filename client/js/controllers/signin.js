@@ -9,7 +9,7 @@ App.SignupRoute = Ember.Route.extend({
   }
 });
 
-App.SignupController = Ember.Controller.extend({
+App.SigninController = Ember.Controller.extend({
   needs: ['application'],
 
   errorMessage: '',
@@ -24,8 +24,8 @@ App.SignupController = Ember.Controller.extend({
       var self = this;
       // try to create a login session
       App.ajaxPost({
-        url: '/api/session',
-        data: user
+        url: '/api/sessions',
+        data: { user: user }
       }).then(function (data) {
         // set the logged in user
         App.set('user', store.push('user', data.user));

@@ -31,6 +31,7 @@ require('./router');
 
 // controllers
 require('./controllers/application');
+require('./controllers/index');
 require('./controllers/signin');
 require('./controllers/signup');
 require('./controllers/project');

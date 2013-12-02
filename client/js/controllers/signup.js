@@ -1,6 +1,13 @@
 require('../models/user');
 
-App.SignupRoute = Ember.Route.extend({});
+App.SignupRoute = Ember.Route.extend({
+  redirect: function () {
+    // if the user is already signed in send the along
+    if (App.get('isSignedIn')) {
+      this.transitionTo('index');
+    }
+  }
+});
 
 App.SignupController = Ember.ObjectController.extend({
 

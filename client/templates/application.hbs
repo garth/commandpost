@@ -11,14 +11,14 @@
     </div>
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        {{#if App.isLoggedIn}}
+        {{#if App.isSignedIn}}
           <li>{{#link-to 'index'}}<i class="fa fa-home"></i> Home{{/link-to}}</li>
         {{else}}
           <li>{{#link-to 'signup'}}<i class="fa fa-edit"></i> Sign up{{/link-to}}</li>
         {{/if}}
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        {{#if App.isLoggedIn}}
+        {{#if App.isSignedIn}}
           <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i>
               {{App.user.name}} <b class="caret"></b></a>
