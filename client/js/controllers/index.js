@@ -7,8 +7,9 @@ App.IndexRoute = Ember.Route.extend({
       applicationController.set('savedTransition', transition);
       this.transitionTo('signin');
     }
+    else {
+      this.transitionTo('projects');
+    }
   }
 
 });
-
-App.IndexController = Ember.Controller.extend({});

@@ -12,6 +12,11 @@ App.Router = Ember.Router.extend({
 App.Router.map(function() {
   this.route('signin');
   this.route('signup');
-  this.resource('index', { path: '/' });
-  this.resource('project', { path: '/projects/:project_id' });
+  //everything under index requires authentication
+  this.resource('index', { path: '/' }, function () {
+    this.resource('projects', function () {
+      this.route('new');
+      this.route('edit', { path: ':project_id' });
+    });
+  });
 });

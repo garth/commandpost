@@ -9,7 +9,7 @@ App.SignupRoute = Ember.Route.extend({
   }
 });
 
-App.SignupController = Ember.ObjectController.extend({
+App.SignupController = Ember.Controller.extend({
 
   errorMessage: '',
   name: '',
