@@ -165,6 +165,30 @@ module.exports = function (grunt) {
       runClientTests: {
         cmd: 'grunt testClientWithoutBuild'
       }
+    },
+    uglify: {
+      publicjs: {
+        options: {
+          preserveComments: false,
+          report: 'min' //'gzip'
+        },
+        files: {
+          'public/js/app.js': ['public/js/app.js'],
+          'public/js/templates.js': ['public/js/templates.js'],
+          'public/js/vendor.js': ['public/js/vendor.js']
+        }
+      }
+    },
+    cssmin: {
+      publiccss: {
+        options: {
+          keepSpecialComments: 0,
+          report: 'min' //'gzip'
+        },
+        files: {
+          'public/css/app.css': ['public/css/app.css']
+        }
+      }
     }
   });
 
@@ -195,6 +219,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-mocha-phantomjs');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-exec');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
 
   grunt.registerTask('build', [
     'emberTemplates', 'recess', 'browserify', 'concat', 'copy'
@@ -213,6 +239,9 @@ module.exports = function (grunt) {
   ]);
   grunt.registerTask('testServerWithoutBuild', [
     'develop:testServer', 'waitForPort', 'mochaTest'
+  ]);
+  grunt.registerTask('production', [
+    'jshint', 'build', 'uglify', 'cssmin'
   ]);
 
   grunt.registerTask('default', ['test']);
