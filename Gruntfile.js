@@ -37,6 +37,8 @@ module.exports = function (grunt) {
       dist: {
         src: [
           'bower_components/jquery/jquery.js',
+          'bower_components/jqueryui/ui/jquery.ui.effect.js',
+          'bower_components/jqueryui/ui/jquery.ui.effect-shake.js',
           'bower_components/bootstrap/js/transition.js',
           'bower_components/bootstrap/js/alert.js',
           'bower_components/bootstrap/js/button.js',
