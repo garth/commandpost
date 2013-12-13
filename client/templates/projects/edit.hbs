@@ -15,20 +15,18 @@
 </form>
 
 <button class="btn btn-primary" {{action 'save'}}>
-  <i class="fa fa-check-circle"></i> Done
+  <i class="fa fa-check"></i> Done
 </button>
 <hr>
-<h2>Delete this board</h2>
+<h3>Delete this board</h3>
 <p class="text-danger">
   Deleting this board will permanently erase the
   board and all assicated data!
 </p>
 <p>
-  Enter the name of the board below and press delete.
-</p>
-<p>
+  Enter the name of the board and press delete:
   {{input value=confirmDelete}}
   <button class="btn btn-danger" {{action 'delete'}}>
-    <i class="fa fa-times-circle"></i> Delete this board
+    <i class="fa fa-times"></i> Delete
   </button>
 </p>
