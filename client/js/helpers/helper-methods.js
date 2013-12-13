@@ -75,3 +75,15 @@ App.eraseCookie = function (name) {
 
 // enable flash messages
 App.flash = toastr;
+
+App.flash.serverError = function (title, err) {
+  var message;
+  if (err.responseJSON && err.responseJSON.error) {
+    message = err.responseJSON.error;
+  }
+  else {
+    message = err.status + ' ' + err.statusText;
+  }
+  App.flash.error(message, title);
+  return message;
+};
