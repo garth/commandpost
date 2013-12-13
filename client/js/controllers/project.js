@@ -1,5 +1,7 @@
 require('../models/project');
 
+var Promise = Ember.RSVP.Promise;
+
 App.ProjectsIndexRoute = Ember.Route.extend({
   model: function () {
     return this.store.find('project');
@@ -8,9 +10,24 @@ App.ProjectsIndexRoute = Ember.Route.extend({
 
 App.ProjectsNewRoute = Ember.Route.extend({
   redirect: function () {
-    this.transitionTo('projects.edit', this.store.createRecord('project', {
+    var store = this.store;
+    var project = store.createRecord('project', {
       name: 'New' // + moment().format('YYYYMMDDHHmmss')
-    }).save());
+    });
+    this.transitionTo('projects.edit', new Promise(function (resolve, reject) {
+      project.save().then(resolve, function (err) {
+        project.deleteRecord();
+        var message;
+        if (err.responseJSON && err.responseJSON.error) {
+          message = err.responseJSON.error;
+        }
+        else {
+          message = err.status + ' ' + err.statusText;
+        }
+        App.flash.error(message, 'Failed to create board');
+        reject(message);
+      });
+    }));
   }
 });
 

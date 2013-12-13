@@ -23,6 +23,9 @@ module.exports = function (app, config, db) {
         data.error = 'Unexpected database error';
       }
     }
+    else {
+      console.log(err);
+    }
 
     // report the error
     res.send(status, data);
