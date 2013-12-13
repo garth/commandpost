@@ -1,5 +1,19 @@
 <h1>Edit {{name}} Board</h1>
 
+<form role="form">
+  <div class="row">
+    <div class="col-md-4">
+      {{input-text label="Name" placeholder="board name" value=name}}
+    </div>
+    <div class="col-md-4">
+      {{input-text label="Created By" value=createdByUser.name disabled=true}}
+    </div>
+    <div class="col-md-4">
+      {{input-text label="Created On" value=createdOn disabled=true}}
+    </div>
+  </div>
+</form>
+
 <button class="btn btn-primary" {{action 'save'}}>
   <i class="fa fa-check-circle"></i> Done
 </button>

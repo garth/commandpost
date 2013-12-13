@@ -1,5 +1,3 @@
-App.ApplicationAdapter = DS.ActiveModelAdapter.extend({
+App.ApplicationAdapter = DS.RESTAdapter.extend({
   namespace: 'api'
 });
-
-//App.ApplicationSerializer = DS.ActiveModelSerializer;
