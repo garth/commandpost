@@ -7,9 +7,14 @@ App.IndexRoute = Ember.Route.extend({
       applicationController.set('savedTransition', transition);
       this.transitionTo('signin');
     }
-    else if (transition.targetName === 'index.index') {
-      this.transitionTo('projects');
-    }
+  }
+
+});
+
+App.IndexIndexRoute = Ember.Route.extend({
+
+  beforeModel: function(transition) {
+    this.transitionTo('projects');
   }
 
 });
