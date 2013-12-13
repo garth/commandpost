@@ -13,5 +13,21 @@ App.ProjectsNewRoute = Ember.Route.extend({
 });
 
 App.ProjectsEditController = Ember.ObjectController.extend({
+  actions: {
+    save: function () {
+      var project = this.get('content');
+      project.save();
+      this.transitionToRoute('projects.view', project);
+    },
+    'delete': function () {
+      var project = this.get('content');
+      project.deleteRecord();
+      project.save();
+      this.transitionToRoute('projects');
+    }
+  }
+});
+
+App.ProjectsViewController = Ember.ObjectController.extend({
 
 });
