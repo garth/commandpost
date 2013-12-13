@@ -17,15 +17,7 @@ App.ProjectsNewRoute = Ember.Route.extend({
     this.transitionTo('projects.edit', new Promise(function (resolve, reject) {
       project.save().then(resolve, function (err) {
         project.deleteRecord();
-        var message;
-        if (err.responseJSON && err.responseJSON.error) {
-          message = err.responseJSON.error;
-        }
-        else {
-          message = err.status + ' ' + err.statusText;
-        }
-        App.flash.error(message, 'Failed to create board');
-        reject(message);
+        reject(App.flash.serverError('Failed to create board', err));
       });
     }));
   }
