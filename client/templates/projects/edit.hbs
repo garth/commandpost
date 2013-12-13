@@ -3,7 +3,7 @@
 <form role="form">
   <div class="row">
     <div class="col-md-4">
-      {{input-text label="Name" placeholder="board name" value=name}}
+      {{input-text label="Name" focus=true placeholder="board name" value=name}}
     </div>
     <div class="col-md-4">
       {{input-text label="Created By" value=createdByUser.name disabled=true}}
@@ -12,16 +12,18 @@
       {{input-text label="Created On" value=createdOn disabled=true}}
     </div>
   </div>
+  <p class="text-right">
+    <button type="submit" class="btn btn-primary" {{action 'save'}}>
+      <i class="fa fa-check"></i> Done
+    </button>
+  </p>
 </form>
 
-<button class="btn btn-primary" {{action 'save'}}>
-  <i class="fa fa-check"></i> Done
-</button>
 <hr>
 <h3>Delete this board</h3>
 <p class="text-danger">
   Deleting this board will permanently erase the
-  board and all assicated data!
+  board and all associated data!
 </p>
 <p>
   Enter the name of the board and press delete:

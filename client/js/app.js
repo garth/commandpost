@@ -29,6 +29,9 @@ require('./store');
 // the router
 require('./router');
 
+// components
+require('./components/input-text');
+
 // controllers
 require('./controllers/application');
 require('./controllers/index');
