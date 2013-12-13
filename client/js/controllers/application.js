@@ -1,4 +1,3 @@
-require('../models/flash-message');
 require('../models/user');
 
 App.ApplicationRoute = Ember.Route.extend({
@@ -36,9 +35,6 @@ App.ApplicationController = Ember.Controller.extend({
   // when they have logged in.
   savedTransition: null,
 
-  // array of flash messages to display
-  flashMessages: Ember.A(),
-
   actions: {
     signout: function() {
       // ask the server to drop the session
@@ -50,17 +46,5 @@ App.ApplicationController = Ember.Controller.extend({
         console.log('Singout Failed', response);
       });
     }
-  },
-
-  // flashMessage should contein type and message
-  flash: function (flashMessage) {
-    var self = this;
-    setTimeout(function () {
-      self.get('flashMessages').pushObject(App.FlashMessage.create(flashMessage));
-    }, 1);
-  },
-
-  clearFlash: function () {
-    this.set('flashMessages', Ember.A());
   }
 });
