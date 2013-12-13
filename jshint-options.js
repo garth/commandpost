@@ -26,6 +26,7 @@ module.exports = {
     DS: true,
     App: true,
     moment: true,
+    toastr: true,
     test: true,
     ok: true,
     console: true,

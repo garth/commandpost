@@ -72,3 +72,6 @@ App.readCookie = function (name) {
 App.eraseCookie = function (name) {
   App.createCookie(name, "" , -1);
 };
+
+// enable flash messages
+App.flash = toastr;
