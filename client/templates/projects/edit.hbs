@@ -1,7 +1,20 @@
 <h1>Edit {{name}} Board</h1>
 
-
-
-
-<button class="btn btn-danger" {{action 'delete'}}>Delete this board</button>
-<button class="btn btn-primary" {{action 'save'}}>Back to the board</button>
+<button class="btn btn-primary" {{action 'save'}}>
+  <i class="fa fa-check-circle"></i> Done
+</button>
+<hr>
+<h2>Delete this board</h2>
+<p class="text-danger">
+  Deleting this board will permanently erase the
+  board and all assicated data!
+</p>
+<p>
+  Enter the name of the board below and press delete.
+</p>
+<p>
+  {{input value=confirmDelete}}
+  <button class="btn btn-danger" {{action 'delete'}}>
+    <i class="fa fa-times-circle"></i> Delete this board
+  </button>
+</p>
