@@ -101,13 +101,13 @@ module.exports = function (grunt) {
         src: ['test/server/*.js']
       }
     },
-    mocha_phantomjs: {
-      all: {
-        options: {
-          urls: ['http://localhost:3001/test']
-        }
-      }
-    },
+    // mocha_phantomjs: {
+    //   all: {
+    //     options: {
+    //       urls: ['http://localhost:3001/test']
+    //     }
+    //   }
+    // },
     develop: {
       server: {
         file: 'app.js',
@@ -152,7 +152,7 @@ module.exports = function (grunt) {
           'public/js/**/*.js',
           'test/client/**/*.js'
         ],
-        tasks: ['develop:server', 'exec:runClientTests']
+        tasks: ['develop:testServer'/*, 'exec:runClientTests'*/]
       },
     },
     exec: {
@@ -161,10 +161,10 @@ module.exports = function (grunt) {
       },
       runServerTests: {
         cmd: 'grunt testServerWithoutBuild'
-      },
-      runClientTests: {
-        cmd: 'grunt testClientWithoutBuild'
-      }
+      }//,
+      // runClientTests: {
+      //   cmd: 'grunt testClientWithoutBuild'
+      // }
     },
     uglify: {
       publicjs: {
@@ -216,7 +216,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-develop');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-mocha-test');
-  grunt.loadNpmTasks('grunt-mocha-phantomjs');
+  //grunt.loadNpmTasks('grunt-mocha-phantomjs');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -228,15 +228,18 @@ module.exports = function (grunt) {
   grunt.registerTask('server', [
     'jshint', 'build', 'develop:server', 'exec:runTests', 'watch'
   ]);
+  grunt.registerTask('testServer', [
+    'jshint', 'build', 'develop:testServer', 'watch'
+  ]);
   grunt.registerTask('test', [
     'jshint', 'build', 'testWithoutBuild'
   ]);
   grunt.registerTask('testWithoutBuild', [
-    'develop:testServer', 'waitForPort', 'mochaTest', 'mocha_phantomjs'
+    'develop:testServer', 'waitForPort', 'mochaTest'//, 'mocha_phantomjs'
   ]);
-  grunt.registerTask('testClientWithoutBuild', [
-    'develop:testServer', 'waitForPort', 'mocha_phantomjs'
-  ]);
+  // grunt.registerTask('testClientWithoutBuild', [
+  //   'develop:testServer', 'waitForPort', 'mocha_phantomjs'
+  // ]);
   grunt.registerTask('testServerWithoutBuild', [
     'develop:testServer', 'waitForPort', 'mochaTest'
   ]);

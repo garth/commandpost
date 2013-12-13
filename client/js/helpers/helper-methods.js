@@ -9,7 +9,7 @@ App.ajax = function (request) {
   return new Ember.RSVP.Promise(function(resolve, reject){
     request.success = resolve;
     request.error = reject;
-    $.ajax(request);
+    Ember.$.ajax(request);
   });
 };
 

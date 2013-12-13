@@ -28,11 +28,12 @@ module.exports = {
     test: true,
     ok: true,
     console: true,
-    '$': true,
     describe: true,
     it: true,
     before: true,
+    after: true,
     beforeEach: true,
+    afterEach: true,
     chai: true
   },
   browser: true,

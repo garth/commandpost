@@ -7,6 +7,7 @@ module.exports = function(app, config) {
     app.use('/mocha', express.static(config.root + '/node_modules/mocha'));
     app.use('/chai', express.static(config.root + '/node_modules/chai'));
     app.use('/test', express.static(config.root + '/test/client'));
+    app.use('/ember-mocha', express.static(config.root + '/bower_components/ember-mocha-adapter'));
   }
   app.set('port', config.port);
   app.set('views', config.root + '/server/views');

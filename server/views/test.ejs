@@ -19,11 +19,15 @@
   <script type="text/javascript" src="/js/vendor.js"></script>
   <script type="text/javascript" src="/mocha/mocha.js"></script>
   <script type="text/javascript" src="/chai/chai.js"></script>
+  <script type="text/javascript" src="/ember-mocha/adapter.js"></script>
   <script type="text/javascript" src="/js/templates.js"></script>
   <script type="text/javascript" src="/js/app.js"></script>
   <script type="text/javascript">
+    App.Router.reopen({
+      location: 'none'
+    });
     App.rootElement = '#application-container';
-    App.setupForTesting();
+    //App.setupForTesting();
     App.injectTestHelpers();
     mocha.setup('bdd');
   </script><%

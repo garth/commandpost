@@ -1,43 +1,26 @@
-// /*global QUnit:true, module:true, test:true, asyncTest:true, expect:true*/
-// /*global start:true, stop:true ok:true, equal:true, notEqual:true, deepEqual:true*/
-// /*global notDeepEqual:true, strictEqual:true, notStrictEqual:true, raises:true*/
-// /*global visit:true, find:true, fillIn:true, click:true, keyEvent:true, wait:true, exists:true*/
+/*global visit:true, find:true, fillIn:true, click:true, keyEvent:true, wait:true, exists:true*/
 
-// module("Login Tests", App.integrationTestModule);
+var expect = chai.expect;
 
-// asyncTest("navigate to login", function() {
-//   visit('/login').then(function () {
-//     ok(exists('form.form-signin'));
-//     start();
-//   });
-// });
+describe('sign in', function () {
 
-// asyncTest("can login", function() {
-//   // mock the ajax call
-//   App.mockAjax(function (request, resolve, reject) {
-//     equal(request.url, '/api/session', 'ajax url was ' + request.url);
-//     equal(request.type, 'POST', 'ajax type was ' + request.type);
-//     equal(request.data.email, 'garth@wi.llia.ms', 'email was ' + request.data.email);
-//     equal(request.data.password, 'testpass', 'password was ' + request.data.password);
-//     resolve({
-//       "users": [{ "id": 1, "first_name": "Garth", "last_name": "Williams",
-//                   "email": "garth@wi.llia.ms", "organisation_id": 1 }],
-//       "organisations": [{ "id": 1, "name": "The Org", "slug": "the-org" }],
-//       "session": { "auth_token": "uuHzQF7bgtkysZd7-FCzfQ", "user_id": 1 }
-//     });
-//     console.log('xxxx');
-//   });
+  beforeEach(function (done) {
+    App.resetFixtures(done);
+  });
 
-//   // navigate
-//   visit('/login').then(function () {
-//     // fill in the login form
-//     fillIn('input[type=text]', 'garth@wi.llia.ms');
-//     fillIn('input[type=password]', 'testpass');
-//     //submit the form
-//     click('button[type=submit]');
+  afterEach(function() {
+    App.reset();
+  });
 
-//     console.log('yyyy');
-//     //ok(exists('.container.organisation'));
-//     start();
-//   });
-// });
+  it('can sign in', function (done) {
+    visit('/signin')
+    .fillIn('input[type=text]', 'Garth')
+    .fillIn('input[type=password]', 'test')
+    .click('button[type=submit]')
+    .then(function () {
+      expect(App.get('isSignedIn')).to.be.true;
+      done();
+    });
+  });
+
+});

@@ -14,7 +14,8 @@
     "font-awesome": "~4.0.3",
     "jquery": "~2.0.3",
     "jqueryui": "~1.10.3",
-    "showdown": "~0.3.1"
+    "showdown": "~0.3.1",
+    "ember-mocha-adapter": "~0.1.2"
   },
   "resolutions": {
     "ember": "~1.2.0",

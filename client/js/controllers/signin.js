@@ -41,7 +41,7 @@ App.SigninController = Ember.Controller.extend({
         }
       }, function (response) {
         self.set('errorMessage', App.getAjaxError(response));
-        $('#signin-view').effect('shake');
+        Ember.$('#signin-view').effect('shake');
       });
     }
   }

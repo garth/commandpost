@@ -14,4 +14,12 @@ module.exports = function (app, config, db) {
     });
 
   }
+
+  if (config.isTest) {
+    app.post('/test/reset-fixtures', function (req, res, next) {
+      require('../../test/fixtures')(function () {
+        res.end();
+      });
+    });
+  }
 };
