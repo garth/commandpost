@@ -15,6 +15,7 @@ module.exports = function (app, config, db) {
   app.post('/api/projects', authorise, function (req, res, next) {
     var project = req.body.project;
     project.createdByUser = req.user.id;
+    project.createdOn = Date.now();
     (new Project(project)).save(function (err, project) {
       if (err) { return next(err); }
       res.send({ project: project.toJSON() });
