@@ -32,14 +32,14 @@ module.exports = function (app, config, db) {
   app.put('/api/projects/:id', authorise, function (req, res, next) {
     Project.findByIdAndUpdate(req.params.id, req.body.project, function(err, project) {
       if (err) { return next(err); }
-      res.end();
+      res.send({});
     });
   });
 
   app.del('/api/projects/:id', authorise, function (req, res, next) {
     Project.findByIdAndRemove(req.params.id, function(err, project) {
       if (err) { return next(err); }
-      res.end();
+      res.send({});
     });
   });
 };

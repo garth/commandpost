@@ -31,14 +31,14 @@ module.exports = function (app, config, db) {
   app.put('/api/cards/:id', authorise, function (req, res, next) {
     Card.findByIdAndUpdate(req.params.id, req.body.card, function(err, card) {
       if (err) { return next(err); }
-      res.end();
+      res.send({});
     });
   });
 
   app.del('/api/cards/:id', authorise, function (req, res, next) {
     Card.findByIdAndRemove(req.params.id, function(err, card) {
       if (err) { return next(err); }
-      res.end();
+      res.send({});
     });
   });
 };

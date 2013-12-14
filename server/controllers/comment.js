@@ -31,14 +31,14 @@ module.exports = function (app, config, db) {
   app.put('/api/comments/:id', authorise, function (req, res, next) {
     Comment.findByIdAndUpdate(req.params.id, req.body.comment, function(err, comment) {
       if (err) { return next(err); }
-      res.end();
+      res.send({});
     });
   });
 
   app.del('/api/comments/:id', authorise, function (req, res, next) {
     Comment.findByIdAndRemove(req.params.id, function(err, comment) {
       if (err) { return next(err); }
-      res.end();
+      res.send({});
     });
   });
 };

@@ -30,7 +30,7 @@ module.exports = function (app, config, db) {
     Session.findByIdAndRemove(req.cookies.session, function(err, session) {
       if (err) { return next(err); }
       res.clearCookie('session');
-      res.end();
+      res.send({});
     });
   });
 

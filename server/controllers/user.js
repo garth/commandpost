@@ -29,14 +29,14 @@ module.exports = function (app, config, db) {
   app.put('/api/users/:id', authorise, function (req, res, next) {
     User.findByIdAndUpdate(req.params.id, req.body.user, function(err, user) {
       if (err) { return next(err); }
-      res.end();
+      res.send({});
     });
   });
 
   app.del('/api/users/:id', authorise, function (req, res, next) {
     User.findByIdAndRemove(req.params.id, function(err, user) {
       if (err) { return next(err); }
-      res.end();
+      res.send({});
     });
   });
 };

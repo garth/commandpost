@@ -29,14 +29,14 @@ module.exports = function (app, config, db) {
   app.put('/api/lanes/:id', authorise, function (req, res, next) {
     Lane.findByIdAndUpdate(req.params.id, req.body.lane, function(err, lane) {
       if (err) { return next(err); }
-      res.end();
+      res.send({});
     });
   });
 
   app.del('/api/lanes/:id', authorise, function (req, res, next) {
     Lane.findByIdAndRemove(req.params.id, function(err, lane) {
       if (err) { return next(err); }
-      res.end();
+      res.send({});
     });
   });
 };
