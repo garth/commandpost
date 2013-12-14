@@ -8,7 +8,8 @@ module.exports = function (app, config, db) {
 
     // check for db errors
     if (err.name === 'MongoError') {
-      switch (err.code) {
+      var code = err.code || err.lastErrorObject.code;
+      switch (code) {
       case 11000:
         status = 409;
         data.error = 'Attempting to add duplicate';

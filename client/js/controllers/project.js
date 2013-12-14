@@ -39,8 +39,12 @@ App.ProjectsEditController = Ember.ObjectController.extend({
   actions: {
     save: function () {
       var project = this.get('content');
-      project.save();
-      this.transitionToRoute('projects.view', project);
+      var self = this;
+      project.save().then(function (project) {
+        self.transitionToRoute('projects.view', project);
+      }, function (err) {
+        App.flash.serverError('Failed to save board', err);
+      });
     },
     'delete': function () {
       var project = this.get('content');
