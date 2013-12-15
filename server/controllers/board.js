@@ -25,7 +25,7 @@ module.exports = function (app, config, db) {
   app.get('/api/boards/:id', authorise, function (req, res, next) {
     Board.findById(req.params.id, function (err, board) {
       if (err) { return next(err); }
-      res.send({ board: board });
+      res.send(board ? { board: board.toJSON() } : 404);
     });
   });
 

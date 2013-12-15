@@ -22,7 +22,7 @@ module.exports = function (app, config, db) {
   app.get('/api/lanes/:id', authorise, function (req, res, next) {
     Lane.findById(req.params.id, function (err, lane) {
       if (err) { return next(err); }
-      res.send({ lane: lane });
+      res.send(lane ? { lane: lane.toJSON() } : 404);
     });
   });
 

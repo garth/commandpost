@@ -49,6 +49,16 @@ describe('comments rest api', function () {
     });
   });
 
+  it('gives 404 for missing comment', function (done) {
+    superagent.get(root + '/52875455e3e2812b6e000099')
+    .set('Cookie', 'session=62875455e3e2812b6e000001;')
+    .end(function (err, res) {
+      expect(err).to.eql(null);
+      expect(res.status).to.equal(404);
+      done();
+    });
+  });
+
   it('updates a comment', function (done) {
     superagent.put(root + '/52875455e3e2812b6e000001').send({
       comment: { title: 'fixed my remarks' }

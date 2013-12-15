@@ -24,7 +24,7 @@ module.exports = function (app, config, db) {
   app.get('/api/cards/:id', authorise, function (req, res, next) {
     Card.findById(req.params.id, function (err, card) {
       if (err) { return next(err); }
-      res.send({ card: card });
+      res.send(card ? { card: card.toJSON() } : 404);
     });
   });
 

@@ -24,7 +24,7 @@ module.exports = function (app, config, db) {
   app.get('/api/comments/:id', authorise, function (req, res, next) {
     Comment.findById(req.params.id, function (err, comment) {
       if (err) { return next(err); }
-      res.send({ comment: comment });
+      res.send(comment ? { comment: comment.toJSON() } : 404);
     });
   });
 

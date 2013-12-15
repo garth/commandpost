@@ -64,6 +64,16 @@ describe('board rest api', function () {
     });
   });
 
+  it('gives 404 for missing board', function (done) {
+    superagent.get(root + '/22875455e3e2812b6e000099')
+    .set('Cookie', 'session=62875455e3e2812b6e000001;')
+    .end(function (err, res) {
+      expect(err).to.eql(null);
+      expect(res.status).to.equal(404);
+      done();
+    });
+  });
+
   it('updates a board', function (done) {
     superagent.put(root + '/22875455e3e2812b6e000001').send({
       board: { name: 'Next Proj' }
