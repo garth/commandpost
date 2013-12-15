@@ -25,6 +25,7 @@ module.exports = function (app, config, db) {
         { board: board, name: 'Done', order: 2 }
       ], function (err, lane1, lane2, lane3) {
         if (err) { return next(err); }
+        board = board.toJSON();
         board.lanes = [ lane1.id, lane2.id, lane3.id ];
         res.send({ board: board });
       });
