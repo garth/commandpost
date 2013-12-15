@@ -11,6 +11,10 @@ module.exports = function (config, db) {
     order: { type: Number, required: true, 'default': 0 }
   }, config.schemaOptions);
 
+  Lane.pre('remove', function (next) {
+    require('../helpers/delete-children')(this, 'Card', 'lane', next);
+  });
+
   // register lane with mongoose
   mongoose.model('Lane', Lane);
 };

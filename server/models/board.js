@@ -11,6 +11,10 @@ module.exports = function (config, db) {
     createdOn: { type: Date, required: true, 'default': Date.now }
   }, config.schemaOptions);
 
+  Board.pre('remove', function (next) {
+    require('../helpers/delete-children')(this, 'Lane', 'board', next);
+  });
+
   // register board with mongoose
   mongoose.model('Board', Board);
 };

@@ -16,6 +16,10 @@ module.exports = function (config, db) {
     order: { type: Number, required: true, 'default': 0 }
   }, config.schemaOptions);
 
+  Card.pre('remove', function (next) {
+    require('../helpers/delete-children')(this, 'Comment', 'card', next);
+  });
+
   // register card with mongoose
   mongoose.model('Card', Card);
 };

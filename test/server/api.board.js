@@ -94,7 +94,14 @@ describe('board rest api', function () {
       expect(err).to.equal(null);
       expect(res.status).to.equal(200);
       expect(res.body).to.exist;
-      done();
+      //check the lanes are gone also
+      superagent.get('http://localhost:3001/api/lanes/32875455e3e2812b6e000001')
+      .set('Cookie', 'session=62875455e3e2812b6e000001;')
+      .end(function (err, res) {
+        expect(err).to.eql(null);
+        expect(res.status).to.equal(404);
+        done();
+      });
     });
   });
 
