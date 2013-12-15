@@ -50,10 +50,14 @@ App.BoardsEditController = Ember.ObjectController.extend({
     },
     'delete': function () {
       var board = this.get('content');
+      var self = this;
       if (this.get('confirmDelete') === board.get('name')) {
         board.deleteRecord();
-        board.save();
-        this.transitionToRoute('boards');
+        board.save().then(function () {
+          self.transitionToRoute('boards.index');
+        }, function (err) {
+          App.flash.serverError('Failed to delete board', err);
+        });
       }
     }
   }
