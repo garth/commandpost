@@ -20,6 +20,12 @@ module.exports = function(app, config) {
   app.use(express.cookieParser());
   app.use(express.bodyParser());
   app.use(express.methodOverride());
+  app.use('/api', function (req, res, next) {
+    res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.header("Pragma", "no-cache");
+    res.header("Expires", 0);
+    next();
+  });
   app.use(app.router);
   app.use(require('../default'));
 };
