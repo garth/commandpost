@@ -15,8 +15,8 @@ module.exports = function (config, db) {
     require('../helpers/delete-children')(this, 'Card', 'lane', next);
   });
 
-  Lane.pre('init', function(next, card) {
-    require('../helpers/insert-child-refs')(card, 'cards', 'Card', 'lane', next);
+  Lane.pre('init', function(next, lane) {
+    require('../helpers/insert-child-refs')(lane, 'cards', 'Card', 'lane', next);
   });
 
 

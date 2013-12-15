@@ -15,14 +15,14 @@ module.exports = function (app, config, db) {
   app.post('/api/lanes', authorise, function (req, res, next) {
     (new Lane(req.body.lane)).save(function (err, lane) {
       if (err) { return next(err); }
-      res.send({ lane: lane.toJSON() });
+      res.send({ lane: lane });
     });
   });
 
   app.get('/api/lanes/:id', authorise, function (req, res, next) {
     Lane.findById(req.params.id, function (err, lane) {
       if (err) { return next(err); }
-      res.send(lane ? { lane: lane.toJSON() } : 404);
+      res.send(lane ? { lane: lane } : 404);
     });
   });
 

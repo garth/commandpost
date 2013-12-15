@@ -17,14 +17,14 @@ module.exports = function (app, config, db) {
     comment.user = req.user.id;
     (new Comment(req.body.comment)).save(function (err, comment) {
       if (err) { return next(err); }
-      res.send({ comment: comment.toJSON() });
+      res.send({ comment: comment });
     });
   });
 
   app.get('/api/comments/:id', authorise, function (req, res, next) {
     Comment.findById(req.params.id, function (err, comment) {
       if (err) { return next(err); }
-      res.send(comment ? { comment: comment.toJSON() } : 404);
+      res.send(comment ? { comment: comment } : 404);
     });
   });
 

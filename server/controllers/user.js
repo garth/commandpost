@@ -22,7 +22,7 @@ module.exports = function (app, config, db) {
   app.get('/api/users/:id', authorise, function (req, res, next) {
     User.findById(req.params.id, function (err, user) {
       if (err) { return next(err); }
-      res.send(user ? { user: user.toJSON() } : 404);
+      res.send(user ? { user: user } : 404);
     });
   });
 

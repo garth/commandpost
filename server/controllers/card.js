@@ -17,14 +17,14 @@ module.exports = function (app, config, db) {
     card.createdByUser = req.user.id;
     (new Card(card)).save(function (err, card) {
       if (err) { return next(err); }
-      res.send({ card: card.toJSON() });
+      res.send({ card: card });
     });
   });
 
   app.get('/api/cards/:id', authorise, function (req, res, next) {
     Card.findById(req.params.id, function (err, card) {
       if (err) { return next(err); }
-      res.send(card ? { card: card.toJSON() } : 404);
+      res.send(card ? { card: card } : 404);
     });
   });
 
