@@ -31,6 +31,7 @@ require('./router');
 
 // components
 require('./components/input-text');
+require('./components/sortable-list');
 
 // controllers
 require('./controllers/application');
