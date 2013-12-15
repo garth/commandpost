@@ -2,6 +2,7 @@ var config = require('../server/config/config')('test');
 var mongo = require('mongodb');
 var fs = require('fs');
 var RSVP = require('rsvp');
+var Promise = RSVP.Promise;
 
 //initialise all fixtures
 module.exports = function (callback) {
@@ -14,22 +15,17 @@ module.exports = function (callback) {
       var collectionName = fixtureFile.replace(/\.js/, '');
       var collectionItems = require(__dirname + '/fixtures/' + fixtureFile);
       // do the work inside a promise
-      promises.push(new RSVP.Promise(function (resolve, reject) {
+      promises.push(new Promise(function (resolve, reject) {
         // drop the existing collection items
         var collection = db.collection(collectionName);
         collection.remove(function (err) {
           if (err) {
-            reject(err);
+            return reject(err);
           }
-          else if (collectionItems.length) {
+          if (collectionItems.length) {
             // insert the collection fixture items
             collection.insert(collectionItems, function (err, result) {
-              if (err) {
-                reject(err);
-              }
-              else {
-                resolve();
-              }
+              err ? reject(err) : resolve();
             });
           }
           else {
@@ -39,11 +35,12 @@ module.exports = function (callback) {
       }));
     });
 
-    // notify when all fixtures modifications are complete
-    if (typeof callback === 'function') {
-      RSVP.all(promises).then(function (results) {
+    RSVP.all(promises).then(function (results) {
+      db.close();
+      if (typeof callback === 'function') {
+        // notify when all fixtures modifications are complete
         callback();
-      });
-    }
+      }
+    });
   });
 };
