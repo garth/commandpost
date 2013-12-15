@@ -32,6 +32,8 @@ describe('cards rest api', function () {
       expect(res.body).to.exist;
       expect(res.body.card).to.exist;
       expect(res.body.card.title).to.equal('Item 1');
+      expect(res.body.card.comments).to.exist;
+      expect(res.body.card.comments.length).to.equal(2);
       done();
     });
   });

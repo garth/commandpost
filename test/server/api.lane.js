@@ -32,6 +32,8 @@ describe('lanes rest api', function () {
       expect(res.body).to.exist;
       expect(res.body.lane).to.exist;
       expect(res.body.lane.name).to.equal('One');
+      expect(res.body.lane.cards).to.exist;
+      expect(res.body.lane.cards.length).to.equal(4);
       done();
     });
   });

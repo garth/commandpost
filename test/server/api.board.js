@@ -20,6 +20,8 @@ describe('board rest api', function () {
       expect(res.body.board).to.exist;
       expect(res.body.board.id.length).to.equal(24);
       expect(res.body.board.createdByUser).to.equal('12875455e3e2812b6e000001');
+      expect(res.body.board.lanes).to.exist;
+      expect(res.body.board.lanes.length).to.equal(3);
       done();
     });
   });
@@ -47,6 +49,8 @@ describe('board rest api', function () {
       expect(res.body.board.name).to.equal('Board');
       expect(res.body.board.createdByUser).to.equal('12875455e3e2812b6e000001');
       expect(res.body.board.createdOn).to.equal('2013-11-20T00:00:00.000Z');
+      expect(res.body.board.lanes).to.exist;
+      expect(res.body.board.lanes.length).to.equal(3);
       done();
     });
   });
