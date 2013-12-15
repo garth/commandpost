@@ -14,7 +14,7 @@ App.IndexRoute = Ember.Route.extend({
 App.IndexIndexRoute = Ember.Route.extend({
 
   beforeModel: function(transition) {
-    this.transitionTo('projects');
+    this.transitionTo('boards');
   }
 
 });

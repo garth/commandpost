@@ -10,7 +10,7 @@ describe('lanes rest api', function () {
 
   it('can create lanes', function (done) {
     superagent.post(root).send({
-      lane: { name: 'New Lane', project: '22875455e3e2812b6e000001' }
+      lane: { name: 'New Lane', board: '22875455e3e2812b6e000001' }
     })
     .set('Cookie', 'session=62875455e3e2812b6e000001;')
     .end(function (err, res) {
@@ -37,7 +37,7 @@ describe('lanes rest api', function () {
   });
 
   it('retrieves a lane collection', function (done) {
-    superagent.get(root + '?project=22875455e3e2812b6e000001')
+    superagent.get(root + '?board=22875455e3e2812b6e000001')
     .set('Cookie', 'session=62875455e3e2812b6e000001;')
     .end(function (err, res) {
       expect(err).to.eql(null);

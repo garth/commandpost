@@ -4,13 +4,13 @@ var ObjectId = Schema.Types.ObjectId;
 
 module.exports = function (config, db) {
 
-  // define project
-  var Project = new Schema({
+  // define board
+  var Board = new Schema({
     name: { type: String, index: { unique: true, dropDups: true }, required: true },
     createdByUser: { type: ObjectId, ref: 'User', required: true },
     createdOn: { type: Date, required: true, 'default': Date.now }
   }, config.schemaOptions);
 
-  // register project with mongoose
-  mongoose.model('Project', Project);
+  // register board with mongoose
+  mongoose.model('Board', Board);
 };

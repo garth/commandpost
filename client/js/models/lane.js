@@ -1,7 +1,7 @@
-require('./project');
+require('./board');
 
 App.Lane = DS.Model.extend({
-  project: DS.belongsTo('project'),
+  board: DS.belongsTo('board'),
   name: DS.attr('string'),
   order: DS.attr('number')
 });

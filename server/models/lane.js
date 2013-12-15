@@ -6,7 +6,7 @@ module.exports = function (config, db) {
 
   // define lane
   var Lane = new Schema({
-    project: { type: ObjectId, ref: 'Project', index: true, required: true },
+    board: { type: ObjectId, ref: 'Board', index: true, required: true },
     name: { type: String, required: true },
     order: { type: Number, required: true, 'default': 0 }
   }, config.schemaOptions);

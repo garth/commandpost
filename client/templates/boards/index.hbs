@@ -1,0 +1,7 @@
+<h1>Boards</h1>
+<ul>
+  {{#each}}
+    <li>{{#link-to 'boards.view' this}}{{name}}{{/link-to}}</li>
+  {{/each}}
+</ul>
+{{#link-to 'boards.new'}}New Board{{/link-to}}
