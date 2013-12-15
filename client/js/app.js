@@ -35,6 +35,7 @@ require('./components/input-text');
 // controllers
 require('./controllers/application');
 require('./controllers/index');
+require('./controllers/error');
 require('./controllers/signin');
 require('./controllers/signup');
 require('./controllers/board');
