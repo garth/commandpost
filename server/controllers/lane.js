@@ -34,9 +34,12 @@ module.exports = function (app, config, db) {
   });
 
   app.del('/api/lanes/:id', authorise, function (req, res, next) {
-    Lane.findByIdAndRemove(req.params.id, function(err, lane) {
+    Lane.findById(req.params.id, function (err, lane) {
       if (err) { return next(err); }
-      res.send({});
+      lane.remove(function (err) {
+        if (err) { return next(err); }
+        res.send({});
+      });
     });
   });
 };

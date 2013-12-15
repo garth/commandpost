@@ -36,9 +36,12 @@ module.exports = function (app, config, db) {
   });
 
   app.del('/api/comments/:id', authorise, function (req, res, next) {
-    Comment.findByIdAndRemove(req.params.id, function(err, comment) {
+    Comment.findById(req.params.id, function (err, comment) {
       if (err) { return next(err); }
-      res.send({});
+      comment.remove(function (err) {
+        if (err) { return next(err); }
+        res.send({});
+      });
     });
   });
 };

@@ -33,5 +33,4 @@ module.exports = function (app, config, db) {
       res.send({});
     });
   });
-
 };

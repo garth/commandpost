@@ -36,9 +36,12 @@ module.exports = function (app, config, db) {
   });
 
   app.del('/api/cards/:id', authorise, function (req, res, next) {
-    Card.findByIdAndRemove(req.params.id, function(err, card) {
+    Card.findById(req.params.id, function (err, card) {
       if (err) { return next(err); }
-      res.send({});
+      card.remove(function (err) {
+        if (err) { return next(err); }
+        res.send({});
+      });
     });
   });
 };

@@ -37,9 +37,12 @@ module.exports = function (app, config, db) {
   });
 
   app.del('/api/boards/:id', authorise, function (req, res, next) {
-    Board.findByIdAndRemove(req.params.id, function(err, board) {
+    Board.findById(req.params.id, function (err, board) {
       if (err) { return next(err); }
-      res.send({});
+      board.remove(function (err) {
+        if (err) { return next(err); }
+        res.send({});
+      });
     });
   });
 };
