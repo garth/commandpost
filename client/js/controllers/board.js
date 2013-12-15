@@ -14,10 +14,12 @@ App.BoardsNewRoute = Ember.Route.extend({
     var board = store.createRecord('board', {
       name: 'New' // + moment().format('YYYYMMDDHHmmss')
     });
+    var self = this;
     this.transitionTo('boards.edit', new Promise(function (resolve, reject) {
       board.save().then(resolve, function (err) {
         board.deleteRecord();
-        reject(App.flash.serverError('Failed to create board', err));
+        App.flash.serverError('Failed to create board', err);
+        self.transitionTo('boards');
       });
     }));
   }
