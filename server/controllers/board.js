@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Board = mongoose.model('Board');
+var Lane = mongoose.model('Lane');
 
 module.exports = function (app, config, db) {
 
@@ -18,7 +19,15 @@ module.exports = function (app, config, db) {
     board.createdOn = Date.now();
     (new Board(board)).save(function (err, board) {
       if (err) { return next(err); }
-      res.send({ board: board.toJSON() });
+      Lane.create([
+        { board: board, name: 'Backlog', order: 0 },
+        { board: board, name: 'In Progress', order: 1 },
+        { board: board, name: 'Done', order: 2 }
+      ], function (err, lane1, lane2, lane3) {
+        if (err) { return next(err); }
+        board.lanes = [ lane1.id, lane2.id, lane3.id ];
+        res.send({ board: board });
+      });
     });
   });
 
