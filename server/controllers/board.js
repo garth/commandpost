@@ -1,13 +1,14 @@
 var mongoose = require('mongoose');
 var Board = mongoose.model('Board');
 var Lane = mongoose.model('Lane');
+var prepareQuery = require('../helpers/prepare-query');
 
 module.exports = function (app, config, db) {
 
   var authorise = require('../authorise')(config);
 
   app.get('/api/boards', authorise, function (req, res, next) {
-    Board.find(req.query || {}, function (err, boards) {
+    Board.find(prepareQuery(req.query), function (err, boards) {
       if (err) { return next(err); }
       res.send({ boards: boards });
     });

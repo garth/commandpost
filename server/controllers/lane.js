@@ -1,12 +1,13 @@
 var mongoose = require('mongoose');
 var Lane = mongoose.model('Lane');
+var prepareQuery = require('../helpers/prepare-query');
 
 module.exports = function (app, config, db) {
 
   var authorise = require('../authorise')(config);
 
   app.get('/api/lanes', authorise, function (req, res, next) {
-    Lane.find(req.query || {}, function (err, lanes) {
+    Lane.find(prepareQuery(req.query), function (err, lanes) {
       if (err) { return next(err); }
       res.send({ lanes: lanes });
     });

@@ -1,12 +1,13 @@
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
+var prepareQuery = require('../helpers/prepare-query');
 
 module.exports = function (app, config, db) {
 
   var authorise = require('../authorise')(config);
 
   app.get('/api/users', authorise, function (req, res, next) {
-    User.find(req.query || {}, function (err, users) {
+    User.find(prepareQuery(req.query), function (err, users) {
       if (err) { return next(err); }
       res.send({ users: users });
     });

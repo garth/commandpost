@@ -1,12 +1,13 @@
 var mongoose = require('mongoose');
 var Card = mongoose.model('Card');
+var prepareQuery = require('../helpers/prepare-query');
 
 module.exports = function (app, config, db) {
 
   var authorise = require('../authorise')(config);
 
   app.get('/api/cards', authorise, function (req, res, next) {
-    Card.find(req.query || {}, function (err, cards) {
+    Card.find(prepareQuery(req.query), function (err, cards) {
       if (err) { return next(err); }
       res.send({ cards: cards });
     });
