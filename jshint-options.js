@@ -25,6 +25,7 @@ module.exports = {
     EmberFC: true,
     DS: true,
     App: true,
+    _: true,
     moment: true,
     toastr: true,
     test: true,
