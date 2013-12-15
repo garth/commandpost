@@ -15,6 +15,11 @@ module.exports = function (config, db) {
     require('../helpers/delete-children')(this, 'Card', 'lane', next);
   });
 
+  Lane.pre('init', function(next, card) {
+    require('../helpers/insert-child-refs')(card, 'cards', 'Card', 'lane', next);
+  });
+
+
   // register lane with mongoose
   mongoose.model('Lane', Lane);
 };

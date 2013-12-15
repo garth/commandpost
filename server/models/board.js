@@ -15,6 +15,10 @@ module.exports = function (config, db) {
     require('../helpers/delete-children')(this, 'Lane', 'board', next);
   });
 
+  Board.pre('init', function(next, board) {
+    require('../helpers/insert-child-refs')(board, 'lanes', 'Lane', 'board', next);
+  });
+
   // register board with mongoose
   mongoose.model('Board', Board);
 };

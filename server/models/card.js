@@ -20,6 +20,10 @@ module.exports = function (config, db) {
     require('../helpers/delete-children')(this, 'Comment', 'card', next);
   });
 
+  Card.pre('init', function(next, card) {
+    require('../helpers/insert-child-refs')(card, 'comments', 'Comment', 'card', next);
+  });
+
   // register card with mongoose
   mongoose.model('Card', Card);
 };
