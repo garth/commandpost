@@ -1,7 +1,7 @@
 App.ErrorController = Ember.Controller.extend({
   title: function () {
     var err = this.get('content');
-    //console.log(err);
+    console.log(err);
     return err.statusText || 'Error';
   }.property('content'),
   message: function () {

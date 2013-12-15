@@ -38,10 +38,19 @@ App.BoardsEditController = Ember.ObjectController.extend({
 
   confirmDelete: null,
 
+  sortedLanes: function () {
+    var lanes = Ember.A(this.get('content.lanes.content.content'));
+    return lanes.sortBy('order');
+  }.property('content.lanes.@each.order'),
+
   actions: {
     save: function () {
       var board = this.get('content');
+      var lanes = board.get('lanes.content.content');
       var self = this;
+      // save any lane changes
+      lanes.invoke('save');
+      // save the board
       board.save().then(function (board) {
         self.transitionToRoute('boards.view', board);
       }, function (err) {

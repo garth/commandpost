@@ -12,6 +12,17 @@
       {{input-text label="Created On" value=createdOn disabled=true}}
     </div>
   </div>
+  <h3>Lanes</h3>
+  {{#sortable-list sortKey="order" class="list-group"}}
+    {{#each lane in sortedLanes}}
+      {{#sortable-list-item item=lane class="list-group-item"}}
+        <div class="input-group">
+          {{input class="form-control" value=lane.name}}
+          <span class="input-group-addon"><i class="fa fa-bars"></i></span>
+        </div>
+      {{/sortable-list-item}}
+    {{/each}}
+  {{/sortable-list}}
   <p class="text-right">
     <button type="submit" class="btn btn-primary" {{action 'save'}}>
       <i class="fa fa-check"></i> Done

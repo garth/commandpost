@@ -16,7 +16,6 @@ App.SortableListComponent = Ember.Component.extend({
           _.each(self.$('li'), function (item) {
             if (item.sortableItem) {
               item.sortableItem.set(key, sort++);
-              console.log('updated ', item.sortableItem.getProperties('name', 'order', 'isDirty'));
             }
           });
         }
