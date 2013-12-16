@@ -41,11 +41,6 @@ App.BoardsEditController = Ember.ObjectController.extend({
     addLane: function () {
       var board = this.get('content');
       var lanes = board.get('lanes.content');
-      console.log({
-        board: board,
-        name: 'New',
-        order: lanes.get('content').length
-      });
       var lane = this.get('store').createRecord('lane', {
         board: board,
         name: 'New',

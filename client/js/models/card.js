@@ -1,5 +1,6 @@
 require('./lane');
 require('./user');
+require('./comment');
 
 App.Card = DS.Model.extend({
   title: DS.attr('string'),
@@ -9,5 +10,6 @@ App.Card = DS.Model.extend({
   createdOn: DS.attr('date'),
   assignedToUser: DS.belongsTo('user'),
   lane: DS.belongsTo('lane'),
-  order: DS.attr('number')
+  order: DS.attr('number'),
+  comments: DS.hasMany('comment', { async: true })
 });
