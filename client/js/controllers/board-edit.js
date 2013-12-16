@@ -38,6 +38,28 @@ App.BoardsEditController = Ember.ObjectController.extend({
   }.property('content.lanes.@each.order'),
 
   actions: {
+    addLane: function () {
+      var board = this.get('content');
+      var lanes = board.get('lanes.content');
+      console.log({
+        board: board,
+        name: 'New',
+        order: lanes.get('content').length
+      });
+      var lane = this.get('store').createRecord('lane', {
+        board: board,
+        name: 'New',
+        order: lanes.get('content').length
+      });
+      lanes.pushObject(lane);
+      lane.save();
+    },
+    deleteLane: function (lane) {
+      var lanes = this.get('content.lanes.content');
+      lanes.removeObject(lane);
+      lane.deleteRecord();
+      lane.save();
+    },
     save: function () {
       var board = this.get('content');
       var lanes = board.get('lanes.content.content');

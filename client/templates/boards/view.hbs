@@ -3,8 +3,12 @@
     <h1>{{name}} Board</h1>
   </div>
   <div class="col-sm-6 text-right board-toolbar">
-    {{#link-to 'boards.edit' content class="btn btn-default"}}Edit Board{{/link-to}}
-    <button class="btn btn-primary">New Card</button>
+    {{#link-to 'boards.edit' content class="btn btn-default"}}
+      <i class="fa fa-cogs"></i> Edit Board
+    {{/link-to}}
+    <button class="btn btn-primary">
+      <i class="fa fa-plus"></i> New Card
+    </button>
   </div>
 </div>
 

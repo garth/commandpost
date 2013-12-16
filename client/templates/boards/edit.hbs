@@ -16,14 +16,22 @@
   {{#sortable-list sortKey="order" class="list-group"}}
     {{#each lane in sortedLanes}}
       {{#sortable-list-item item=lane class="list-group-item"}}
+        <div class="lane-info pull-right">
+          <button class="btn btn-danger btn-xs" {{action 'deleteLane' lane}}>
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
         <div class="input-group">
-          {{input class="form-control" value=lane.name}}
           <span class="input-group-addon"><i class="fa fa-bars"></i></span>
+          {{input class="form-control" value=lane.name}}
         </div>
       {{/sortable-list-item}}
     {{/each}}
   {{/sortable-list}}
   <p class="text-right">
+    <button class="btn btn-default" {{action 'addLane'}}>
+      <i class="fa fa-plus"></i> Add Lane
+    </button>
     <button type="submit" class="btn btn-primary" {{action 'save'}}>
       <i class="fa fa-check"></i> Done
     </button>
@@ -31,6 +39,7 @@
 </form>
 
 <hr>
+
 <h3>Delete this board</h3>
 <p class="text-danger">
   Deleting this board will permanently erase the

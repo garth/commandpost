@@ -10,7 +10,7 @@ App.BoardsViewController = Ember.ObjectController.extend({
   laneStyle: function () {
     var count = this.get('content.lanes.content.content').length;
     return 'width: ' + (count > 0 ? 100.0 / count : 0) + '%';
-  }.property('content.lanes'),
+  }.property('sortedLanes'),
 
   sortedLanes: function () {
     var lanes = Ember.A(this.get('content.lanes.content.content'));
