@@ -43,13 +43,20 @@ App.BoardsEditController = Ember.ObjectController.extend({
       var lanes = board.get('lanes.content.content');
       var self = this;
       // save any lane changes
-      lanes.invoke('save');
-      // save the board
-      board.save().then(function (board) {
-        self.transitionToRoute('boards.view', board);
-      }, function (err) {
-        App.flash.serverError('Failed to save board', err);
+      _.each(lanes, function (lane) {
+        if (lane.get('isDirty')) { lane.save(); }
       });
+      // save the board
+      if (board.get('isDirty')) {
+        board.save().then(function (board) {
+          self.transitionToRoute('boards.view', board);
+        }, function (err) {
+          App.flash.serverError('Failed to save board', err);
+        });
+      }
+      else {
+        this.transitionToRoute('boards.view', board);
+      }
     },
     'delete': function () {
       var board = this.get('content');
