@@ -15,12 +15,7 @@
 <div class="board-lanes">
   {{#each lane in sortedLanes}}
     <div class="board-lane" {{bind-attr style="laneStyle"}}>
-      <div class="panel panel-default">
-        <div class="panel-heading">{{lane.name}}</div>
-        <div class="panel-body">
-          {{lane.name}} content
-        </div>
-      </div>
+      {{render "boards/lane" lane}}
     </div>
   {{/each}}
 </div>

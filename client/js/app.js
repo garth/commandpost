@@ -41,3 +41,4 @@ require('./controllers/signin');
 require('./controllers/signup');
 require('./controllers/board');
 require('./controllers/board-edit');
+require('./controllers/lane');

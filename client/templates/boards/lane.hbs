@@ -1,0 +1,15 @@
+<div class="panel panel-default">
+  <div class="panel-heading">{{name}}</div>
+  <div class="panel-body">
+    {{#sortable-list sortKey="order" class="list-group"}}
+      {{#each card in sortedCards}}
+        {{#sortable-list-item item=lane class="list-group-item"}}
+          <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-bars"></i></span>
+            {{input class="form-control" value=card.name}}
+          </div>
+        {{/sortable-list-item}}
+      {{/each}}
+    {{/sortable-list}}
+  </div>
+</div>
