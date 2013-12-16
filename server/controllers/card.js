@@ -16,6 +16,7 @@ module.exports = function (app, config, db) {
   app.post('/api/cards', authorise, function (req, res, next) {
     var card = req.body.card;
     card.createdByUser = req.user.id;
+    card.createdOn = Date.now();
     (new Card(card)).save(function (err, card) {
       if (err) { return next(err); }
       res.send({ card: card });

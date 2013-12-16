@@ -1,12 +1,19 @@
 <div class="panel panel-default">
   <div class="panel-heading">{{name}}</div>
   <div class="panel-body">
-    {{#sortable-list sortKey="order" class="list-group"}}
+    {{#sortable-list
+      parent=content
+      childrenKey="cards"
+      parentKey="lane"
+      sortKey="order"
+      autoSave=true
+      connectWith="board-lane-list"
+      class="list-group"}}
       {{#each card in sortedCards}}
-        {{#sortable-list-item item=lane class="list-group-item"}}
+        {{#sortable-list-item item=card class="list-group-item"}}
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-bars"></i></span>
-            {{input class="form-control" value=card.name}}
+            {{input class="form-control" value=card.title}}
           </div>
         {{/sortable-list-item}}
       {{/each}}
