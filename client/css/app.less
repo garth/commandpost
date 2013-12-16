@@ -68,17 +68,24 @@ footer {
 // board styles
 .board-toolbar {
   padding-top: 15px;
+  padding-bottom: 8px;
 }
 .board-lanes {
-  margin-right: -15px;
+  margin-right: -10px;
+  .lane-container {
+    padding: 5px;
+    overflow-y: scroll;
+  }
   .board-lane {
     float: left;
-    padding-right: 15px;
+    padding-right: 10px;
+    margin-bottom: -25px;
   }
 }
 .board-lane-list {
-  padding-top: 10px;
-  margin-top: -10px;
-  padding-bottom: 30px;
-  margin-bottom: -30px;
+  padding-top: 5px;
+  margin-top: -5px;
+  padding-bottom: 5px;
+  margin-bottom: -5px;
+  min-height: 100%;
 }

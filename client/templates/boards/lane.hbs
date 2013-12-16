@@ -1,6 +1,6 @@
 <div class="panel panel-default">
   <div class="panel-heading">{{name}}</div>
-  <div class="panel-body">
+  <div class="panel-body lane-container" {{bind-attr style="view.laneStyle"}}>
     {{#sortable-list
       parent=content
       childrenKey="cards"
@@ -10,7 +10,9 @@
       connectWith="board-lane-list"
       class="list-group"}}
       {{#each card in sortedCards}}
-        {{#sortable-list-item item=card class="list-group-item"}}
+        {{#sortable-list-item
+          item=card
+          class="list-group-item"}}
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-bars"></i></span>
             {{input class="form-control" value=card.title}}
