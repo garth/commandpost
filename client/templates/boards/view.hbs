@@ -1,5 +1,13 @@
-<h1>{{name}} Board</h1>
-{{#link-to 'boards.edit' content}}Edit{{/link-to}}
+<div class="row">
+  <div class="col-sm-6">
+    <h1>{{name}} Board</h1>
+  </div>
+  <div class="col-sm-6 text-right board-toolbar">
+    {{#link-to 'boards.edit' content class="btn btn-default"}}Edit Board{{/link-to}}
+    <button class="btn btn-primary">New Card</button>
+  </div>
+</div>
+
 <div class="board-lanes">
   {{#each lane in sortedLanes}}
     <div class="board-lane" {{bind-attr style="laneStyle"}}>
