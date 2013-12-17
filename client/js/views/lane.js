@@ -2,7 +2,7 @@ App.BoardsLaneView = Ember.View.extend({
   laneStyle: null,
 
   updateStyle: function () {
-    var height = Ember.$(window).height() - 240;
+    var height = Ember.$(window).height() - 235;
     this.set('laneStyle', 'height: ' + (height < 200 ? 200 : height) + 'px;');
   },
 
