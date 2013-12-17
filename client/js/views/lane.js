@@ -9,8 +9,13 @@ App.BoardsLaneView = Ember.View.extend({
   setup: function () {
     this.updateStyle();
     var self = this;
-    window.addEventListener("resize", function () {
+    this.resizeHandler = function () {
       self.updateStyle();
-    });
-  }.on('didInsertElement')
+    };
+    window.addEventListener('resize', this.resizeHandler);
+  }.on('didInsertElement'),
+
+  teardown: function () {
+    window.removeEventListener('resize', this.resizeHandler);
+  }.on('willDestroyElement')
 });
