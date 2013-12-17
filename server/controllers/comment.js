@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var Comment = mongoose.model('Comment');
 var prepareQuery = require('../helpers/prepare-query');
+var updateProperties = require('../helpers/update-properties');
+var recordHistory = require('../helpers/history').record;
 
 module.exports = function (app, config, db) {
 
@@ -16,8 +18,9 @@ module.exports = function (app, config, db) {
   app.post('/api/comments', authorise, function (req, res, next) {
     var comment = req.body.comment;
     comment.user = req.user.id;
-    (new Comment(req.body.comment)).save(function (err, comment) {
+    (new Comment(comment)).save(function (err, comment) {
       if (err) { return next(err); }
+      recordHistory(req.user, 'comment', 'create', comment.toJSON());
       res.send({ comment: comment });
     });
   });
@@ -30,15 +33,21 @@ module.exports = function (app, config, db) {
   });
 
   app.put('/api/comments/:id', authorise, function (req, res, next) {
-    Comment.findByIdAndUpdate(req.params.id, req.body.comment, function(err, comment) {
+    Comment.findById(req.params.id, function (err, comment) {
       if (err) { return next(err); }
-      res.send({});
+      var oldValues = updateProperties(comment, req.body.comment, ['text']);
+      recordHistory(req.user, 'comment', 'update', comment.toJSON(), oldValues);
+      comment.save(function (err, comment) {
+        if (err) { return next(err); }
+        res.send({});
+      });
     });
   });
 
   app.del('/api/comments/:id', authorise, function (req, res, next) {
     Comment.findById(req.params.id, function (err, comment) {
       if (err) { return next(err); }
+      recordHistory(req.user, 'comment', 'delete', comment.toJSON());
       comment.remove(function (err) {
         if (err) { return next(err); }
         res.send({});

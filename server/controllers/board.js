@@ -2,6 +2,8 @@ var mongoose = require('mongoose');
 var Board = mongoose.model('Board');
 var Lane = mongoose.model('Lane');
 var prepareQuery = require('../helpers/prepare-query');
+var updateProperties = require('../helpers/update-properties');
+var recordHistory = require('../helpers/history').record;
 
 module.exports = function (app, config, db) {
 
@@ -28,6 +30,10 @@ module.exports = function (app, config, db) {
         if (err) { return next(err); }
         board = board.toJSON();
         board.lanes = [ lane1.id, lane2.id, lane3.id ];
+        recordHistory(req.user, 'board', 'create', board);
+        recordHistory(req.user, 'lane', 'create', lane1.toJSON());
+        recordHistory(req.user, 'lane', 'create', lane2.toJSON());
+        recordHistory(req.user, 'lane', 'create', lane3.toJSON());
         res.send({ board: board });
       });
     });
@@ -41,15 +47,21 @@ module.exports = function (app, config, db) {
   });
 
   app.put('/api/boards/:id', authorise, function (req, res, next) {
-    Board.findByIdAndUpdate(req.params.id, req.body.board, function(err, board) {
+    Board.findById(req.params.id, function (err, board) {
       if (err) { return next(err); }
-      res.send({});
+      var oldValues = updateProperties(board, req.body.board, ['name']);
+      recordHistory(req.user, 'board', 'update', board.toJSON(), oldValues);
+      board.save(function (err, board) {
+        if (err) { return next(err); }
+        res.send({});
+      });
     });
   });
 
   app.del('/api/boards/:id', authorise, function (req, res, next) {
     Board.findById(req.params.id, function (err, board) {
       if (err) { return next(err); }
+      recordHistory(req.user, 'board', 'delete', board.toJSON());
       board.remove(function (err) {
         if (err) { return next(err); }
         res.send({});

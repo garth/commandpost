@@ -19,7 +19,6 @@ module.exports = function (config, db) {
     require('../helpers/insert-child-refs')(lane, 'cards', 'Card', 'lane', next);
   });
 
-
   // register lane with mongoose
   mongoose.model('Lane', Lane);
 };

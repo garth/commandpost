@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var Lane = mongoose.model('Lane');
 var prepareQuery = require('../helpers/prepare-query');
+var updateProperties = require('../helpers/update-properties');
+var recordHistory = require('../helpers/history').record;
 
 module.exports = function (app, config, db) {
 
@@ -16,6 +18,7 @@ module.exports = function (app, config, db) {
   app.post('/api/lanes', authorise, function (req, res, next) {
     (new Lane(req.body.lane)).save(function (err, lane) {
       if (err) { return next(err); }
+      recordHistory(req.user, 'lane', 'create', lane.toJSON());
       res.send({ lane: lane });
     });
   });
@@ -28,15 +31,21 @@ module.exports = function (app, config, db) {
   });
 
   app.put('/api/lanes/:id', authorise, function (req, res, next) {
-    Lane.findByIdAndUpdate(req.params.id, req.body.lane, function(err, lane) {
+    Lane.findById(req.params.id, function (err, lane) {
       if (err) { return next(err); }
-      res.send({});
+      var oldValues = updateProperties(lane, req.body.lane, ['name', 'order']);
+      recordHistory(req.user, 'lane', 'update', lane.toJSON(), oldValues);
+      lane.save(function (err, lane) {
+        if (err) { return next(err); }
+        res.send({});
+      });
     });
   });
 
   app.del('/api/lanes/:id', authorise, function (req, res, next) {
     Lane.findById(req.params.id, function (err, lane) {
       if (err) { return next(err); }
+      recordHistory(req.user, 'lane', 'delete', lane.toJSON());
       lane.remove(function (err) {
         if (err) { return next(err); }
         res.send({});
