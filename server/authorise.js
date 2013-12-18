@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Session = mongoose.model('Session');
 
-module.exports = function (config) {
+module.exports = function (config, allowUnauthorised) {
 
   return function (req, res, next) {
     var sessionId = req.cookies.session;
@@ -13,7 +13,12 @@ module.exports = function (config) {
         }
         else if (!session || session.expiresOn < Date.now()) {
           res.clearCookie('session');
-          res.send(401, { message: 'Session has expired.' });
+          if (allowUnauthorised) {
+            next();
+          }
+          else {
+            res.send(401, { message: 'Session has expired.' });
+          }
         }
         else {
           req.user = session.user;
@@ -33,7 +38,12 @@ module.exports = function (config) {
       });
     }
     else {
-      res.send(401, { message: 'Authorisation required.' });
+      if (allowUnauthorised) {
+        next();
+      }
+      else {
+        res.send(401, { message: 'Authorisation required.' });
+      }
     }
   };
 

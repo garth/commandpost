@@ -37,18 +37,11 @@ var sendDocsSince = function (res, lastId) {
 
 module.exports = function (app, config, db) {
 
-  var authorise = require('../authorise')(config);
+  var authorise = require('../authorise')(config, true);
 
   app.get('/api/events', authorise, function (req, res, next) {
     // set timeout as high as possible
     req.socket.setTimeout(Infinity);
-
-    // send missed changes
-    var lastId = req.headers['Last-Event-ID'];
-    if (lastId) {
-      console.log('sending docs since', lastId);
-      sendDocsSince(res, lastId);
-    }
 
     // send headers for event-stream connection
     // see spec for more information
@@ -56,14 +49,31 @@ module.exports = function (app, config, db) {
     res.setHeader('Connection', 'keep-alive');
     res.write('\n');
 
-    // push this res object to our global variable
-    openConnections.push(res);
+    // drop unauthorised connections every 5 seconds (client will reconnect)
+    if (!req.user) {
+      setTimeout(function () {
+        console.log('drop');
+        res.end();
+      }, 5 * 1000);
+    }
+    else {
+      console.log('connected');
+      // send missed changes
+      var lastId = req.headers['Last-Event-ID'];
+      if (lastId) {
+        console.log('sending docs since', lastId);
+        sendDocsSince(res, lastId);
+      }
 
-    // When the request is closed, e.g. the browser window
-    // is closed. We search through the open connections
-    // array and remove this connection.
-    req.on("close", function() {
-      openConnections = _.without(openConnections, res);
-    });
+      // push this res object to our global variable
+      openConnections.push(res);
+
+      // When the request is closed, e.g. the browser window
+      // is closed. We search through the open connections
+      // array and remove this connection.
+      req.on("close", function() {
+        openConnections = _.without(openConnections, res);
+      });
+    }
   });
 };

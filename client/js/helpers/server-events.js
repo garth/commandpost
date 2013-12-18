@@ -1,4 +1,4 @@
-// models can use App.server to listen to change events from the server
+// models can use App.serverEvents to listen to change events from the server
 App.serverEvents = new window.EventSource('/api/events');
 
 App.serverEvents.addEventListener('ping', function(e) {
