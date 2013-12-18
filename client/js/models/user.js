@@ -5,15 +5,19 @@ App.User = DS.Model.extend({
 
 App.serverEvents.addEventListener('createUser', function(e) {
   var store = App.User.store;
-  console.log('create', e.data, store);
+  var userData = JSON.parse(e.data).document;
+  var user = store.getById('board', userData.id);
+  if (!user) {
+    store.push('user', userData);
+  }
 }, false);
 
 App.serverEvents.addEventListener('updateUser', function(e) {
   var store = App.User.store;
-  console.log('update', e.data, store);
-}, false);
-
-App.serverEvents.addEventListener('deleteUser', function(e) {
-  var store = App.User.store;
-  console.log('delete', e.data, store);
+  var userData = JSON.parse(e.data).document;
+  var user = store.getById('user', userData.id);
+  // update the user if it's in the store
+  if (user) {
+    store.push('user', userData);
+  }
 }, false);
