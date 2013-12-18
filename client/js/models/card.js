@@ -13,3 +13,18 @@ App.Card = DS.Model.extend({
   order: DS.attr('number'),
   comments: DS.hasMany('comment', { async: true })
 });
+
+App.serverEvents.addEventListener('createCard', function(e) {
+  var store = App.Card.store;
+  console.log('create', e.data, store);
+}, false);
+
+App.serverEvents.addEventListener('updateCard', function(e) {
+  var store = App.Card.store;
+  console.log('update', e.data, store);
+}, false);
+
+App.serverEvents.addEventListener('deleteCard', function(e) {
+  var store = App.Card.store;
+  console.log('delete', e.data, store);
+}, false);

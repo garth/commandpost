@@ -39,7 +39,7 @@ module.exports = function (app, config, db) {
 
   var authorise = require('../authorise')(config);
 
-  app.get('/api/history', authorise, function (req, res, next) {
+  app.get('/api/events', authorise, function (req, res, next) {
     // set timeout as high as possible
     req.socket.setTimeout(Infinity);
 
