@@ -1,4 +1,16 @@
-<div class="input-group">
-  <span class="input-group-addon"><i class="fa fa-bars"></i></span>
-  {{input class="form-control" value=title}}
+<div class="card">
+  {{#if isEditing}}
+    <div class="editing">
+      <i class="fa fa-chevron-circle-down opener" {{action "close"}}></i>
+      {{input class="form-control" value=title}}
+      <div class="text-right">
+        <button class="btn btn-default btn-xs" {{action "close"}}>Done</button>
+      </div>
+    </div>
+  {{else}}
+    <div class="closed">
+      <i class="fa fa-chevron-circle-right opener" {{action "open"}}></i>
+      {{title}}
+    </div>
+  {{/if}}
 </div>

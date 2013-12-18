@@ -52,12 +52,10 @@ module.exports = function (app, config, db) {
     // drop unauthorised connections every 5 seconds (client will reconnect)
     if (!req.user) {
       setTimeout(function () {
-        console.log('drop');
         res.end();
       }, 5 * 1000);
     }
     else {
-      console.log('connected');
       // send missed changes
       var lastId = req.headers['Last-Event-ID'];
       if (lastId) {

@@ -11,7 +11,9 @@ App.Card = DS.Model.extend({
   assignedToUser: DS.belongsTo('user'),
   lane: DS.belongsTo('lane'),
   order: DS.attr('number'),
-  comments: DS.hasMany('comment', { async: true })
+  comments: DS.hasMany('comment', { async: true }),
+
+  isEditing: false
 });
 
 App.serverEvents.addEventListener('createCard', function(e) {
