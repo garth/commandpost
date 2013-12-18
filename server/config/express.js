@@ -1,7 +1,7 @@
 var express = require('express');
 
 module.exports = function(app, config) {
-  app.use(express.compress());
+  //app.use(express.compress());
   app.use(express.static(config.root + '/public'));
   if (!config.isProduction) {
     app.use('/mocha', express.static(config.root + '/node_modules/mocha'));

@@ -12,7 +12,8 @@
     "mongoose": "~3.8.1",
     "password-hash": "~1.2.1",
     "rsvp": "~2.0.4",
-    "underscore": "~1.5.2"
+    "underscore": "~1.5.2",
+    "underscore.string": "~2.3.3"
   },
   "devDependencies": {
     "browserify": "~2.36.1",

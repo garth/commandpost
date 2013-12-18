@@ -1,10 +1,11 @@
 var _ = require('underscore');
+var _s = require('underscore.string');
 
 var openConnections = [];
 
 require('../helpers/history').notify(function (doc) {
   var id = (new Date()).getMilliseconds();
-  var event = doc.action;
+  var event = doc.action + _s.capitalize(doc.documentType);
   var data = JSON.stringify(doc);
   // notify each client
   openConnections.forEach(function (res) {
@@ -13,6 +14,13 @@ require('../helpers/history').notify(function (doc) {
     res.write('data: ' + data + '\n\n'); // extra newline is required
   });
 });
+
+// ping clients every 15 seconds to keep the connection open
+setInterval(function () {
+  openConnections.forEach(function (res) {
+    res.write('event: ping\ndata:\n\n');
+  });
+}, 15 * 1000);
 
 module.exports = function (app, config, db) {
 
@@ -24,11 +32,8 @@ module.exports = function (app, config, db) {
 
     // send headers for event-stream connection
     // see spec for more information
-    res.writeHead(200, {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive'
-    });
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Connection', 'keep-alive');
     res.write('\n');
 
     // push this res object to our global variable
