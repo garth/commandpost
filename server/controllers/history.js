@@ -1,17 +1,20 @@
+var mongoose = require('mongoose');
+var History = mongoose.model('History');
 var _ = require('underscore');
 var _s = require('underscore.string');
 
 var openConnections = [];
 
+var sendDoc = function (res, doc) {
+  res.write('id: ' + doc.id + '\n');
+  res.write('event: ' + doc.action + _s.capitalize(doc.documentType) + '\n');
+  res.write('data: ' + JSON.stringify(doc) + '\n\n'); // extra newline is required
+};
+
 require('../helpers/history').notify(function (doc) {
-  var id = (new Date()).getMilliseconds();
-  var event = doc.action + _s.capitalize(doc.documentType);
-  var data = JSON.stringify(doc);
   // notify each client
   openConnections.forEach(function (res) {
-    res.write('id: ' + id + '\n');
-    res.write('event: ' + event + '\n');
-    res.write('data: ' + data + '\n\n'); // extra newline is required
+    sendDoc(res, doc);
   });
 });
 
@@ -22,6 +25,16 @@ setInterval(function () {
   });
 }, 15 * 1000);
 
+var sendDocsSince = function (res, lastId) {
+  History.find({ _id: { $gt: lastId }}, function (err, docs) {
+    if (!err) {
+      docs.forEach(function (doc) {
+        sendDoc(res, doc.toJSON());
+      });
+    }
+  });
+};
+
 module.exports = function (app, config, db) {
 
   var authorise = require('../authorise')(config);
@@ -29,6 +42,13 @@ module.exports = function (app, config, db) {
   app.get('/api/history', authorise, function (req, res, next) {
     // set timeout as high as possible
     req.socket.setTimeout(Infinity);
+
+    // send missed changes
+    var lastId = req.headers['Last-Event-ID'];
+    if (lastId) {
+      console.log('sending docs since', lastId);
+      sendDocsSince(res, lastId);
+    }
 
     // send headers for event-stream connection
     // see spec for more information
