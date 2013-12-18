@@ -11,11 +11,14 @@ App.Comment = DS.Model.extend({
 App.serverEvents.addEventListener('createComment', function(e) {
   var store = App.Comment.store;
   var commentData = JSON.parse(e.data).document;
-  var card = store.getById('card', commentData.card);
-  // add the comment if the card is in the store
-  if (card) {
-    var comment = store.push('comment', commentData);
-    card.get('comments.content').pushObject(comment);
+  var comment = store.getById('comment', commentData.id);
+  if (!comment) {
+    var card = store.getById('card', commentData.card);
+    // add the comment if the card is in the store
+    if (card) {
+      comment = store.push('comment', commentData);
+      card.get('comments.content').pushObject(comment);
+    }
   }
 }, false);
 

@@ -17,11 +17,14 @@ App.Card = DS.Model.extend({
 App.serverEvents.addEventListener('createCard', function(e) {
   var store = App.Card.store;
   var cardData = JSON.parse(e.data).document;
-  var lane = store.getById('lane', cardData.lane);
-  // add the card if the lane is in the store
-  if (lane) {
-    var card = store.push('card', cardData);
-    lane.get('cards.content').pushObject(card);
+  var card = store.getById('card', cardData.id);
+  if (!card) {
+    var lane = store.getById('lane', cardData.lane);
+    // add the card if the lane is in the store
+    if (lane) {
+      card = store.push('card', cardData);
+      lane.get('cards.content').pushObject(card);
+    }
   }
 }, false);
 

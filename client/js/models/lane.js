@@ -10,15 +10,35 @@ App.Lane = DS.Model.extend({
 
 App.serverEvents.addEventListener('createLane', function(e) {
   var store = App.Lane.store;
-  console.log('create', e.data, store);
+  var laneData = JSON.parse(e.data).document;
+  var lane = store.getById('lane', laneData.id);
+  if (!lane) {
+    var board = store.getById('board', laneData.board);
+    // add the lane if the board is in the store
+    if (board) {
+      lane = store.push('lane', laneData);
+      board.get('lanes.content').pushObject(lane);
+    }
+  }
 }, false);
 
 App.serverEvents.addEventListener('updateLane', function(e) {
   var store = App.Lane.store;
-  console.log('update', e.data, store);
+  var laneData = JSON.parse(e.data).document;
+  var lane = store.getById('lane', laneData.id);
+  // update the lane if it's in the store
+  if (lane) {
+    store.push('lane', laneData);
+  }
 }, false);
 
 App.serverEvents.addEventListener('deleteLane', function(e) {
   var store = App.Lane.store;
-  console.log('delete', e.data, store);
+  var laneData = JSON.parse(e.data).document;
+  var lane = store.getById('lane', laneData.id);
+  // remove the comment from the store
+  if (lane) {
+    lane.get('board.lanes.content').removeObject(lane);
+    store.unloadRecord(lane);
+  }
 }, false);
