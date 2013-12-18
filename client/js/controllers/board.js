@@ -15,7 +15,7 @@ App.BoardsViewController = Ember.ObjectController.extend({
   sortedLanes: function () {
     var lanes = Ember.A(this.get('content.lanes.content.content'));
     return lanes.sortBy('order');
-  }.property('content.lanes.@each.order'),
+  }.property('content.lanes.content.@each.order'),
 
   actions: {
     addCard: function () {
