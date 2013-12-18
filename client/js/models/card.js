@@ -50,5 +50,5 @@ App.serverEvents.addEventListener('deleteCard', function(e) {
   if (card) {
     card.get('lane.cards.content').removeObject(card);
     store.unloadRecord(card);
-  };
+  }
 }, false);
