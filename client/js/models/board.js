@@ -1,11 +1,14 @@
 require('./user');
 require('./lane');
+require('./card-type');
 
 App.Board = DS.Model.extend({
   name: DS.attr('string'),
   createdByUser: DS.belongsTo('user'),
   createdOn: DS.attr('date'),
-  lanes: DS.hasMany('lane', { async: true })
+  lanes: DS.hasMany('lane', { async: true }),
+  defaultCardType: DS.belongsTo('card-type'),
+  cardTypes: DS.hasMany('card-type', { async: true })
 });
 
 App.serverEvents.addEventListener('createBoard', function(e) {

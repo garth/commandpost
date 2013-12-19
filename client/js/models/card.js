@@ -1,8 +1,10 @@
 require('./lane');
 require('./user');
 require('./comment');
+require('./card-type');
 
 App.Card = DS.Model.extend({
+  cardType: DS.belongsTo('card-type'),
   title: DS.attr('string'),
   description: DS.attr('string'),
   points: DS.attr('number'),

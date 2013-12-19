@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Board = mongoose.model('Board');
 var Lane = mongoose.model('Lane');
+var CardType = mongoose.model('CardType');
 var prepareQuery = require('../helpers/prepare-query');
 var updateProperties = require('../helpers/update-properties');
 var recordHistory = require('../helpers/history').record;
@@ -28,13 +29,27 @@ module.exports = function (app, config, db) {
         { board: board, name: 'Done', order: 2 }
       ], function (err, lane1, lane2, lane3) {
         if (err) { return next(err); }
-        board = board.toJSON();
-        board.lanes = [ lane1.id, lane2.id, lane3.id ];
-        recordHistory(req.user, 'board', 'create', board);
-        recordHistory(req.user, 'lane', 'create', lane1.toJSON());
-        recordHistory(req.user, 'lane', 'create', lane2.toJSON());
-        recordHistory(req.user, 'lane', 'create', lane3.toJSON());
-        res.send({ board: board });
+        CardType.create([
+          { board: board, name: 'Story', icon: 'book', pointScale: '1,2,3,5,8', isDefault: true },
+          { board: board, name: 'Bug', icon: 'bug', priority: 1 },
+          { board: board, name: 'Task', icon: 'wrench' }
+        ], function (err, type1, type2, type3) {
+          if (err) { return next(err); }
+          board.defaultCardType = type1.id;
+          board.save(function (err, board) {
+            board = board.toJSON();
+            board.lanes = [ lane1.id, lane2.id, lane3.id ];
+            board.cardTypes = [ type1.id, type2.id, type3.id ];
+            recordHistory(req.user, 'board', 'create', board);
+            recordHistory(req.user, 'lane', 'create', lane1.toJSON());
+            recordHistory(req.user, 'lane', 'create', lane2.toJSON());
+            recordHistory(req.user, 'lane', 'create', lane3.toJSON());
+            recordHistory(req.user, 'cardType', 'create', type1.toJSON());
+            recordHistory(req.user, 'cardType', 'create', type2.toJSON());
+            recordHistory(req.user, 'cardType', 'create', type3.toJSON());
+            res.send({ board: board });
+          });
+        });
       });
     });
   });
@@ -49,7 +64,7 @@ module.exports = function (app, config, db) {
   app.put('/api/boards/:id', authorise, function (req, res, next) {
     Board.findById(req.params.id, function (err, board) {
       if (err) { return next(err); }
-      var oldValues = updateProperties(board, req.body.board, ['name']);
+      var oldValues = updateProperties(board, req.body.board, ['name', 'defaultCardType']);
       recordHistory(req.user, 'board', 'update', board.toJSON(), oldValues);
       board.save(function (err, board) {
         if (err) { return next(err); }

@@ -51,6 +51,8 @@ describe('board rest api', function () {
       expect(res.body.board.createdOn).to.equal('2013-11-20T00:00:00.000Z');
       expect(res.body.board.lanes).to.exist;
       expect(res.body.board.lanes.length).to.equal(3);
+      expect(res.body.board.cardTypes).to.exist;
+      expect(res.body.board.cardTypes.length).to.equal(3);
       done();
     });
   });
