@@ -11,7 +11,7 @@
         {{#each lane in sortedLanes}}
           <li>
             <a href="#" {{action toggleLane lane}}>
-              <span {{bind-attr class="lane.defaultIsVisible:text-info:text-warning"}}>
+              <span {{bind-attr class="lane.defaultIsVisible:text-info:text-muted"}}>
                 <i {{bind-attr class=":fa lane.isVisible:fa-check-square-o:fa-square-o :fa-fw"}}></i>
                 {{lane.name}}
               </span>
