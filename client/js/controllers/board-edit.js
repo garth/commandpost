@@ -37,6 +37,11 @@ App.BoardsEditController = Ember.ObjectController.extend({
     return lanes.sortBy('order');
   }.property('content.lanes.@each.order'),
 
+  sortedCardTypes: function () {
+    var types = Ember.A(this.get('content.cardTypes.content.content'));
+    return types.sortBy('name');
+  }.property('content.cardTypes.@each.name'),
+
   actions: {
     addLane: function () {
       var board = this.get('content');
@@ -44,7 +49,8 @@ App.BoardsEditController = Ember.ObjectController.extend({
       var lane = this.get('store').createRecord('lane', {
         board: board,
         name: 'New',
-        order: lanes.get('content').length
+        order: lanes.get('content').length,
+        defaultIsVisible: true
       });
       lanes.pushObject(lane);
       lane.save();

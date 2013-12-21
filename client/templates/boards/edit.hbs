@@ -1,7 +1,16 @@
-<h1><i class="fa fa-bar-chart-o fa-rotate-180"></i> Edit {{name}} Board</h1>
+<div class="row">
+  <div class="col-sm-6">
+    <h1><i class="fa fa-wrench"></i> Edit {{name}} Board</h1>
+  </div>
+  <div class="col-sm-6 text-right board-toolbar">
+    <button type="submit" class="btn btn-primary" {{action 'save'}}>
+      <i class="fa fa-check"></i> Done
+    </button>
+  </div>
+</div>
 
 <div class="panel panel-default">
-  <div class="panel-heading">Board</div>
+  <div class="panel-heading"><i class="fa fa-bar-chart-o fa-rotate-180"></i> Board</div>
   <div class="panel-body">
     <div class="row">
       <div class="col-md-4">
@@ -17,40 +26,80 @@
   </div>
 </div>
 
-<div class="panel panel-default">
-  <div class="panel-heading">Lanes</div>
-  <div class="panel-body">
-    {{#sortable-list sortKey="order" class="list-group"}}
-      {{#each lane in sortedLanes}}
-        {{#sortable-list-item item=lane class="list-group-item"}}
+<div class="row">
+  <div class="col-md-6">
+
+    <div class="panel panel-default">
+      <div class="panel-heading"><i class="fa fa-align-left fa-rotate-90"></i> Lanes</div>
+      <div class="panel-body">
+        {{#sortable-list sortKey="order" class="list-group"}}
+          {{#each lane in sortedLanes}}
+            {{#sortable-list-item item=lane class="list-group-item lane-edit"}}
+              {{#unless lane.cards.length}}
+                <div class="lane-info right-margin">
+                  <button class="btn btn-danger btn-xs" {{action 'deleteLane' lane}}>
+                    <i class="fa fa-times"></i>
+                  </button>
+                </div>
+              {{/unless}}
+              <i class="fa fa-bars left-margin drag"></i>
+              {{input class="form-control" value=lane.name}}
+              <div class="row">
+                <div class="col-sm-6">
+                  <label>
+                    {{input type="checkbox" checked=lane.defaultIsVisible}}
+                    Visible by default
+                  </label>
+                </div>
+                <div class="col-sm-6 text-right">
+                  {{lane.cards.length}} cards
+                </div>
+              </div>
+              {{/sortable-list-item}}
+          {{/each}}
+        {{/sortable-list}}
+      </div>
+      <div class="panel-footer text-right">
+        <button class="btn btn-default" {{action 'addLane'}}>
+          <i class="fa fa-plus"></i> Add Lane
+        </button>
+      </div>
+    </div>
+
+  </div>
+  <div class="col-md-6">
+
+    <div class="panel panel-default">
+      <div class="panel-heading"><i class="fa fa-tag"></i> Card Types</div>
+      <div class="panel-body">
+        {{#each cardType in cardTypes}}
           <div class="lane-info pull-right">
-            <button class="btn btn-danger btn-xs" {{action 'deleteLane' lane}}>
+            <button class="btn btn-danger btn-xs" {{action 'deleteCardType' cardType}}>
               <i class="fa fa-times"></i>
             </button>
           </div>
-          <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-bars"></i></span>
-            {{input class="form-control" value=lane.name}}
-          </div>
-        {{/sortable-list-item}}
-      {{/each}}
-    {{/sortable-list}}
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label class="col-sm-3 control-label">Name</label>
+              <div class="col-sm-9">
+                {{input class="form-control" value=cardType.name}}
+              </div>
+            </div>
+          </form>
+        {{/each}}
+      </div>
+      <div class="panel-footer text-right">
+        <button class="btn btn-default" {{action 'addCardType'}}>
+          <i class="fa fa-plus"></i> Add Card Type
+        </button>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<p class="text-right">
-  <button class="btn btn-default" {{action 'addLane'}}>
-    <i class="fa fa-plus"></i> Add Lane
-  </button>
-  <button type="submit" class="btn btn-primary" {{action 'save'}}>
-    <i class="fa fa-check"></i> Done
-  </button>
-</p>
-
-<hr>
-
 <div class="panel panel-danger">
-  <div class="panel-heading">Delete this Board</div>
+  <div class="panel-heading"><i class="fa fa-warning"></i> Delete this Board</div>
   <div class="panel-body">
     <p>
       Deleting this board will permanently erase the
@@ -59,9 +108,11 @@
     <p>
       Enter the name of the board and press delete:
       {{input value=confirmDelete}}
-      <button class="btn btn-danger" {{action 'delete'}}>
-        <i class="fa fa-times"></i> Delete
-      </button>
     </p>
+  </div>
+  <div class="panel-footer text-right">
+    <button class="btn btn-danger" {{action 'delete'}}>
+      <i class="fa fa-times"></i> Delete
+    </button>
   </div>
 </div>
