@@ -33,7 +33,9 @@ module.exports = function (app, config, db) {
   app.put('/api/lanes/:id', authorise, function (req, res, next) {
     Lane.findById(req.params.id, function (err, lane) {
       if (err) { return next(err); }
-      var oldValues = updateProperties(lane, req.body.lane, ['name', 'order']);
+      var oldValues = updateProperties(lane, req.body.lane, [
+        'name', 'order', 'defaultIsVisible'
+      ]);
       recordHistory(req.user, 'lane', 'update', lane.toJSON(), oldValues);
       lane.save(function (err, lane) {
         if (err) { return next(err); }

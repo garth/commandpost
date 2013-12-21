@@ -8,7 +8,8 @@ module.exports = function (config, db) {
   var Lane = new Schema({
     board: { type: ObjectId, ref: 'Board', index: true, required: true },
     name: { type: String, required: true },
-    order: { type: Number, required: true, 'default': 0 }
+    order: { type: Number, required: true, 'default': 0 },
+    defaultIsVisible: { type: Boolean, required: true, 'default': true }
   }, config.schemaOptions);
 
   Lane.pre('remove', function (next) {

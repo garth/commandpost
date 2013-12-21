@@ -21,7 +21,9 @@ describe('board rest api', function () {
       expect(res.body.board.id.length).to.equal(24);
       expect(res.body.board.createdByUser).to.equal('12875455e3e2812b6e000001');
       expect(res.body.board.lanes).to.exist;
-      expect(res.body.board.lanes.length).to.equal(3);
+      expect(res.body.board.lanes.length).to.equal(4);
+      expect(res.body.board.cardTypes).to.exist;
+      expect(res.body.board.cardTypes.length).to.equal(3);
       done();
     });
   });

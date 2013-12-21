@@ -3,6 +3,20 @@
     <h1>{{name}} Board</h1>
   </div>
   <div class="col-sm-6 text-right board-toolbar">
+    <div class="btn-group text-left">
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        <i class="fa fa-eye"></i> Lanes <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        {{#each lane in sortedLanes}}
+          <li>
+            <a href="#" {{action toggleLane lane}}>
+              <i {{bind-attr class=":fa lane.isVisible:fa-check-square-o:fa-square-o"}}></i> {{lane.name}}
+            </a>
+          </li>
+        {{/each}}
+      </ul>
+    </div>
     {{#link-to 'boards.edit' content class="btn btn-default"}}
       <i class="fa fa-cogs"></i> Edit Board
     {{/link-to}}
@@ -13,7 +27,7 @@
 </div>
 
 <div class="board-lanes">
-  {{#each lane in sortedLanes}}
+  {{#each lane in visibleLanes}}
     <div class="board-lane" {{bind-attr style="laneStyle"}}>
       {{render "boards/lane" lane}}
     </div>

@@ -8,18 +8,31 @@ App.BoardsIndexRoute = Ember.Route.extend({
 
 App.BoardsViewController = Ember.ObjectController.extend({
   laneStyle: function () {
-    var count = this.get('content.lanes.content.content').length;
+    var count = this.get('visibleLanes').length;
     return 'width: ' + (count > 0 ? 100.0 / count : 0) + '%';
-  }.property('sortedLanes'),
+  }.property('visibleLanes'),
 
   sortedLanes: function () {
     var lanes = Ember.A(this.get('content.lanes.content.content'));
     return lanes.sortBy('order');
   }.property('content.lanes.content.@each.order'),
 
+  visibleLanes: function () {
+    return this.get('sortedLanes').filter(function (lane) {
+      return lane.get('isVisible');
+    });
+  }.property('sortedLanes.@each.isVisible'),
+
   actions: {
+    toggleLane: function (lane) {
+      console.log('toggle', lane);
+      lane.set('isVisible', !lane.get('isVisible'));
+    },
     addCard: function () {
-      var lane = this.get('sortedLanes')[0];
+      // find the first lane that defaults to being visible
+      var lane = this.get('sortedLanes').find(function (lane) {
+        return lane.get('defaultIsVisible');
+      });
       var cards = lane.get('cards.content');
       var card = this.get('store').createRecord('card', {
         lane: lane,

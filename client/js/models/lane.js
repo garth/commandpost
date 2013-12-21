@@ -5,7 +5,27 @@ App.Lane = DS.Model.extend({
   board: DS.belongsTo('board'),
   name: DS.attr('string'),
   order: DS.attr('number'),
-  cards: DS.hasMany('card', { async: true })
+  defaultIsVisible: DS.attr('boolean'),
+  cards: DS.hasMany('card', { async: true }),
+
+  isVisible: function (key, value) {
+    var id = this.get('id');
+    var defaultValue = this.get('defaultIsVisible');
+    if (key && value !== undefined) {
+      if (value === defaultValue) {
+        delete window.localStorage['lane_' + id + '_isHidden'];
+      }
+      else {
+        window.localStorage['lane_' + id + '_isHidden'] = JSON.stringify(!value);
+      }
+      return !!value;
+    }
+    else if (id) {
+      value = window.localStorage['lane_' + id + '_isHidden'];
+      return value ? value === 'false' : defaultValue;
+    }
+    return defaultValue;
+  }.property()
 });
 
 App.serverEvents.addEventListener('createLane', function(e) {

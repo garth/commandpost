@@ -24,10 +24,11 @@ module.exports = function (app, config, db) {
     (new Board(board)).save(function (err, board) {
       if (err) { return next(err); }
       Lane.create([
-        { board: board, name: 'Backlog', order: 0 },
-        { board: board, name: 'In Progress', order: 1 },
-        { board: board, name: 'Done', order: 2 }
-      ], function (err, lane1, lane2, lane3) {
+        { board: board, name: 'Unplanned', order: 0, defaultIsVisible: false },
+        { board: board, name: 'Backlog', order: 1 },
+        { board: board, name: 'In Progress', order: 2 },
+        { board: board, name: 'Done', order: 3 }
+      ], function (err, lane1, lane2, lane3, lane4) {
         if (err) { return next(err); }
         CardType.create([
           { board: board, name: 'Story', icon: 'book', pointScale: '1,2,3,5,8', isDefault: true },
@@ -38,12 +39,13 @@ module.exports = function (app, config, db) {
           board.defaultCardType = type1.id;
           board.save(function (err, board) {
             board = board.toJSON();
-            board.lanes = [ lane1.id, lane2.id, lane3.id ];
+            board.lanes = [ lane1.id, lane2.id, lane3.id, lane4.id ];
             board.cardTypes = [ type1.id, type2.id, type3.id ];
             recordHistory(req.user, 'board', 'create', board);
             recordHistory(req.user, 'lane', 'create', lane1.toJSON());
             recordHistory(req.user, 'lane', 'create', lane2.toJSON());
             recordHistory(req.user, 'lane', 'create', lane3.toJSON());
+            recordHistory(req.user, 'lane', 'create', lane4.toJSON());
             recordHistory(req.user, 'cardType', 'create', type1.toJSON());
             recordHistory(req.user, 'cardType', 'create', type2.toJSON());
             recordHistory(req.user, 'cardType', 'create', type3.toJSON());
