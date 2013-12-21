@@ -35,7 +35,7 @@ module.exports = function (app, config, db) {
     CardType.findById(req.params.id, function (err, cardType) {
       if (err) { return next(err); }
       var oldValues = updateProperties(cardType, req.body.cardType, [
-        'board', 'name', 'icon', 'pointScale', 'priority'
+        'board', 'name', 'icon', 'pointScale', 'priority', 'isHidden'
       ]);
       recordHistory(req.user, 'cardType', 'update', cardType.toJSON(), oldValues);
       cardType.save(function (err, cardType) {

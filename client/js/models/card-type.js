@@ -1,9 +1,10 @@
 App.CardType = DS.Model.extend({
-  board: DS.belongsTo('board'),
+  board: DS.belongsTo('board', { inverse: 'cardTypes' }),
   name: DS.attr('string'),
   icon: DS.attr('string'),
   pointScale: DS.attr('string'),
-  priority: DS.attr('number')
+  priority: DS.attr('number'),
+  isHidden: DS.attr('boolean')
 });
 
 App.serverEvents.addEventListener('createCardType', function(e) {

@@ -10,7 +10,8 @@ module.exports = function (config, db) {
     name: { type: String, required: true },
     icon: { type: String, required: true },
     pointScale: { type: String },
-    priority: { type: Number, required: true, 'default': 0 }
+    priority: { type: Number, required: true, 'default': 0 },
+    isHidden: { type: Boolean, required: true, 'default': false }
   }, config.schemaOptions);
 
   // register card type with mongoose

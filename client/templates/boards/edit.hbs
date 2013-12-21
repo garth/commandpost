@@ -36,7 +36,7 @@
           {{#each lane in sortedLanes}}
             {{#sortable-list-item item=lane class="list-group-item lane-edit"}}
               {{#unless lane.cards.length}}
-                <div class="lane-info right-margin">
+                <div class="right-margin">
                   <button class="btn btn-danger btn-xs" {{action 'deleteLane' lane}}>
                     <i class="fa fa-times"></i>
                   </button>
@@ -45,13 +45,13 @@
               <i class="fa fa-bars left-margin drag"></i>
               {{input class="form-control" value=lane.name}}
               <div class="row">
-                <div class="col-sm-6">
+                <div class="col-xs-8">
                   <label>
                     {{input type="checkbox" checked=lane.defaultIsVisible}}
                     Visible by default
                   </label>
                 </div>
-                <div class="col-sm-6 text-right">
+                <div class="col-xs-4 text-right">
                   {{lane.cards.length}} cards
                 </div>
               </div>
@@ -72,21 +72,48 @@
     <div class="panel panel-default">
       <div class="panel-heading"><i class="fa fa-tag"></i> Card Types</div>
       <div class="panel-body">
-        {{#each cardType in cardTypes}}
-          <div class="lane-info pull-right">
-            <button class="btn btn-danger btn-xs" {{action 'deleteCardType' cardType}}>
-              <i class="fa fa-times"></i>
-            </button>
-          </div>
-          <form class="form-horizontal">
-            <div class="form-group">
-              <label class="col-sm-3 control-label">Name</label>
-              <div class="col-sm-9">
-                {{input class="form-control" value=cardType.name}}
-              </div>
-            </div>
-          </form>
-        {{/each}}
+        <ul class="list-group">
+          {{#each cardType in cardTypes}}
+            <li class="list-group-item card-type-edit">
+              <form class="form-horizontal">
+                <div class="form-group">
+                  <label class="col-xs-3 control-label">Name</label>
+                  <div class="col-xs-9">
+                    {{input class="form-control" value=cardType.name}}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-3 control-label">Icon</label>
+                  <div class="col-xs-9">
+                    <div class="input-group">
+                      <span class="input-group-addon">{{card-icon icon=cardType.icon}}</span>
+                      {{input class="form-control" value=cardType.icon}}
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-3 control-label">Points</label>
+                  <div class="col-xs-9">
+                    {{input class="form-control" value=cardType.pointScale}}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-3 control-label">Priority</label>
+                  <div class="col-xs-9">
+                    {{input type="number" class="form-control" value=cardType.priority}}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-offset-3 col-xs-9">
+                    <label>
+                      {{input type="checkbox" checked=cardType.isHidden}} Hide for new cards
+                    </label>
+                  </div>
+                </div>
+              </form>
+            </li>
+          {{/each}}
+        </ul>
       </div>
       <div class="panel-footer text-right">
         <button class="btn btn-default" {{action 'addCardType'}}>
