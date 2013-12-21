@@ -37,10 +37,11 @@ App.BoardsEditController = Ember.ObjectController.extend({
     return lanes.sortBy('order');
   }.property('content.lanes.@each.order'),
 
-  sortedCardTypes: function () {
-    var types = Ember.A(this.get('content.cardTypes.content.content'));
-    return types.sortBy('name');
-  }.property('content.cardTypes.@each.name'),
+  visibleCardTypes: function () {
+    return this.get('content.cardTypes').filter(function (cardType) {
+      return !cardType.get('isHidden');
+    });
+  }.property('content.cardTypes.@each.isHidden'),
 
   actions: {
 
@@ -93,16 +94,11 @@ App.BoardsEditController = Ember.ObjectController.extend({
         if (cardType.get('isDirty')) { cardType.save(); }
       });
       // save the board
-      if (board.get('isDirty')) {
-        board.save().then(function (board) {
-          self.transitionToRoute('boards.view', board);
-        }, function (err) {
-          App.flash.serverError('Failed to save board', err);
-        });
-      }
-      else {
-        this.transitionToRoute('boards.view', board);
-      }
+      board.save().then(function (board) {
+        self.transitionToRoute('boards.view', board);
+      }, function (err) {
+        App.flash.serverError('Failed to save board', err);
+      });
     },
 
     'delete': function () {

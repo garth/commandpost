@@ -12,17 +12,26 @@
 <div class="panel panel-default">
   <div class="panel-heading"><i class="fa fa-bar-chart-o fa-rotate-180"></i> Board</div>
   <div class="panel-body">
-    <div class="row">
-      <div class="col-md-4">
-        {{input-text label="Name" focus=true placeholder="board name" value=name}}
+    <form class="form-horizontal">
+      <div class="form-group">
+        <label class="col-xs-2 control-label">Name</label>
+        <div class="col-xs-4">
+          {{input class="form-control" value=name}}
+        </div>
+        <label class="col-xs-2 control-label">Default Card Type</label>
+        <div class="col-xs-4">
+          <div class="input-group">
+            <span class="input-group-addon">{{card-icon icon=defaultCardType.icon}}</span>
+            {{view Ember.Select
+              content=visibleCardTypes
+              selection=defaultCardType
+              optionValuePath="content.id"
+              optionLabelPath="content.name"
+              class="form-control"}}
+          </div>
+        </div>
       </div>
-      <div class="col-md-4">
-        {{input-text label="Created By" value=createdByUser.name disabled=true}}
-      </div>
-      <div class="col-md-4">
-        {{input-text label="Created On" value=createdOn disabled=true}}
-      </div>
-    </div>
+    </form>
   </div>
 </div>
 
