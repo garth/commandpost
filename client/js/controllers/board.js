@@ -25,7 +25,6 @@ App.BoardsViewController = Ember.ObjectController.extend({
 
   actions: {
     toggleLane: function (lane) {
-      console.log('toggle', lane);
       lane.set('isVisible', !lane.get('isVisible'));
     },
     addCard: function () {
