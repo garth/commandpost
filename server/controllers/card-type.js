@@ -8,14 +8,14 @@ module.exports = function (app, config, db) {
 
   var authorise = require('../authorise')(config);
 
-  app.get('/api/cardtypes', authorise, function (req, res, next) {
+  app.get('/api/cardTypes', authorise, function (req, res, next) {
     CardType.find(prepareQuery(req.query), function (err, cardTypes) {
       if (err) { return next(err); }
       res.send({ cardTypes: cardTypes });
     });
   });
 
-  app.post('/api/cardtypes', authorise, function (req, res, next) {
+  app.post('/api/cardTypes', authorise, function (req, res, next) {
     var cardType = req.body.cardType;
     (new CardType(cardType)).save(function (err, cardType) {
       if (err) { return next(err); }
@@ -24,14 +24,14 @@ module.exports = function (app, config, db) {
     });
   });
 
-  app.get('/api/cardtypes/:id', authorise, function (req, res, next) {
+  app.get('/api/cardTypes/:id', authorise, function (req, res, next) {
     CardType.findById(req.params.id, function (err, cardType) {
       if (err) { return next(err); }
       res.send(cardType ? { cardType: cardType } : 404);
     });
   });
 
-  app.put('/api/cardtypes/:id', authorise, function (req, res, next) {
+  app.put('/api/cardTypes/:id', authorise, function (req, res, next) {
     CardType.findById(req.params.id, function (err, cardType) {
       if (err) { return next(err); }
       var oldValues = updateProperties(cardType, req.body.cardType, [
@@ -45,7 +45,7 @@ module.exports = function (app, config, db) {
     });
   });
 
-  app.del('/api/cardtypes/:id', authorise, function (req, res, next) {
+  app.del('/api/cardTypes/:id', authorise, function (req, res, next) {
     CardType.findById(req.params.id, function (err, cardType) {
       if (err) { return next(err); }
       recordHistory(req.user, 'cardType', 'delete', cardType.toJSON());

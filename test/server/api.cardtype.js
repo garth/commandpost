@@ -1,6 +1,6 @@
 var superagent = require('superagent');
 var expect = require('chai').expect;
-var root = 'http://localhost:3001/api/cardtypes';
+var root = 'http://localhost:3001/api/cardTypes';
 
 describe('card types rest api', function () {
 
