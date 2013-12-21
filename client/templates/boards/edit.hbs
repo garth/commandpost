@@ -1,54 +1,67 @@
-<h1>Edit {{name}} Board</h1>
+<h1><i class="fa fa-bar-chart-o fa-rotate-180"></i> Edit {{name}} Board</h1>
 
-<form role="form">
-  <div class="row">
-    <div class="col-md-4">
-      {{input-text label="Name" focus=true placeholder="board name" value=name}}
-    </div>
-    <div class="col-md-4">
-      {{input-text label="Created By" value=createdByUser.name disabled=true}}
-    </div>
-    <div class="col-md-4">
-      {{input-text label="Created On" value=createdOn disabled=true}}
+<div class="panel panel-default">
+  <div class="panel-heading">Board</div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-4">
+        {{input-text label="Name" focus=true placeholder="board name" value=name}}
+      </div>
+      <div class="col-md-4">
+        {{input-text label="Created By" value=createdByUser.name disabled=true}}
+      </div>
+      <div class="col-md-4">
+        {{input-text label="Created On" value=createdOn disabled=true}}
+      </div>
     </div>
   </div>
-  <h3>Lanes</h3>
-  {{#sortable-list sortKey="order" class="list-group"}}
-    {{#each lane in sortedLanes}}
-      {{#sortable-list-item item=lane class="list-group-item"}}
-        <div class="lane-info pull-right">
-          <button class="btn btn-danger btn-xs" {{action 'deleteLane' lane}}>
-            <i class="fa fa-times"></i>
-          </button>
-        </div>
-        <div class="input-group">
-          <span class="input-group-addon"><i class="fa fa-bars"></i></span>
-          {{input class="form-control" value=lane.name}}
-        </div>
-      {{/sortable-list-item}}
-    {{/each}}
-  {{/sortable-list}}
-  <p class="text-right">
-    <button class="btn btn-default" {{action 'addLane'}}>
-      <i class="fa fa-plus"></i> Add Lane
-    </button>
-    <button type="submit" class="btn btn-primary" {{action 'save'}}>
-      <i class="fa fa-check"></i> Done
-    </button>
-  </p>
-</form>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">Lanes</div>
+  <div class="panel-body">
+    {{#sortable-list sortKey="order" class="list-group"}}
+      {{#each lane in sortedLanes}}
+        {{#sortable-list-item item=lane class="list-group-item"}}
+          <div class="lane-info pull-right">
+            <button class="btn btn-danger btn-xs" {{action 'deleteLane' lane}}>
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-bars"></i></span>
+            {{input class="form-control" value=lane.name}}
+          </div>
+        {{/sortable-list-item}}
+      {{/each}}
+    {{/sortable-list}}
+  </div>
+</div>
+
+<p class="text-right">
+  <button class="btn btn-default" {{action 'addLane'}}>
+    <i class="fa fa-plus"></i> Add Lane
+  </button>
+  <button type="submit" class="btn btn-primary" {{action 'save'}}>
+    <i class="fa fa-check"></i> Done
+  </button>
+</p>
 
 <hr>
 
-<h3>Delete this board</h3>
-<p class="text-danger">
-  Deleting this board will permanently erase the
-  board and all associated data!
-</p>
-<p>
-  Enter the name of the board and press delete:
-  {{input value=confirmDelete}}
-  <button class="btn btn-danger" {{action 'delete'}}>
-    <i class="fa fa-times"></i> Delete
-  </button>
-</p>
+<div class="panel panel-danger">
+  <div class="panel-heading">Delete this Board</div>
+  <div class="panel-body">
+    <p>
+      Deleting this board will permanently erase the
+      board and all associated data!
+    </p>
+    <p>
+      Enter the name of the board and press delete:
+      {{input value=confirmDelete}}
+      <button class="btn btn-danger" {{action 'delete'}}>
+        <i class="fa fa-times"></i> Delete
+      </button>
+    </p>
+  </div>
+</div>
