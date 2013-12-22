@@ -1,7 +1,9 @@
+var _ = require('underscore');
 var mongoose = require('mongoose');
 var Board = mongoose.model('Board');
 var Lane = mongoose.model('Lane');
 var CardType = mongoose.model('CardType');
+var User = mongoose.model('User');
 var prepareQuery = require('../helpers/prepare-query');
 var updateProperties = require('../helpers/update-properties');
 var recordHistory = require('../helpers/history').record;
@@ -14,7 +16,15 @@ module.exports = function (app, config, db) {
   app.get('/api/boards', authorise, function (req, res, next) {
     Board.find(prepareQuery(req.query), function (err, boards) {
       if (err) { return next(err); }
-      res.send(prepareToSend('boards', boards, ['lanes', 'cardTypes', 'cards']));
+      User.find(function (err, users) {
+        if (err) { return next(err); }
+        var container = prepareToSend('boards', boards, ['lanes', 'cardTypes', 'cards']);
+        container.boards.forEach(function (board) {
+          board.users = _.map(users, function (user) { return user.id; });
+        });
+        container.users = users;
+        res.send(container);
+      });
     });
   });
 
@@ -39,21 +49,27 @@ module.exports = function (app, config, db) {
           if (err) { return next(err); }
           board.defaultCardType = type1.id;
           board.save(function (err, board) {
-            board = board.toJSON();
-            board.lanes = [ lane1.id, lane2.id, lane3.id, lane4.id ];
-            board.cardTypes = [ type1.id, type2.id, type3.id ];
-            recordHistory(req.user, 'board', 'create', board);
-            recordHistory(req.user, 'lane', 'create', lane1.toJSON());
-            recordHistory(req.user, 'lane', 'create', lane2.toJSON());
-            recordHistory(req.user, 'lane', 'create', lane3.toJSON());
-            recordHistory(req.user, 'lane', 'create', lane4.toJSON());
-            recordHistory(req.user, 'cardType', 'create', type1.toJSON());
-            recordHistory(req.user, 'cardType', 'create', type2.toJSON());
-            recordHistory(req.user, 'cardType', 'create', type3.toJSON());
-            res.send({
-              board: board,
-              lanes: [ lane1, lane2, lane3, lane4 ],
-              cardTypes: [ type1, type2, type3 ]
+            if (err) { return next(err); }
+            User.find(function (err, users) {
+              if (err) { return next(err); }
+              board = board.toJSON();
+              board.users = _.map(users, function (user) { return user.id; });
+              board.lanes = [ lane1.id, lane2.id, lane3.id, lane4.id ];
+              board.cardTypes = [ type1.id, type2.id, type3.id ];
+              recordHistory(req.user, 'board', 'create', board);
+              recordHistory(req.user, 'lane', 'create', lane1.toJSON());
+              recordHistory(req.user, 'lane', 'create', lane2.toJSON());
+              recordHistory(req.user, 'lane', 'create', lane3.toJSON());
+              recordHistory(req.user, 'lane', 'create', lane4.toJSON());
+              recordHistory(req.user, 'cardType', 'create', type1.toJSON());
+              recordHistory(req.user, 'cardType', 'create', type2.toJSON());
+              recordHistory(req.user, 'cardType', 'create', type3.toJSON());
+              res.send({
+                board: board,
+                users: users,
+                lanes: [ lane1, lane2, lane3, lane4 ],
+                cardTypes: [ type1, type2, type3 ]
+              });
             });
           });
         });
@@ -64,7 +80,16 @@ module.exports = function (app, config, db) {
   app.get('/api/boards/:id', authorise, function (req, res, next) {
     Board.findById(req.params.id, function (err, board) {
       if (err) { return next(err); }
-      res.send(board ? prepareToSend('board', board, ['lanes', 'cardTypes', 'cards']) : 404);
+      if (!board) { res.send(404); }
+      else {
+        User.find(function (err, users) {
+          if (err) { return next(err); }
+          var container = prepareToSend('board', board, ['lanes', 'cardTypes', 'cards']);
+          container.board.users = _.map(users, function (user) { return user.id; });
+          container.users = users;
+          res.send(container);
+        });
+      }
     });
   });
 

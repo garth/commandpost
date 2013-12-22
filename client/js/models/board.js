@@ -9,6 +9,7 @@ App.Board = DS.Model.extend({
   lanes: DS.hasMany('lane'),
   defaultCardType: DS.belongsTo('cardType'),
   cardTypes: DS.hasMany('cardType'),
+  users: DS.hasMany('user'),
 
   cards: function () {
     var cards = Ember.A();
