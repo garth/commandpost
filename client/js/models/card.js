@@ -54,7 +54,7 @@ App.serverEvents.addEventListener('deleteCard', function(e) {
   var cardData = JSON.parse(e.data).document;
   var card = store.getById('card', cardData.id);
   // remove the card from the store
-  if (card) {
+  if (card && !card.get('isDeleted')) {
     card.get('lane.cards.content').removeObject(card);
     store.unloadRecord(card);
   }

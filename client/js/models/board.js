@@ -43,7 +43,7 @@ App.serverEvents.addEventListener('deleteBoard', function(e) {
   var boardData = JSON.parse(e.data).document;
   var board = store.getById('board', boardData.id);
   // remove the board from the store
-  if (board) {
+  if (board && !board.get('isDeleted')) {
     store.unloadRecord(board);
   }
 }, false);

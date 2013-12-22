@@ -57,7 +57,7 @@ App.serverEvents.addEventListener('deleteLane', function(e) {
   var laneData = JSON.parse(e.data).document;
   var lane = store.getById('lane', laneData.id);
   // remove the lane from the store
-  if (lane) {
+  if (lane && !lane.get('isDeleted')) {
     lane.get('board.lanes.content').removeObject(lane);
     store.unloadRecord(lane);
   }

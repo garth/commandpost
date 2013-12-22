@@ -37,7 +37,7 @@ App.serverEvents.addEventListener('deleteComment', function(e) {
   var commentData = JSON.parse(e.data).document;
   var comment = store.getById('card', commentData.id);
   // remove the comment from the store
-  if (comment) {
+  if (comment && !comment.get('isDeleted')) {
     comment.get('card.comments.content').removeObject(comment);
     store.unloadRecord(comment);
   }

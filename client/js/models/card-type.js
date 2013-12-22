@@ -8,9 +8,15 @@ App.CardType = DS.Model.extend({
 
   cards: function () {
     var cardType = this;
-    return this.get('board.cards').filter(function (card) {
-      return card && card.get('cardType') === cardType;
-    });
+    var cards = this.get('board.cards');
+    if (cards) {
+      return this.get('board.cards').filter(function (card) {
+        return card && card.get('cardType') === cardType;
+      });
+    }
+    else {
+      return Ember.A();
+    }
   }.property('board.cards')
 });
 
@@ -43,7 +49,7 @@ App.serverEvents.addEventListener('deleteCardType', function(e) {
   var cardTypeData = JSON.parse(e.data).document;
   var cardType = store.getById('cardType', cardTypeData.id);
   // remove the card type from the store
-  if (cardType) {
+  if (cardType && !cardType.get('isDeleted')) {
     cardType.get('board.cardTypes.content').removeObject(cardType);
     store.unloadRecord(cardType);
   }
