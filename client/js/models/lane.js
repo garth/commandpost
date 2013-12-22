@@ -6,7 +6,7 @@ App.Lane = DS.Model.extend({
   name: DS.attr('string'),
   order: DS.attr('number'),
   defaultIsVisible: DS.attr('boolean'),
-  cards: DS.hasMany('card', { async: true }),
+  cards: DS.hasMany('card'),
 
   isVisible: function (key, value) {
     var id = this.get('id');

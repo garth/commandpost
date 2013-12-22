@@ -10,6 +10,7 @@ module.exports = function (parent, childrenPropertyKey, childType, parentPropert
     parent[childrenPropertyKey] = _.map(children, function (child) {
       return child.id;
     });
+    parent['_' + childrenPropertyKey] = children;
     next();
   });
 };

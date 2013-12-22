@@ -5,6 +5,7 @@ var CardType = mongoose.model('CardType');
 var prepareQuery = require('../helpers/prepare-query');
 var updateProperties = require('../helpers/update-properties');
 var recordHistory = require('../helpers/history').record;
+var prepareToSend = require('../helpers/prepare-to-send');
 
 module.exports = function (app, config, db) {
 
@@ -13,7 +14,7 @@ module.exports = function (app, config, db) {
   app.get('/api/boards', authorise, function (req, res, next) {
     Board.find(prepareQuery(req.query), function (err, boards) {
       if (err) { return next(err); }
-      res.send({ boards: boards });
+      res.send(prepareToSend('boards', boards, ['lanes', 'cardTypes', 'cards']));
     });
   });
 
@@ -49,7 +50,11 @@ module.exports = function (app, config, db) {
             recordHistory(req.user, 'cardType', 'create', type1.toJSON());
             recordHistory(req.user, 'cardType', 'create', type2.toJSON());
             recordHistory(req.user, 'cardType', 'create', type3.toJSON());
-            res.send({ board: board });
+            res.send({
+              board: board,
+              lanes: [ lane1, lane2, lane3, lane4 ],
+              cardTypes: [ type1, type2, type3 ]
+            });
           });
         });
       });
@@ -59,7 +64,7 @@ module.exports = function (app, config, db) {
   app.get('/api/boards/:id', authorise, function (req, res, next) {
     Board.findById(req.params.id, function (err, board) {
       if (err) { return next(err); }
-      res.send(board ? { board: board } : 404);
+      res.send(board ? prepareToSend('board', board, ['lanes', 'cardTypes', 'cards']) : 404);
     });
   });
 

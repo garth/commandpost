@@ -33,7 +33,7 @@ App.BoardsEditController = Ember.ObjectController.extend({
   confirmDelete: null,
 
   sortedLanes: function () {
-    var lanes = Ember.A(this.get('content.lanes.content.content'));
+    var lanes = Ember.A(this.get('content.lanes.content'));
     return lanes.sortBy('order');
   }.property('content.lanes.@each.order'),
 
@@ -47,7 +47,7 @@ App.BoardsEditController = Ember.ObjectController.extend({
 
     addLane: function () {
       var board = this.get('content');
-      var lanes = board.get('lanes.content');
+      var lanes = board.get('lanes');
       var lane = this.get('store').createRecord('lane', {
         board: board,
         name: 'New Lane',
@@ -59,7 +59,7 @@ App.BoardsEditController = Ember.ObjectController.extend({
     },
 
     deleteLane: function (lane) {
-      var lanes = this.get('content.lanes.content');
+      var lanes = this.get('content.lanes');
       lanes.removeObject(lane);
       lane.deleteRecord();
       lane.save();
@@ -67,7 +67,7 @@ App.BoardsEditController = Ember.ObjectController.extend({
 
     addCardType: function () {
       var board = this.get('content');
-      var cardTypes = board.get('cardTypes.content');
+      var cardTypes = board.get('cardTypes');
       var cardType = this.get('store').createRecord('cardType', {
         board: board,
         name: 'New Card Type',
@@ -82,8 +82,8 @@ App.BoardsEditController = Ember.ObjectController.extend({
 
     save: function () {
       var board = this.get('content');
-      var lanes = board.get('lanes.content.content');
-      var cardTypes = board.get('cardTypes.content.content');
+      var lanes = board.get('lanes.content');
+      var cardTypes = board.get('cardTypes.content');
       var self = this;
       // save any lane changes
       _.each(lanes, function (lane) {

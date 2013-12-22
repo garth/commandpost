@@ -6,9 +6,9 @@ App.Board = DS.Model.extend({
   name: DS.attr('string'),
   createdByUser: DS.belongsTo('user'),
   createdOn: DS.attr('date'),
-  lanes: DS.hasMany('lane', { async: true }),
+  lanes: DS.hasMany('lane'),
   defaultCardType: DS.belongsTo('cardType'),
-  cardTypes: DS.hasMany('cardType', { async: true })
+  cardTypes: DS.hasMany('cardType')
 });
 
 App.serverEvents.addEventListener('createBoard', function(e) {

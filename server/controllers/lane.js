@@ -3,6 +3,7 @@ var Lane = mongoose.model('Lane');
 var prepareQuery = require('../helpers/prepare-query');
 var updateProperties = require('../helpers/update-properties');
 var recordHistory = require('../helpers/history').record;
+var prepareToSend = require('../helpers/prepare-to-send');
 
 module.exports = function (app, config, db) {
 
@@ -11,7 +12,7 @@ module.exports = function (app, config, db) {
   app.get('/api/lanes', authorise, function (req, res, next) {
     Lane.find(prepareQuery(req.query), function (err, lanes) {
       if (err) { return next(err); }
-      res.send({ lanes: lanes });
+      res.send(prepareToSend('lanes', lanes, ['cards']));
     });
   });
 
@@ -26,7 +27,7 @@ module.exports = function (app, config, db) {
   app.get('/api/lanes/:id', authorise, function (req, res, next) {
     Lane.findById(req.params.id, function (err, lane) {
       if (err) { return next(err); }
-      res.send(lane ? { lane: lane } : 404);
+      res.send(lane ? prepareToSend('lane', lane, ['card']) : 404);
     });
   });
 

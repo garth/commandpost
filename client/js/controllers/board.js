@@ -13,9 +13,9 @@ App.BoardsViewController = Ember.ObjectController.extend({
   }.property('visibleLanes'),
 
   sortedLanes: function () {
-    var lanes = Ember.A(this.get('content.lanes.content.content'));
+    var lanes = Ember.A(this.get('content.lanes.content'));
     return lanes.sortBy('order');
-  }.property('content.lanes.content.@each.order'),
+  }.property('content.lanes.@each.order'),
 
   visibleLanes: function () {
     return this.get('sortedLanes').filter(function (lane) {
@@ -32,7 +32,7 @@ App.BoardsViewController = Ember.ObjectController.extend({
       var lane = this.get('sortedLanes').find(function (lane) {
         return lane.get('defaultIsVisible');
       });
-      var cards = lane.get('cards.content');
+      var cards = lane.get('cards');
       var card = this.get('store').createRecord('card', {
         lane: lane,
         title: 'New Card',
