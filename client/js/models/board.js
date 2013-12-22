@@ -8,7 +8,15 @@ App.Board = DS.Model.extend({
   createdOn: DS.attr('date'),
   lanes: DS.hasMany('lane'),
   defaultCardType: DS.belongsTo('cardType'),
-  cardTypes: DS.hasMany('cardType')
+  cardTypes: DS.hasMany('cardType'),
+
+  cards: function () {
+    var cards = Ember.A();
+    this.get('lanes').forEach(function (lane) {
+      cards.pushObjects(lane.get('cards.content'));
+    });
+    return cards;
+  }.property('lanes.@each.cards')
 });
 
 App.serverEvents.addEventListener('createBoard', function(e) {

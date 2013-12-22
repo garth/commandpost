@@ -4,7 +4,14 @@ App.CardType = DS.Model.extend({
   icon: DS.attr('string'),
   pointScale: DS.attr('string'),
   priority: DS.attr('number'),
-  isHidden: DS.attr('boolean')
+  isHidden: DS.attr('boolean'),
+
+  cards: function () {
+    var cardType = this;
+    return this.get('board.cards').filter(function (card) {
+      return card && card.get('cardType') === cardType;
+    });
+  }.property('board.cards')
 });
 
 App.serverEvents.addEventListener('createCardType', function(e) {

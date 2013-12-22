@@ -6,6 +6,7 @@ module.exports = function (config, db) {
 
   // define card
   var Card = new Schema({
+    cardType: { type: ObjectId, ref: 'CardType', required: true },
     title: { type: String, required: true },
     description: { type: String },
     points: { type: Number },

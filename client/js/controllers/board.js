@@ -37,7 +37,9 @@ App.BoardsViewController = Ember.ObjectController.extend({
         lane: lane,
         title: 'New Card',
         order: cards.get('content').length,
-        points: 0
+        cardType: lane.get('board.defaultCardType'),
+        points: 0,
+        isEditing: true
       });
       cards.pushObject(card);
       card.save();

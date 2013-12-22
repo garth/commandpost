@@ -80,6 +80,13 @@ App.BoardsEditController = Ember.ObjectController.extend({
       cardType.save();
     },
 
+    deleteCardType: function (cardType) {
+      var cardTypes = this.get('content.cardTypes');
+      cardTypes.removeObject(cardType);
+      cardType.deleteRecord();
+      cardType.save();
+    },
+
     save: function () {
       var board = this.get('content');
       var lanes = board.get('lanes.content');

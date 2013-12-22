@@ -10,7 +10,11 @@ describe('cards rest api', function () {
 
   it('can create cards', function (done) {
     superagent.post(root).send({
-      card: { title: 'Amazing Thing', lane: '32875455e3e2812b6e000001' }
+      card: {
+        cardType: '72875455e3e2812b6e000001',
+        title: 'Amazing Thing',
+        lane: '32875455e3e2812b6e000001'
+      }
     })
     .set('Cookie', 'session=62875455e3e2812b6e000001;')
     .end(function (err, res) {
