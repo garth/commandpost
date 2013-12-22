@@ -5,6 +5,6 @@ App.CardIconComponent = Ember.Component.extend({
   icon: null,
 
   iconClass: function () {
-    return 'fa fa-fw fa-' + this.get('icon');
+    return 'card-icon fa fa-fw fa-' + this.get('icon');
   }.property('icon')
 });
