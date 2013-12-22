@@ -20,7 +20,9 @@ App.BoardsCardController = Ember.ObjectController.extend({
     }
     else {
       var card = this.get('model');
-      card.set('points', 0);
+      if (!card.get('isDeleted')) {
+        card.set('points', 0);
+      }
       return [];
     }
   }.property('model.cardType'),
