@@ -15,7 +15,11 @@ App.Card = DS.Model.extend({
   order: DS.attr('number'),
   comments: DS.hasMany('comment', { async: true }),
 
-  isEditing: false
+  isEditing: false,
+
+  priority: function () {
+    return (this.get('cardType.priority') || 0) * -1;
+  }.property()
 });
 
 App.serverEvents.addEventListener('createCard', function(e) {
