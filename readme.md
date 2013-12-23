@@ -19,15 +19,18 @@ Technology
 
 The client application is based on primarily on [EmberJS](http://emberjs.com),
 [Bootstrap](http://getbootstrap.com) and some [jQuery UI](http://jqueryui.com). The server uses
-[NodeJS](http://nodejs.org), [Express](http://expressjs.com) and [mongoDB](http://www.mongodb.org).
+[NodeJS](http://nodejs.org), [Express](http://expressjs.com) and
+[mongoDB](http://www.mongodb.org). Command Posts uses REST to push/pull data from the client and
+[Server-Sent Events](http://en.wikipedia.org/wiki/Server-sent_events) to push data from the
+server. So it should work with older proxies and servers where web sockets are an issue, however
+IE still does not support the SSE standard so cannot be used with Command Post at this time.
 
 Status
 ------
 
 Command Post is in beta. Currently you can:
 
-* Signup
-* Signin
+* Signup and signin
 * List boards
 * Create and configure boards
 * Manage board lanes
@@ -47,8 +50,10 @@ The following features are planned (in no particular order):
 * Improved security constraints - Per board, roles, etc...
 * Release management - Archive completed cards and create release notes
 * Velocity estimations based on history
-* Iteration markers/grouping
+* Iteration markers/grouping - allow distant backlog iterations to be collapsed
 * Improved emberjs automated testing
+* Make change history/log viewable
+* Highlight real-time changes
 
 The following are being considered:
 
