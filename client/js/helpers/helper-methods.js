@@ -74,7 +74,7 @@ App.eraseCookie = function (name) {
 };
 
 // enable flash messages
-App.flash = toastr;
+App.flash = window.toastr;
 
 App.flash.serverError = function (title, err) {
   var message;
@@ -87,3 +87,16 @@ App.flash.serverError = function (title, err) {
   App.flash.error(message, title);
   return message;
 };
+
+// enable keyboard shortcuts in views
+Ember.View.reopen({
+  bindKey: function (shortcut, action) {
+    var controller = this.controller;
+    window.key(shortcut, function () {
+      controller.send(action);
+    });
+  },
+  unbindKey: function (shortcut) {
+    window.key.unbind(shortcut);
+  }
+});

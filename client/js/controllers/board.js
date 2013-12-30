@@ -1,4 +1,5 @@
 require('../models/board');
+require('../views/board');
 
 App.BoardsIndexRoute = Ember.Route.extend({
   model: function () {

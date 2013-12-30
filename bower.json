@@ -16,7 +16,8 @@
     "jqueryui": "~1.10.3",
     "ember-mocha-adapter": "~0.1.2",
     "momentjs": "~2.4.0",
-    "toastr": "~2.0.1"
+    "toastr": "~2.0.1",
+    "keymaster": "~1.6.1"
   },
   "resolutions": {
     "ember": "~1.2.0",
