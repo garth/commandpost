@@ -1,3 +1,5 @@
+require('../views/card');
+
 App.BoardsCardController = Ember.ObjectController.extend({
 
   users: function () {
