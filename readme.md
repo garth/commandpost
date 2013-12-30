@@ -72,6 +72,8 @@ Install
 5. `npm install -g bower` & `bower install`
 6. `npm install -g grunt-cli` & `grunt`
 
+For installation on Windows see the [iisnode readme](docs/iisnode/readme.md).
+
 Configuration
 -------------
 
