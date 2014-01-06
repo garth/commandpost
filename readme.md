@@ -69,7 +69,7 @@ Install
 2. Install nodejs
 3. Clone this repository to your target machine
 4. `npm install`
-5. `npm install -g bower` & `bower install`
+5. `npm install -g bower`
 6. `npm install -g grunt-cli` & `grunt`
 
 For installation on Windows see the [iisnode readme](docs/iisnode/readme.md).

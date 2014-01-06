@@ -18,7 +18,6 @@ Build a production version of Command Post
 
 ```
 npm install
-bower install
 grunt production
 rm -r node_modules
 npm install --production
