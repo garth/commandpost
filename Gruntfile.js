@@ -55,6 +55,8 @@ module.exports = function (grunt) {
           'bower_components/bootstrap/js/tooltip.js',
           'bower_components/bootstrap/js/popover.js',
           'bower_components/bootstrap/js/affix.js',
+          'bower_components/typeahead.js/dist/typeahead.js',
+          'bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js',
           'bower_components/handlebars/handlebars.js',
           'bower_components/ember/ember.js',
           'bower_components/ember-data/ember-data.js',

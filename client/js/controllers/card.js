@@ -29,6 +29,15 @@ App.BoardsCardController = Ember.ObjectController.extend({
     }
   }.property('model.cardType'),
 
+  allTags: function () {
+    var allTags = [];
+    this.get('model.lane.cards').forEach(function (card) {
+      allTags = _.union(allTags, card.get('tags'));
+    });
+    allTags.sort();
+    return allTags;
+  }.property('model.lane.cards.@each.tags'),
+
   actions: {
 
     open: function () {
