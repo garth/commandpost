@@ -89,14 +89,15 @@ App.flash.serverError = function (title, err) {
 };
 
 // enable keyboard shortcuts in views
+var key = window.key.noConflict();
 Ember.View.reopen({
   bindKey: function (shortcut, action) {
     var controller = this.controller;
-    window.key(shortcut, function () {
+    key(shortcut, function () {
       controller.send(action);
     });
   },
   unbindKey: function (shortcut) {
-    window.key.unbind(shortcut);
+    key.unbind(shortcut);
   }
 });
