@@ -8,6 +8,7 @@ App.Card = DS.Model.extend({
   title: DS.attr('string'),
   description: DS.attr('string'),
   points: DS.attr('number'),
+  tags: DS.attr('tags'),
   createdByUser: DS.belongsTo('user'),
   createdOn: DS.attr('date'),
   assignedToUser: DS.belongsTo('user'),

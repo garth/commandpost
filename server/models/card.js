@@ -10,6 +10,7 @@ module.exports = function (config, db) {
     title: { type: String, required: true },
     description: { type: String },
     points: { type: Number },
+    tags: { type: [String], 'default': [] },
     createdByUser: { type: ObjectId, ref: 'User', required: true },
     createdOn: { type: Date, required: true, 'default': Date.now },
     assignedToUser: { type: ObjectId, ref: 'User', index: true },
