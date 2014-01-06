@@ -1,1 +1,5 @@
-{{yield}}
+{{#each collection}}
+  {{#sortable-list-item item=. class=controller.itemClass}}
+    {{yield}}
+  {{/sortable-list-item}}
+{{/each}}

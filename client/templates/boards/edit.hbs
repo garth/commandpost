@@ -41,31 +41,31 @@
     <div class="panel panel-default">
       <div class="panel-heading"><i class="fa fa-align-left fa-rotate-90"></i> Lanes</div>
       <div class="panel-body">
-        {{#sortable-list sortKey="order" class="list-group"}}
-          {{#each lane in sortedLanes}}
-            {{#sortable-list-item item=lane class="list-group-item lane-edit"}}
-              {{#unless lane.cards.length}}
-                <div class="right-margin">
-                  <button class="btn btn-danger btn-xs" {{action 'deleteLane' lane}}>
-                    <i class="fa fa-times"></i>
-                  </button>
-                </div>
-              {{/unless}}
-              <i class="fa fa-bars left-margin drag"></i>
-              {{input class="form-control" value=lane.name}}
-              <div class="row">
-                <div class="col-xs-8">
-                  <label>
-                    {{input type="checkbox" checked=lane.defaultIsVisible}}
-                    Visible by default
-                  </label>
-                </div>
-                <div class="col-xs-4 text-right">
-                  {{lane.cards.length}} cards
-                </div>
-              </div>
-              {{/sortable-list-item}}
-          {{/each}}
+        {{#sortable-list
+          collection=sortedLanes
+          sortKey="order"
+          class="list-group"
+          itemClass="list-group-item lane-edit"}}
+          {{#unless cards.length}}
+            <div class="right-margin">
+              <button class="btn btn-danger btn-xs" {{action 'deleteLane' .}}>
+                <i class="fa fa-times"></i>
+              </button>
+            </div>
+          {{/unless}}
+          <i class="fa fa-bars left-margin drag"></i>
+          {{input class="form-control" value=name}}
+          <div class="row">
+            <div class="col-xs-8">
+              <label>
+                {{input type="checkbox" checked=defaultIsVisible}}
+                Visible by default
+              </label>
+            </div>
+            <div class="col-xs-4 text-right">
+              {{cards.length}} cards
+            </div>
+          </div>
         {{/sortable-list}}
       </div>
       <div class="panel-footer text-right">

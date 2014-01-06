@@ -4,18 +4,24 @@ App.SortableListComponent = Ember.Component.extend({
   tagName: 'ul',
   classNameBindings: ['connectWith'],
 
+  collection: null,
   parent: null,
   childrenKey: null,
   parentKey: null,
   sortKey: null,
   autoSave: false,
   connectWith: null,
+  itemClass: '',
+
+  collectionObserver: function () {
+    this.$().sortable('refresh');
+  }.observes('collection'),
 
   setup: function () {
     var self = this;
     var connectWith = this.get('connectWith');
     this.$().sortable({
-      update: function(event, ui) {
+      update: function (event, ui) {
         var sort = 0;
         var list = self.getProperties('sortKey', 'autoSave', 'parent', 'childrenKey', 'parentKey');
         if (list.sortKey) {
@@ -54,5 +60,26 @@ App.SortableListComponent = Ember.Component.extend({
 
   teardown: function () {
     this.$().sortable('destroy');
-  }.on('willDestroyElement')
+  }.on('willDestroyElement'),
+
+  // override the default yield so that we can pass "each" context
+  _yield: function(context, options) {
+    var get = Ember.get,
+    view = options.data.view,
+    parentView = this._parentView,
+    template = get(this, 'template');
+
+    if (template) {
+      Ember.assert("A Component must have a parent view in order to yield.", parentView);
+      view.appendChild(Ember.View, {
+        isVirtual: true,
+        tagName: '',
+        _contextView: parentView,
+        template: template,
+        context: get(view, 'context'), // the default is get(parentView, 'context'),
+        controller: get(parentView, 'controller'),
+        templateData: { keywords: parentView.cloneKeywords() }
+      });
+    }
+  }
 });

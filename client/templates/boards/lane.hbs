@@ -2,20 +2,16 @@
   <div class="panel-heading">{{name}}</div>
   <div class="panel-body lane-container" {{bind-attr style="view.laneStyle"}}>
     {{#sortable-list
+      collection=sortedCards
       parent=content
       childrenKey="cards"
       parentKey="lane"
       sortKey="order"
       autoSave=true
       connectWith="board-lane-list"
-      class="list-group"}}
-      {{#each card in sortedCards}}
-        {{#sortable-list-item
-          item=card
-          class="list-group-item"}}
-          {{render "boards/card" card}}
-        {{/sortable-list-item}}
-      {{/each}}
+      class="list-group"
+      itemClass="list-group-item"}}
+      {{render "boards/card" .}}
     {{/sortable-list}}
   </div>
 </div>
