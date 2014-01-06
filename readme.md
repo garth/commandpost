@@ -20,7 +20,7 @@ Technology
 The client application is based on primarily on [EmberJS](http://emberjs.com),
 [Bootstrap](http://getbootstrap.com) and some [jQuery UI](http://jqueryui.com). The server uses
 [NodeJS](http://nodejs.org), [Express](http://expressjs.com) and
-[mongoDB](http://www.mongodb.org). Command Posts uses REST to push/pull data from the client and
+[mongoDB](http://www.mongodb.org). Command Post uses REST to push/pull data from the client and
 [Server-Sent Events](http://en.wikipedia.org/wiki/Server-sent_events) to push data from the
 server. So it should work with older proxies and servers where web sockets are an issue, however
 IE still does not support the SSE standard so cannot be used with Command Post at this time.
@@ -40,6 +40,21 @@ Command Post is in beta. Currently you can:
 * View changes by team members in near real-time
 
 If you find an bug, please open a github issue.
+
+Changelog
+---------
+
+#### 1.0.0-beta.2
+
+* [fix] Sorting cards of differing priorities now works consistently
+* [feature] Added support for tagging cards
+* [feature] Added support for keyboard shortcuts
+* [feature] Auto-focus new cards
+* [doc] Added information and sample config for Windows/IIS Deployment
+
+#### 1.0.0-beta.1
+
+* Initial release
 
 Roadmap
 -------
