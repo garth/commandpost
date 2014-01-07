@@ -71,10 +71,10 @@
         <span class="label label-default pull-right">{{points}}</span>
       {{/if}}
       <div class="first-row">
-        {{title}}
         {{#each tag in tags}}
           <span class="label label-primary tag">{{tag}}</span>
         {{/each}}
+        {{title}}
         {{#if assignedToUser}}
           ({{assignedToUser.name}})
         {{/if}}
