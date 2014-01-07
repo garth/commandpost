@@ -8,6 +8,18 @@ App.Lane = DS.Model.extend({
   defaultIsVisible: DS.attr('boolean'),
   cards: DS.hasMany('card'),
 
+  tags: function () {
+    var allTags = [];
+    this.get('cards').forEach(function (card) {
+      var tags = card.get('tags');
+      if (tags) {
+        allTags = _.union(allTags, tags);
+      }
+    });
+    allTags.sort();
+    return allTags;
+  }.property('cards.@each.tags'),
+
   isVisible: function (key, value) {
     var id = this.get('id');
     var defaultValue = this.get('defaultIsVisible');
