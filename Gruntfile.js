@@ -62,6 +62,7 @@ module.exports = function (grunt) {
           'bower_components/ember-data/ember-data.js',
           'bower_components/keymaster/keymaster.js',
           'node_modules/underscore/underscore.js',
+          'node_modules/faye/browser/faye-browser.js',
           'bower_components/momentjs/moment.js',
           'bower_components/toastr/toastr.js'
         ],
