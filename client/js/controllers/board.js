@@ -25,9 +25,11 @@ App.BoardsViewController = Ember.ObjectController.extend({
   }.property('sortedLanes.@each.isVisible'),
 
   actions: {
+
     toggleLane: function (lane) {
       lane.set('isVisible', !lane.get('isVisible'));
     },
+
     addCard: function (begining) {
       // find the first lane that defaults to being visible
       var lane = this.get('sortedLanes').find(function (lane) {
@@ -43,7 +45,10 @@ App.BoardsViewController = Ember.ObjectController.extend({
         isEditing: true
       });
       cards.pushObject(card);
-      card.save();
+      // only save if at the end, since sorting will auto-save
+      if (!begining) {
+        card.save();
+      }
     }
   }
 });
