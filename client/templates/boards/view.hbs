@@ -23,9 +23,27 @@
     {{#link-to 'boards.edit' content class="btn btn-default"}}
       <i class="fa fa-wrench"></i> Edit Board
     {{/link-to}}
-    <button class="btn btn-primary" {{action "addCard"}}>
-      <i class="fa fa-plus"></i> New Card
-    </button>
+    <div class="btn-group">
+      <button type="button" class="btn btn-primary" {{action "addCard"}}>
+        <i class="fa fa-plus"></i> New Card
+      </button>
+      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+        <span class="caret"></span>
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu text-left" role="menu">
+        <li>
+          <a href="#" {{action "addCard" true}}>
+            <i class="fa fa-download fa-flip-vertical"></i> Add to begining
+          </a>
+        </li>
+        <li>
+          <a href="#" {{action "addCard"}}>
+            <i class="fa fa-download"></i> Add to end <span class="text-muted">(default)</span>
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
 

@@ -28,7 +28,7 @@ App.BoardsViewController = Ember.ObjectController.extend({
     toggleLane: function (lane) {
       lane.set('isVisible', !lane.get('isVisible'));
     },
-    addCard: function () {
+    addCard: function (begining) {
       // find the first lane that defaults to being visible
       var lane = this.get('sortedLanes').find(function (lane) {
         return lane.get('defaultIsVisible');
@@ -37,7 +37,7 @@ App.BoardsViewController = Ember.ObjectController.extend({
       var card = this.get('store').createRecord('card', {
         lane: lane,
         title: 'New Card',
-        order: cards.get('content').length,
+        order: begining ? -1 : cards.get('content').length,
         cardType: lane.get('board.defaultCardType'),
         points: 0,
         isEditing: true
