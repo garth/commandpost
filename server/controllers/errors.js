@@ -32,4 +32,8 @@ module.exports = function (app, config, db) {
     res.send(status, data);
   });
 
+  app.pubsub.subscribe('/error/**', function (message) {
+    console.log('error', message);
+  });
+
 };

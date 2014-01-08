@@ -23,6 +23,10 @@ module.exports = function (app, config, db) {
       if (err) { return next(err); }
       recordHistory(req.user, 'card', 'create', card.toJSON());
       res.send({ card: card });
+
+      // lane card order might need updating
+      app.pubsub.publish('/card/move', { cardId: card.id });
+
     });
   });
 
@@ -37,12 +41,22 @@ module.exports = function (app, config, db) {
     Card.findById(req.params.id, function (err, card) {
       if (err) { return next(err); }
       var oldValues = updateProperties(card, req.body.card, [
-        'cardType', 'title', 'description', 'points', 'tags', 'assignedToUser', 'lane', 'order'
+        'cardType', 'title', 'description', 'points', 'tags', 'assignedToUser'
       ]);
       recordHistory(req.user, 'card', 'update', card.toJSON(), oldValues);
       card.save(function (err, card) {
         if (err) { return next(err); }
         res.send({});
+
+        // if the card type changed, then lane card order might need updating
+        if (oldValues.cardType) {
+          app.pubsub.publish('/card/move', {
+            cardId: card.id,
+            oldCardType: oldValues.cardType,
+            cardType: card.cardType
+          });
+        }
+
       });
     });
   });
