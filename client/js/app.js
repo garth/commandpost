@@ -23,6 +23,7 @@ App = Ember.Application.extend({
 //load helpers
 require('./helpers/helper-methods');
 require('./helpers/server-events');
+require('./helpers/pubsub');
 
 // prepare the data store
 require('./store');

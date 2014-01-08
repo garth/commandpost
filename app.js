@@ -1,3 +1,4 @@
+var http = require('http');
 var express = require('express');
 var faye = require('faye');
 var fs = require('fs');
@@ -9,14 +10,25 @@ var db = require('./server/config/mongoose')(config);
 // setup express
 var app = express();
 require('./server/config/express')(app, config);
+app.server = http.createServer(app);
 
 // setup faye pub sub
 var bayeux = new faye.NodeAdapter({
   mount: '/pubsub',
   timeout: 45
 });
-bayeux.attach(app);
+bayeux.attach(app.server);
 app.pubsub = bayeux.getClient();
+
+// bayeux.on('handshake', function (clientId) {
+//   console.log('handshake', clientId);
+// });
+// bayeux.on('subscribe', function (clientId, channel) {
+//   console.log('subscribe', clientId, channel);
+// });
+// bayeux.on('publish', function (clientId, channel, data) {
+//   console.log('publish', clientId, channel, data);
+// });
 
 // load the controllers
 var controllersPath = path.join(config.root, 'server/controllers');
@@ -27,5 +39,5 @@ fs.readdirSync(controllersPath).forEach(function (file) {
 });
 
 // start the server
-app.listen(config.port);
+app.server.listen(config.port);
 console.log('Mogul listening on port ' + config.port + ' in ' + config.env + ' mode');
