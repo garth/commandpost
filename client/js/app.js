@@ -22,9 +22,15 @@ App = Ember.Application.extend({
 
 //load helpers
 require('./helpers/helper-methods');
-require('./helpers/server-events');
 require('./helpers/pubsub');
 
+//load models
+require('./models/board');
+require('./models/card-type');
+require('./models/card');
+require('./models/comment');
+require('./models/lane');
+require('./models/user');
 
 // the router
 require('./router');

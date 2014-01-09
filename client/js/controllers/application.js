@@ -1,5 +1,3 @@
-require('../models/user');
-
 App.ApplicationRoute = Ember.Route.extend({
   model: function () {
     var store = this.get('store');

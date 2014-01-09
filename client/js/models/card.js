@@ -1,20 +1,22 @@
-require('./lane');
-require('./user');
-require('./comment');
-require('./card-type');
+// require('./lane');
+// require('./user');
+// require('./comment');
+// require('./card-type');
 
-App.Card = DS.Model.extend({
-  cardType: DS.belongsTo('cardType'),
-  title: DS.attr('string'),
-  description: DS.attr('string'),
-  points: DS.attr('number'),
-  tags: DS.attr('tags'),
-  createdByUser: DS.belongsTo('user'),
-  createdOn: DS.attr('date'),
-  assignedToUser: DS.belongsTo('user'),
-  lane: DS.belongsTo('lane'),
-  order: DS.attr('number'),
-  comments: DS.hasMany('comment', { async: true }),
+App.Card = Ember.Object.extend({
+  lane: null,
+
+  id: null,
+  cardTypeId: null,
+  title: null,
+  description: null,
+  points: null,
+  tags: null,
+  createdByUserId: null,
+  createdOn: null,
+  assignedToUserId: null,
+  order: null,
+  comments: null,
 
   isEditing: false,
 
@@ -23,44 +25,44 @@ App.Card = DS.Model.extend({
   }.property()
 });
 
-App.serverEvents.addEventListener('createCard', function(e) {
-  var store = App.Card.store;
-  var cardData = JSON.parse(e.data).document;
-  var card = store.getById('card', cardData.id);
-  if (!card) {
-    var lane = store.getById('lane', cardData.lane);
-    // add the card if the lane is in the store
-    if (lane) {
-      card = store.push('card', cardData);
-      lane.get('cards.content').pushObject(card);
-    }
-  }
-}, false);
+// App.serverEvents.addEventListener('createCard', function(e) {
+//   var store = App.Card.store;
+//   var cardData = JSON.parse(e.data).document;
+//   var card = store.getById('card', cardData.id);
+//   if (!card) {
+//     var lane = store.getById('lane', cardData.lane);
+//     // add the card if the lane is in the store
+//     if (lane) {
+//       card = store.push('card', cardData);
+//       lane.get('cards.content').pushObject(card);
+//     }
+//   }
+// }, false);
 
-App.serverEvents.addEventListener('updateCard', function(e) {
-  var store = App.Card.store;
-  var cardData = JSON.parse(e.data).document;
-  var card = store.getById('card', cardData.id);
-  // update the card if it's in the store
-  if (card) {
-    var oldLane = card.get('lane');
-    var newLane = store.getById('lane', cardData.lane);
-    card = store.push('card', cardData);
-    // move lane if necessary
-    if (oldLane.get('id') !== newLane.get('id')) {
-      oldLane.get('cards.content').removeObject(card);
-      newLane.get('cards.content').pushObject(card);
-    }
-  }
-}, false);
+// App.serverEvents.addEventListener('updateCard', function(e) {
+//   var store = App.Card.store;
+//   var cardData = JSON.parse(e.data).document;
+//   var card = store.getById('card', cardData.id);
+//   // update the card if it's in the store
+//   if (card) {
+//     var oldLane = card.get('lane');
+//     var newLane = store.getById('lane', cardData.lane);
+//     card = store.push('card', cardData);
+//     // move lane if necessary
+//     if (oldLane.get('id') !== newLane.get('id')) {
+//       oldLane.get('cards.content').removeObject(card);
+//       newLane.get('cards.content').pushObject(card);
+//     }
+//   }
+// }, false);
 
-App.serverEvents.addEventListener('deleteCard', function(e) {
-  var store = App.Card.store;
-  var cardData = JSON.parse(e.data).document;
-  var card = store.getById('card', cardData.id);
-  // remove the card from the store
-  if (card && !card.get('isDeleted')) {
-    card.get('lane.cards.content').removeObject(card);
-    store.unloadRecord(card);
-  }
-}, false);
+// App.serverEvents.addEventListener('deleteCard', function(e) {
+//   var store = App.Card.store;
+//   var cardData = JSON.parse(e.data).document;
+//   var card = store.getById('card', cardData.id);
+//   // remove the card from the store
+//   if (card && !card.get('isDeleted')) {
+//     card.get('lane.cards.content').removeObject(card);
+//     store.unloadRecord(card);
+//   }
+// }, false);

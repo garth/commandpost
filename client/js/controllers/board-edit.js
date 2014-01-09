@@ -1,5 +1,3 @@
-require('../models/board');
-
 var Promise = Ember.RSVP.Promise;
 
 App.BoardsNewRoute = Ember.Route.extend({
