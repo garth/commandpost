@@ -34,13 +34,11 @@ var components = [
 ];
 var debugComponents = _.union(components, [
   'bower_components/handlebars/handlebars.js',
-  'bower_components/ember/ember.js',
-  'bower_components/ember-data/ember-data.js'
+  'bower_components/ember/ember.js'
 ]);
 var productionComponents = _.union(components, [
   'bower_components/handlebars/handlebars.runtime.js',
-  'bower_components/ember/ember.prod.js',
-  'bower_components/ember-data/ember-data.prod.js'
+  'bower_components/ember/ember.prod.js'
 ]);
 
 module.exports = function (grunt) {

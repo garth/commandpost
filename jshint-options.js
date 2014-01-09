@@ -22,8 +22,6 @@ module.exports = {
   passfail: false,
   globals: {
     Ember: true,
-    EmberFC: true,
-    DS: true,
     App: true,
     _: true,
     moment: true,

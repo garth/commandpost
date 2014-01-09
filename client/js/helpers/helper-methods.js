@@ -101,13 +101,3 @@ Ember.View.reopen({
     key.unbind(shortcut);
   }
 });
-
-// ember data transforms
-App.TagsTransform = DS.Transform.extend({
-  serialize: function(value) {
-    return value && value.toArray ? value.toArray() : [];
-  },
-  deserialize: function(value) {
-    return Ember.A(value);
-  }
-});
