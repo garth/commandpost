@@ -5,6 +5,7 @@ var fs = require('fs');
 var config = require('./server/config/config')();
 var path = require('path');
 
+// connect to the db and init model schemas
 var db = require('./server/config/mongoose')(config);
 
 // setup express
