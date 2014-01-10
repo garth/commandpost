@@ -3,6 +3,22 @@ App.pubsub = new window.Faye.Client('/pubsub', {
   retry: 5
 });
 
+var clientId = App.createUuid();
+
+App.pubsub.addExtension({
+  outgoing: function (message, callback) {
+    message.ext = message.ext || {};
+    message.ext.sessionId = localStorage.sessionId;
+    message.ext.clientId = clientId;
+    callback(message);
+  }
+});
+
+App.pubsub.subscribe('/private/' + clientId + '/error/**', function (message) {
+  App.flash.error(message.message || 'Unknown error');
+  console.log('Error', message);
+});
+
 App.pubsub.on('transport:down', function() {
   App.flash.error('Service Unavailable');
 });
@@ -11,6 +27,6 @@ App.pubsub.on('transport:up', function() {
   App.flash.success('Service Available');
 });
 
-App.pubsub.subscribe('/board/52b7656f012992730e000099/**', function (message) {
-  console.log(message);
-});
+// App.pubsub.subscribe('/board/**', function (message) {
+//   console.log(message);
+// });

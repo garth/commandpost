@@ -14,20 +14,23 @@ require('./server/config/express')(app, config);
 app.server = http.createServer(app);
 
 // setup faye pub sub
-var bayeux = new faye.NodeAdapter({
+app.bayeux = new faye.NodeAdapter({
   mount: '/pubsub',
   timeout: 45
 });
-bayeux.attach(app.server);
-app.pubsub = bayeux.getClient();
+app.bayeux.attach(app.server);
+app.pubsub = app.bayeux.getClient();
 
-// bayeux.on('handshake', function (clientId) {
+// prepare authorisation first
+require('./server/authorise')(app, config, db);
+
+// app.bayeux.on('handshake', function (clientId) {
 //   console.log('handshake', clientId);
 // });
-// bayeux.on('subscribe', function (clientId, channel) {
+// app.bayeux.on('subscribe', function (clientId, channel) {
 //   console.log('subscribe', clientId, channel);
 // });
-// bayeux.on('publish', function (clientId, channel, data) {
+// app.bayeux.on('publish', function (clientId, channel, data) {
 //   console.log('publish', clientId, channel, data);
 // });
 

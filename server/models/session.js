@@ -10,7 +10,7 @@ module.exports = function (config, db) {
 
   // define session
   var Session = new Schema({
-    user: { type: ObjectId, ref: 'User', required: true },
+    userId: { type: ObjectId, required: true },
     expiresOn: { type: Date, 'default': expires, required: true }
   }, config.schemaOptions);
 
