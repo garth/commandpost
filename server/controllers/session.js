@@ -4,33 +4,73 @@ var Session = mongoose.model('Session');
 
 module.exports = function (app, config, db) {
 
-  var authorise = require('../authorise')(config);
+  app.pubsub.subscribe('/server/session/get', function (message) {
+    User.findById(message.ext && message.ext.userId, function (err, user) {
+      if (err) {
+        return app.publishError('session', 'server', {
+          code: 500,
+          message: 'Failed to lookup user',
+          details: err,
+          context: message
+        });
+      }
+      if (!user) {
+        return app.pubsub.publishError('session', {
+          code: 404,
+          message: 'User not found',
+          context: message
+        });
+      }
+    });
+  };
 
-  app.get('/api/sessions', authorise, function (req, res, next) {
-    res.send({ user: req.user });
-  });
-
-  app.post('/api/sessions', function (req, res, next) {
-    User.findOne({ name: req.body.user.name }, function (err, user) {
-      if (err) { return next(err); }
-      if (!user || !user.checkPassword(req.body.user.password)) {
-        res.send(401, { message: 'Incorrect name or password.' });
+  app.pubsub.subscribe('/server/session/create', function (message) {
+    User.findOne({ name: message.name }, function (err, user) {
+      if (err) {
+        return app.publishError('session', 'server', {
+          code: 500,
+          message: 'Failed to lookup user',
+          details: err,
+          context: message
+        });
+      }
+      if (!user || !user.checkPassword(message.password)) {
+        return app.pubsub.publishError('session', {
+          code: 401,
+          message: 'Incorrect name or password',
+          context: message
+        });
       }
       else {
-        (new Session({ user: user.id })).save(function (err, session) {
-          if (err) { return next(err); }
-          res.cookie('session', session.id, { maxAge: config.sessionTtl });
-          res.send({ user: user });
+        (new Session({ userId: user.id })).save(function (err, session) {
+          if (err) {
+            return app.pubsub.publishError('session', 'server', {
+              code: 500,
+              message: 'Failed to create session',
+              details: err,
+              context: message
+            });
+          }
+          app.pubsub.publishToClient('/session/create', {
+            newSessionId: session.id,
+            user: user
+          });
         });
       }
     });
   });
 
-  app.del('/api/sessions', authorise, function (req, res, next) {
-    Session.findByIdAndRemove(req.cookies.session, function(err, session) {
-      if (err) { return next(err); }
-      res.clearCookie('session');
-      res.send({});
+  app.pubsub.subscribe('/server/session/destroy', function (message) {
+    Session.findByIdAndRemove(message.ext && message.ext.sessionId, function (err, session) {
+      if (err) {
+        return app.publishError('session', 'server', {
+          code: 500,
+          message: 'Failed to destroy session',
+          details: err,
+          context: message
+        });
+      }
+      app.pubsub.publishToClient('/session/destroy', {});
     });
   });
 };

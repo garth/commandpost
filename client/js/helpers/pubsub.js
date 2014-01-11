@@ -20,11 +20,11 @@ App.pubsub.subscribe('/private/' + clientId + '/error/**', function (message) {
 });
 
 App.pubsub.on('transport:down', function() {
-  App.flash.error('Service Unavailable');
+  App.flash.error('Failed to connect to server');
 });
 
 App.pubsub.on('transport:up', function() {
-  App.flash.success('Service Available');
+  App.flash.success('Connected to server');
 });
 
 // App.pubsub.subscribe('/board/**', function (message) {

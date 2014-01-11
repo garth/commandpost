@@ -1,6 +1,5 @@
 var http = require('http');
 var express = require('express');
-var faye = require('faye');
 var fs = require('fs');
 var config = require('./server/config/config')();
 var path = require('path');
@@ -13,26 +12,11 @@ var app = express();
 require('./server/config/express')(app, config);
 app.server = http.createServer(app);
 
-// setup faye pub sub
-app.bayeux = new faye.NodeAdapter({
-  mount: '/pubsub',
-  timeout: 45
-});
-app.bayeux.attach(app.server);
-app.pubsub = app.bayeux.getClient();
+// init pub sub system
+require('./server/helpers/pubsub')(app, config, db);
 
-// prepare authorisation first
+// prepare authorisation
 require('./server/authorise')(app, config, db);
-
-// app.bayeux.on('handshake', function (clientId) {
-//   console.log('handshake', clientId);
-// });
-// app.bayeux.on('subscribe', function (clientId, channel) {
-//   console.log('subscribe', clientId, channel);
-// });
-// app.bayeux.on('publish', function (clientId, channel, data) {
-//   console.log('publish', clientId, channel, data);
-// });
 
 // load the controllers
 var controllersPath = path.join(config.root, 'server/controllers');

@@ -6,23 +6,6 @@ var serverSecret = crypto.randomBytes(256).toString();
 
 module.exports = function (app, config, db) {
 
-  app.publishError = function (serverType, clientType, error) {
-    if (!error) {
-      error = clientType;
-      clientType = serverType;
-    }
-    else {
-      app.pubsub.publish('/error/' + serverType, error);
-    }
-    if (error.context && error.context.ext && error.context.ext.clientId) {
-      app.pubsub.publish('/private/' + error.context.ext.clientId + '/error/' + clientType, {
-        code: error.code,
-        message: error.message,
-        context: error.context
-      });
-    }
-  };
-
   app.pubsub.addExtension({
     // all server sent messages are authorised with serverSecret
     outgoing: function (message, callback) {
@@ -38,8 +21,8 @@ module.exports = function (app, config, db) {
       // all subscriptions (except /private/ channels) need to be pre-authorised
       if ((message.channel === '/meta/subscribe' &&
         !message.subscription.match(/^\/private\//)) ||
-        // all messages (except /meta/ and /server/session need to be pre-authorised
-        !message.channel.match(/^\/(meta|server\/session)\//)) {
+        // all messages (except /meta/ and /server/session/create need to be pre-authorised
+        !message.channel.match(/^\/(meta|server\/session\/create)/)) {
 
         // session is required
         var sessionId = message.ext && message.ext.sessionId;
@@ -63,7 +46,7 @@ module.exports = function (app, config, db) {
             if (err) {
               errorMessage = 'Failed to lookup session';
               message.error = '500::' + errorMessage;
-              app.publishError('session', 'server', {
+              app.pubsub.publishError('session', 'server', {
                 code: 500,
                 message: errorMessage,
                 details: err,
@@ -74,7 +57,7 @@ module.exports = function (app, config, db) {
             else if (!session || session.expiresOn < Date.now()) {
               errorMessage = 'Session has expired';
               message.error = '401::' + errorMessage;
-              app.publishError('session', {
+              app.pubsub.publishError('session', {
                 code: 401,
                 message: errorMessage,
                 context: message
@@ -88,7 +71,7 @@ module.exports = function (app, config, db) {
               var ttl = new Date(new Date().getTime() + config.sessionTtl - 1000 * 60 * 60 * 24);
               if (session.expiresOn < ttl) {
                 session.extend(function (err, session) {
-                  app.publishError('session', 'server', {
+                  app.pubsub.publishError('session', 'server', {
                     code: 500,
                     message: 'Failed to extend session',
                     details: err,
@@ -108,13 +91,10 @@ module.exports = function (app, config, db) {
     },
 
     outgoing: function (message, callback) {
-      if (message.ext) {
-        // ensure that outgoing messages don't have the session id attached
+      // if message is not directed to the server, remove the client and session id
+      if (message.ext && !message.channel.match(/^\/server\//)) {
         delete message.ext.sessionId;
-        // if message is not directed to the server, remove the client id
-        if (!message.channel.match(/^\/server\//)) {
-          delete message.ext.clientId;
-        }
+        delete message.ext.clientId;
       }
       callback(message);
     }
