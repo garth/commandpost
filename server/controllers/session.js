@@ -5,7 +5,7 @@ var Session = mongoose.model('Session');
 module.exports = function (app, config, db) {
 
   app.pubsub.subscribe('/server/session/get', function (message) {
-    User.findById(message.ext && message.ext.userId, function (err, user) {
+    User.findById(message.meta && message.meta.userId, function (err, user) {
       if (err) {
         return app.publishError('/session', '/server', {
           message: 'Failed to lookup user',
@@ -22,7 +22,7 @@ module.exports = function (app, config, db) {
       }
       app.pubsub.publishToClient('/session/get', {
         user: user.toJSON()
-      });
+      }, message);
     });
   });
 
@@ -61,7 +61,6 @@ module.exports = function (app, config, db) {
   });
 
   app.pubsub.subscribe('/server/session/destroy', function (message) {
-    console.log('destroy', message);
     Session.findByIdAndRemove(message.sessionId, function (err, session) {
       if (err) {
         return app.publishError('/session', '/server', {

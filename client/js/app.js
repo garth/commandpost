@@ -10,6 +10,7 @@ App = Ember.Application.extend({
   // LOG_VERSION: true,
   // debugMode: true,
 
+  isConnected: true,
   user: null,
 
   config: config,

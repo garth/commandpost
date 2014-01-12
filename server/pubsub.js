@@ -31,7 +31,7 @@ module.exports = function (app, config, db) {
 
   // publish to client helper
   app.pubsub.publishToClient = function (channel, message, context) {
-    var clientChannelId = context && context.clientChannelId;
+    var clientChannelId = context && context.meta && context.meta.clientChannelId;
     if (clientChannelId) {
       app.pubsub.publish('/private/' + clientChannelId + channel, message);
     }

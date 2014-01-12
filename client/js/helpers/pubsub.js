@@ -10,7 +10,8 @@ App.pubsub.addExtension({
     message.ext = message.ext || {};
     message.ext.sessionId = localStorage.sessionId;
     message.data = message.data || {};
-    message.data.clientChannelId = clientChannelId;
+    message.data.meta = message.data.meta || {};
+    message.data.meta.clientChannelId = clientChannelId;
     callback(message);
   }
 });
@@ -26,12 +27,12 @@ App.pubsub.subscribe('/private/' + clientChannelId + '/error/**', function (mess
 
 App.pubsub.on('transport:down', function() {
   App.flash.error('Failed to connect to server');
+  App.set('isConnected', false);
 });
 
 App.pubsub.on('transport:up', function() {
-  App.flash.success('Connected to server');
+  if (!App.get('isConnected')) {
+    App.set('isConnected', true);
+    App.flash.success('Connected to server');
+  }
 });
-
-// App.pubsub.subscribe('/board/**', function (message) {
-//   console.log(message);
-// });

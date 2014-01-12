@@ -49,8 +49,7 @@ module.exports = function (app, config, db) {
             if (err) {
               errorMessage = 'Failed to lookup session';
               message.error = '500::' + errorMessage;
-              app.pubsub.publishError('session', 'server', {
-                code: 500,
+              app.pubsub.publishError('/session', '/server', {
                 message: errorMessage,
                 details: err,
                 context: message
@@ -60,7 +59,7 @@ module.exports = function (app, config, db) {
             else if (!session || session.expiresOn < Date.now()) {
               errorMessage = 'Session has expired';
               message.error = '401::' + errorMessage;
-              app.pubsub.publishError('session', {
+              app.pubsub.publishError('/session', {
                 code: 401,
                 message: errorMessage,
                 context: message
@@ -68,14 +67,15 @@ module.exports = function (app, config, db) {
             }
             else {
               // accept this request
-              message.ext.userId = session.userId;
+              message.data = message.data || {};
+              message.data.meta = message.data.meta || {};
+              message.data.meta.userId = session.userId;
 
               // extend the session once per day
               var ttl = new Date(new Date().getTime() + config.sessionTtl - 1000 * 60 * 60 * 24);
               if (session.expiresOn < ttl) {
                 session.extend(function (err, session) {
-                  app.pubsub.publishError('session', 'server', {
-                    code: 500,
+                  app.pubsub.publishError('/session', '/server', {
                     message: 'Failed to extend session',
                     details: err,
                     context: message
@@ -99,8 +99,8 @@ module.exports = function (app, config, db) {
         if (message.ext) {
           delete message.ext.sessionId;
         }
-        if (message.data) {
-          delete message.data.clientChannelId;
+        if (message.data && message.data.meta) {
+          delete message.data.meta.clientChannelId;
         }
       }
       callback(message);
