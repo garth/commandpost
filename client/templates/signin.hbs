@@ -8,7 +8,7 @@
     <form class="form-signin" {{action "signin" on="submit"}}>
       <div {{bind-attr class=":panel errorMessage:panel-danger:panel-default"}}>
         <div class="panel-body">
-          {{input-text type="text" label="Name" placeholder="name" value=name}}
+          {{input-text type="text" label="Login Name" placeholder="login name" value=name}}
           {{input-text type="password" label="Password" placeholder="password" value=password}}
         </div>
         <div {{bind-attr class=":panel-footer errorMessage:panel-footer-danger"}}>

@@ -24,6 +24,7 @@ App = Ember.Application.extend({
 //load helpers
 require('./helpers/helper-methods');
 require('./helpers/pubsub');
+require('./helpers/controller');
 
 //load models
 require('./models/board');

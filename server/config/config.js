@@ -23,9 +23,8 @@ module.exports = function (env) {
         transform: function (doc, ret, options) {
           delete ret.__v;
           delete ret._id;
-          if (ret.password) {
-            delete ret.password;
-          }
+          delete ret.password;
+          delete ret.login;
         }
       }
     },

@@ -1,6 +1,7 @@
 App.User = Ember.Object.extend({
+  id: null,
   name: null,
-  password: null
+  initials: null
 });
 
 // App.serverEvents.addEventListener('createUser', function(e) {

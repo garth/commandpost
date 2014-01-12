@@ -27,7 +27,7 @@ module.exports = function (app, config, db) {
   });
 
   app.pubsub.subscribe('/server/session/create', function (message) {
-    User.findOne({ name: message.name }, function (err, user) {
+    User.findOne({ login: message.name.toLowerCase() }, function (err, user) {
       if (err) {
         return app.publishError('/session', '/server', {
           message: 'Failed to lookup user',
@@ -38,7 +38,7 @@ module.exports = function (app, config, db) {
       if (!user || !user.checkPassword(message.password)) {
         return app.pubsub.publishError('/session', {
           code: 401,
-          message: 'Incorrect name or password',
+          message: 'Incorrect login name or password',
           context: message
         });
       }

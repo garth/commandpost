@@ -22,8 +22,9 @@ module.exports = function (app, config, db) {
       // all subscriptions (except /private/ channels) need to be pre-authorised
       if ((message.channel === '/meta/subscribe' &&
         !message.subscription.match(/^\/private\//)) ||
-        // all messages (except /meta/ and /server/session/create need to be pre-authorised
-        !message.channel.match(/^\/(meta|server\/session\/create)/)) {
+        // all messages (except /meta/, /server/session/create and
+        // /server/user/create need to be pre-authorised
+        !message.channel.match(/^\/(meta|server\/session\/create|server\/user\/create)/)) {
 
         // session is required
         var sessionId = message.ext && message.ext.sessionId;
@@ -52,7 +53,7 @@ module.exports = function (app, config, db) {
               app.pubsub.publishError('/session', '/server', {
                 message: errorMessage,
                 details: err,
-                context: message
+                context: message.data
               });
             }
             // check if session is not found or has expired
@@ -62,7 +63,7 @@ module.exports = function (app, config, db) {
               app.pubsub.publishError('/session', {
                 code: 401,
                 message: errorMessage,
-                context: message
+                context: message.data
               });
             }
             else {
@@ -78,7 +79,7 @@ module.exports = function (app, config, db) {
                   app.pubsub.publishError('/session', '/server', {
                     message: 'Failed to extend session',
                     details: err,
-                    context: message
+                    context: message.data
                   });
                 });
               }
