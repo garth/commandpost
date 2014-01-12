@@ -2,7 +2,31 @@ require('../views/board');
 
 App.BoardsIndexRoute = Ember.Route.extend({
   model: function () {
-    return this.store.find('board');
+    return new Ember.RSVP.Promise(function (resolve, reject) {
+      var subscriptionGet, subscriptionError, timeout;
+
+      var done = function (boards) {
+        clearTimeout(timeout);
+        subscriptionGet.cancel();
+        subscriptionError.cancel();
+        resolve(boards || []);
+      };
+
+      timeout = setTimeout(function () {
+        App.flash.error('Find boards timed out');
+        done();
+      }, 10 * 1000);
+
+      subscriptionGet = App.pubsub.subscribeToClient('/boards', function (message) {
+        done(message.boards);
+      });
+
+      subscriptionError = App.pubsub.subscribeToClient('/error/boards', function (message) {
+        done();
+      });
+
+      App.pubsub.publish('/server/boards', {});
+    });
   }
 });
 
