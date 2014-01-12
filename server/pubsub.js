@@ -13,20 +13,20 @@ module.exports = function (app, config, db) {
   // publish error helper
   app.pubsub.publishError = function (serverChannel, clientChannel, error) {
     if (!error) {
+      // no server notification
       error = clientChannel;
       clientChannel = serverChannel;
     }
     else {
-      app.pubsub.publish('/error/' + serverChannel, error);
+      // notify server
+      app.pubsub.publish('/error' + serverChannel, error);
     }
-    var clientChannelId = error && error.context && error.context.clientChannelId;
-    if (clientChannelId) {
-      app.pubsub.publish('/private/' + clientChannelId + '/error/' + clientChannel, {
-        code: error.code,
-        message: error.message,
-        context: error.context
-      });
-    }
+    // notifiy client
+    app.pubsub.publishToClient('/error' + clientChannel, {
+      code: error.code || 500,
+      message: error.message,
+      context: error.context
+    }, error.context);
   };
 
   // publish to client helper

@@ -35,14 +35,16 @@ App.ApplicationController = Ember.Controller.extend({
 
   actions: {
     signout: function() {
-      // ask the server to drop the session
-      App.ajaxDelete({ url: '/api/sessions' }).then(function (data) {
+
+      var subscription = App.pubsub.subscribeToClient('/session/destroy', function (message) {
+        subscription.cancel();
+        delete localStorage.sessionId;
         // reload the page to force drop all data
         document.location = '/';
-      }, function (response) {
-        this.flash('Singout Failed');
-        console.log('Singout Failed', response);
       });
+
+      // ask the server to drop the session
+      App.pubsub.publish('/server/session/destroy', { sessionId: localStorage.sessionId });
     }
   }
 });
