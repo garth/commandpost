@@ -11,16 +11,17 @@ module.exports = function (app, config, db) {
   app.pubsub = app.bayeux.getClient();
 
   // publish error helper
-  app.pubsub.publishError = function (serverType, clientType, error) {
+  app.pubsub.publishError = function (serverChannel, clientChannel, error) {
     if (!error) {
-      error = clientType;
-      clientType = serverType;
+      error = clientChannel;
+      clientChannel = serverChannel;
     }
     else {
-      app.pubsub.publish('/error/' + serverType, error);
+      app.pubsub.publish('/error/' + serverChannel, error);
     }
-    if (error && error.context && error.context.ext && error.context.ext.clientId) {
-      app.pubsub.publish('/private/' + error.context.ext.clientId + '/error/' + clientType, {
+    var clientChannelId = error && error.context && error.context.clientChannelId;
+    if (clientChannelId) {
+      app.pubsub.publish('/private/' + clientChannelId + '/error/' + clientChannel, {
         code: error.code,
         message: error.message,
         context: error.context
@@ -30,8 +31,9 @@ module.exports = function (app, config, db) {
 
   // publish to client helper
   app.pubsub.publishToClient = function (channel, message, context) {
-    if (context && context.ext && context.ext.clientId) {
-      app.pubsub.publish('/private/' + context.ext.clientId + channel, message);
+    var clientChannelId = context && context.clientChannelId;
+    if (clientChannelId) {
+      app.pubsub.publish('/private/' + clientChannelId + channel, message);
     }
   };
 

@@ -22,7 +22,7 @@ module.exports = function (app, config, db) {
         });
       }
     });
-  };
+  });
 
   app.pubsub.subscribe('/server/session/create', function (message) {
     User.findOne({ name: message.name }, function (err, user) {
@@ -53,8 +53,8 @@ module.exports = function (app, config, db) {
           }
           app.pubsub.publishToClient('/session/create', {
             newSessionId: session.id,
-            user: user
-          });
+            user: user.toJSON()
+          }, message);
         });
       }
     });

@@ -13,7 +13,7 @@ require('./server/config/express')(app, config);
 app.server = http.createServer(app);
 
 // init pub sub system
-require('./server/helpers/pubsub')(app, config, db);
+require('./server/pubsub')(app, config, db);
 
 // prepare authorisation
 require('./server/authorise')(app, config, db);

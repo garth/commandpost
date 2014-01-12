@@ -11,6 +11,7 @@ module.exports = function (app, config, db) {
     outgoing: function (message, callback) {
       message.ext = message.ext || {};
       message.ext.sessionId = serverSecret;
+      callback(message);
     }
   });
 
@@ -28,10 +29,12 @@ module.exports = function (app, config, db) {
         var sessionId = message.ext && message.ext.sessionId;
         if (!sessionId) {
           message.error = '401::Authentication required';
-          return callback(message);
+          callback(message);
         }
-        // check all sessions except server session
-        if (sessionId !== serverSecret) {
+        else  if (sessionId === serverSecret) {
+          callback(message);
+        }
+        else {
 
           // if this is a subscription, check if clients are allowed to subscibe to this channel
           if (message.channel === '/meta/subscribe' &&
@@ -92,9 +95,13 @@ module.exports = function (app, config, db) {
 
     outgoing: function (message, callback) {
       // if message is not directed to the server, remove the client and session id
-      if (message.ext && !message.channel.match(/^\/server\//)) {
-        delete message.ext.sessionId;
-        delete message.ext.clientId;
+      if (!message.channel.match(/^\/server\//)) {
+        if (message.ext) {
+          delete message.ext.sessionId;
+        }
+        if (message.data) {
+          delete message.data.clientChannelId;
+        }
       }
       callback(message);
     }

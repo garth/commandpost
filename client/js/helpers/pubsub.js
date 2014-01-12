@@ -3,18 +3,23 @@ App.pubsub = new window.Faye.Client('/pubsub', {
   retry: 5
 });
 
-var clientId = App.createUuid();
+var clientChannelId = App.createUuid();
 
 App.pubsub.addExtension({
   outgoing: function (message, callback) {
     message.ext = message.ext || {};
     message.ext.sessionId = localStorage.sessionId;
-    message.ext.clientId = clientId;
+    message.data = message.data || {};
+    message.data.clientChannelId = clientChannelId;
     callback(message);
   }
 });
 
-App.pubsub.subscribe('/private/' + clientId + '/error/**', function (message) {
+App.pubsub.subscribeToClient = function (channel, callback) {
+  return App.pubsub.subscribe('/private/' + clientChannelId + channel, callback);
+};
+
+App.pubsub.subscribe('/private/' + clientChannelId + '/error/**', function (message) {
   App.flash.error(message.message || 'Unknown error');
   console.log('Error', message);
 });
