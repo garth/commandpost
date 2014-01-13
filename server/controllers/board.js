@@ -1,17 +1,15 @@
 var _ = require('underscore');
 var mongoose = require('mongoose');
 var Board = mongoose.model('Board');
-//var User = mongoose.model('User');
-//var prepareQuery = require('../helpers/prepare-query');
-//var updateProperties = require('../helpers/update-properties');
-//var recordHistory = require('../helpers/history').record;
 
 module.exports = function (app, config, db) {
+
+  var recordHistory = require('../helpers/history')(app.pubsub);
 
   app.pubsub.subscribe('/server/boards', function (message) {
     Board.find({}, function (err, boards) {
       if (err) {
-        return app.publishError('/boards', '/boards', {
+        return app.pubsub.publishError('/boards', '/boards', {
           message: 'Failed to get boards',
           details: err,
           context: message
@@ -24,75 +22,47 @@ module.exports = function (app, config, db) {
           name: board.name
         });
       });
-      app.pubsub.publishToClient('/boards', {
-        boards: boardList
-      }, message);
+      app.pubsub.publishToClient('/boards', { boards: boardList }, message);
     });
   });
 
-  // app.get('/api/boards', authorise, function (req, res, next) {
-  //   Board.find(prepareQuery(req.query), function (err, boards) {
-  //     if (err) { return next(err); }
-  //     User.find(function (err, users) {
-  //       if (err) { return next(err); }
-  //       var container = prepareToSend('boards', boards, ['lanes', 'cardTypes', 'cards']);
-  //       container.boards.forEach(function (board) {
-  //         board.users = _.map(users, function (user) { return user.id; });
-  //       });
-  //       container.users = users;
-  //       res.send(container);
-  //     });
-  //   });
-  // });
+  app.pubsub.subscribe('/server/boards/create', function (message) {
+    var board = new Board(message.board);
+    board.createdByUserId = message.meta.userId;
+    board.createdOn = Date.now();
+    board.cardTypes.push(
+      { board: board, name: 'Story', icon: 'book', pointScale: '1,2,3,5,8', isDefault: true },
+      { board: board, name: 'Bug', icon: 'bug', priority: 1 },
+      { board: board, name: 'Task', icon: 'wrench' });
+    board.defaultCardTypeId = board.cardTypes[0].id;
+    board.lanes.push(
+      { name: 'Unplanned', order: 0, defaultIsVisible: false },
+      { name: 'Backlog', order: 1 },
+      { name: 'In Progress', order: 2 },
+      { name: 'Done', order: 3 });
 
-  // app.post('/api/boards', authorise, function (req, res, next) {
-  //   var board = req.body.board;
-  //   board.createdByUser = req.user.id;
-  //   board.createdOn = Date.now();
-  //   (new Board(board)).save(function (err, board) {
-  //     if (err) { return next(err); }
-  //     Lane.create([
-  //       { board: board, name: 'Unplanned', order: 0, defaultIsVisible: false },
-  //       { board: board, name: 'Backlog', order: 1 },
-  //       { board: board, name: 'In Progress', order: 2 },
-  //       { board: board, name: 'Done', order: 3 }
-  //     ], function (err, lane1, lane2, lane3, lane4) {
-  //       if (err) { return next(err); }
-  //       CardType.create([
-  //        { board: board, name: 'Story', icon: 'book', pointScale: '1,2,3,5,8', isDefault: true },
-  //         { board: board, name: 'Bug', icon: 'bug', priority: 1 },
-  //         { board: board, name: 'Task', icon: 'wrench' }
-  //       ], function (err, type1, type2, type3) {
-  //         if (err) { return next(err); }
-  //         board.defaultCardType = type1.id;
-  //         board.save(function (err, board) {
-  //           if (err) { return next(err); }
-  //           User.find(function (err, users) {
-  //             if (err) { return next(err); }
-  //             board = board.toJSON();
-  //             board.users = _.map(users, function (user) { return user.id; });
-  //             board.lanes = [ lane1.id, lane2.id, lane3.id, lane4.id ];
-  //             board.cardTypes = [ type1.id, type2.id, type3.id ];
-  //             recordHistory(req.user, 'board', 'create', board);
-  //             recordHistory(req.user, 'lane', 'create', lane1.toJSON());
-  //             recordHistory(req.user, 'lane', 'create', lane2.toJSON());
-  //             recordHistory(req.user, 'lane', 'create', lane3.toJSON());
-  //             recordHistory(req.user, 'lane', 'create', lane4.toJSON());
-  //             recordHistory(req.user, 'cardType', 'create', type1.toJSON());
-  //             recordHistory(req.user, 'cardType', 'create', type2.toJSON());
-  //             recordHistory(req.user, 'cardType', 'create', type3.toJSON());
-  //             res.send({
-  //               board: board,
-  //               users: users,
-  //               lanes: [ lane1, lane2, lane3, lane4 ],
-  //               cardTypes: [ type1, type2, type3 ]
-  //             });
-  //           });
-  //         });
-  //       });
-  //     });
-  //   });
-  // });
+    board.save(function (err, board) {
+      if (err) {
+        return app.pubsub.publishError('/boards/create', '/boards/create', {
+          message: 'Failed to create board',
+          details: err,
+          context: message
+        });
+      }
+      board = board.toJSON();
+      recordHistory(message, 'board', 'create', board);
+      app.pubsub.publishToClient('/boards/create', { board: board }, message);
+
+      // notify all subscribers
+      app.pubsub.publish('/boards', {
+        action: 'create',
+        board: {
+          id: board.id,
+          name: board.name
+        }
+      });
+    });
+  });
 
   // app.get('/api/boards/:id', authorise, function (req, res, next) {
   //   Board.findById(req.params.id, function (err, board) {
