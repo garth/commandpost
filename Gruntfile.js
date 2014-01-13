@@ -1,6 +1,5 @@
 'use strict';
 
-var request = require('request');
 var portscanner = require('portscanner');
 var _ = require('underscore');
 

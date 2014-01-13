@@ -1,4 +1,4 @@
-var superagent = require('superagent');
+//var superagent = require('superagent');
 var expect = require('chai').expect;
 var root = 'http://localhost:3001/api/comments';
 
