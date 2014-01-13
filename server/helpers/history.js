@@ -1,26 +1,25 @@
 var mongoose = require('mongoose');
 var History = mongoose.model('History');
 
-var notify = null;
-
-exports.record = function (user, type, action, document, previousValues) {
-  var data = {
-    user: user.id,
-    date: Date.now(),
-    action: action,
-    documentType: type,
-    document: document
-  };
-  if (previousValues) {
-    data.previousValues = previousValues;
-  }
-  (new History(data)).save(function (err, doc) {
-    if (!err && typeof notify === 'function') {
-      notify(doc.toJSON());
+module.exports = function (pubsub) {
+  return function (message, type, action, document, previousValues) {
+    var history = {
+      userId: message.meta.userId,
+      action: action,
+      documentType: type,
+      document: document
+    };
+    if (previousValues) {
+      history.previousValues = previousValues;
     }
-  });
-};
-
-exports.notify = function (eventHandler) {
-  notify = eventHandler;
+    (new History(history)).save(function (err, history) {
+      if (err) {
+        return pubsub.publishError('/history', '/history', {
+          message: 'Failed save history',
+          details: err,
+          context: message
+        });
+      }
+    });
+  };
 };

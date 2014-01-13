@@ -7,7 +7,7 @@ module.exports = function (config, db) {
 
   // define history
   var History = new Schema({
-    user: { type: ObjectId, ref: 'User', required: true },
+    userId: { type: ObjectId, required: true },
     date: { type: Date, required: true, 'default': Date.now },
     action: { type: String, enum: ['create', 'update', 'delete'], require: true },
     documentType: { type: String, require: true },
