@@ -63,7 +63,7 @@ module.exports = function (app, config, db) {
   app.pubsub.subscribe('/server/session/destroy', function (message) {
     Session.findByIdAndRemove(message.sessionId, function (err, session) {
       if (err) {
-        return app.publishError('/session', '/server', {
+        return app.publishError('/session', '/session/destroy', {
           message: 'Failed to destroy session',
           details: err,
           context: message

@@ -19,15 +19,13 @@ App.ApplicationController = Ember.Controller.extend({
   actions: {
     signout: function() {
 
-      var subscription = App.pubsub.subscribeToClient('/session/destroy', function (message) {
-        subscription.cancel();
+      App.pubsub.publishAwait('/session/destroy', {
+        sessionId: localStorage.sessionId
+      }).then(function () {
         delete localStorage.sessionId;
         // reload the page to force drop all data
         document.location = '/';
       });
-
-      // ask the server to drop the session
-      App.pubsub.publish('/server/session/destroy', { sessionId: localStorage.sessionId });
     }
   }
 });
