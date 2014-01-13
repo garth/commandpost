@@ -1,38 +1,9 @@
 App.ApplicationRoute = Ember.Route.extend({
   model: function () {
-    return new Ember.RSVP.Promise(function (resolve, reject) {
-
-      // check if the user is already logged in
-      if (!localStorage.sessionId) {
-        return resolve();
-      }
-
-      var subscriptionGet, subscriptionError, timeout;
-
-      var done = function () {
-        clearTimeout(timeout);
-        subscriptionGet.cancel();
-        subscriptionError.cancel();
-        resolve();
-      };
-
-      timeout = setTimeout(function () {
-        App.flash.error('Auto login timed out');
-        done();
-      }, 10 * 1000);
-
-      subscriptionGet = App.pubsub.subscribeToClient('/session/get', function (message) {
-        App.set('user', App.User.create(message.user));
-        done();
-      });
-
-      subscriptionError = App.pubsub.subscribeToClient('/error/session/get', function (message) {
-        console.log('autologin failed:', message);
-        done();
-      });
-
-      App.pubsub.publish('/server/session/get', {});
-
+    // ensure there is a session id before attempting to login
+    if (!localStorage.sessionId) { return; }
+    return App.pubsub.publishAwait('/session/get', function (message) {
+      App.set('user', App.User.create(message.user));
     });
   }
 });
