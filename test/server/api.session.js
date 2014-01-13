@@ -35,22 +35,23 @@ describe('sessions api', function () {
     }, done);
   });
 
-  it('cannot delete a session when not authenticated', function (done){
-    var pubsub = require('../pubsub')('');
-    pubsub.subscribeToClient('/error/session', function (message) {
+  it('cannot delete a session when not authenticated', function (done) {
+    var pubsubNoSession = require('../pubsub')();
+    pubsubNoSession.subscribeToClient('/error/session', function (message) {
       expect(message.errorCode).to.equal(401);
       done();
-    });
-    pubsub.publishAwait('/session/destroy', {
-      sessionId: '62875455e3e2812b6e000001'
-    }).then(function (message) {
-      done(new Error('Invalid session deleted'));
-    }, function (error) {
-      done(new Error('Delete session returned error'));
+    }).then(function () {
+      pubsubNoSession.publishAwait('/session/destroy', {
+        sessionId: '62875455e3e2812b6e000001'
+      }).then(function (message) {
+        done(new Error('Invalid session deleted'));
+      }, function (error) {
+        done(new Error('Delete session returned error'));
+      });
     });
   });
 
-  it('cannot delete a session with an invalid id', function (done){
+  it('cannot delete a session with an invalid id', function (done) {
     pubsub.publishAwait('/session/destroy', {
       sessionId: '62875455e3e2812b6e000099'
     }).then(function (message) {

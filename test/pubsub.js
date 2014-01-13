@@ -5,5 +5,5 @@ var pubsub = require('../client/js/helpers/pubsub');
 
 module.exports = function (sessionId) {
   return pubsub(null, Faye, RSVP, 'http://localhost:3001/pubsub',
-    uuid.v1(), { sessionId: sessionId });
+    uuid.v4(), { sessionId: sessionId });
 };

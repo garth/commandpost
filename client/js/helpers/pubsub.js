@@ -72,7 +72,10 @@ module.exports = function (App, Faye, RSVP, endPoint, clientChannelId, localStor
         done(message, true);
       });
 
-      pubsub.publish('/server' + channel, message || {});
+      // when subscriptions are ready, publish the message
+      RSVP.all([subscriptionGet, subscriptionError]).then(function () {
+        pubsub.publish('/server' + channel, message || {});
+      });
     });
   };
 

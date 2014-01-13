@@ -82,7 +82,7 @@ module.exports = function (app, config, db) {
               // accept this request
               message.data = message.data || {};
               message.data.meta = message.data.meta || {};
-              message.data.meta.userId = session.userId;
+              message.data.meta.userId = session.userId.toString();
 
               // extend the session once per day
               var ttl = new Date(new Date().getTime() + config.sessionTtl - 1000 * 60 * 60 * 24);
