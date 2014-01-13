@@ -23,7 +23,8 @@ App = Ember.Application.extend({
 
 //load helpers
 require('./helpers/helper-methods');
-require('./helpers/pubsub');
+App.pubsub = require('./helpers/pubsub')(
+  App, window.Faye, Ember.RSVP, '/pubsub', App.createUuid(), localStorage);
 require('./helpers/controller');
 
 //load models
