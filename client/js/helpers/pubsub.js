@@ -20,12 +20,12 @@ module.exports = function (App, Faye, RSVP, endPoint, clientChannelId, localStor
     return pubsub.subscribe('/private/' + clientChannelId + channel, callback);
   };
 
-  pubsub.subscribe('/private/' + clientChannelId + '/error/**', function (message) {
-    if (App && App.flash) {
+  if (App && App.flash) {
+    pubsub.subscribeToClient('/error/**', function (message) {
       App.flash.error(message.message || 'Unknown error');
-    }
-    console.log('Error', message);
-  });
+      console.log('Error', message);
+    });
+  }
 
   pubsub.publishAwait = function (channel, message, formatResponse) {
     if (typeof message === 'function' && !formatResponse) {
@@ -43,7 +43,9 @@ module.exports = function (App, Faye, RSVP, endPoint, clientChannelId, localStor
           resolve(message);
         }
         else {
-          reject(message);
+          var error = new Error(message.message || 'Unexpected Error');
+          error.data = message;
+          reject(error);
         }
       };
 
@@ -51,7 +53,7 @@ module.exports = function (App, Faye, RSVP, endPoint, clientChannelId, localStor
         if (App && App.flash) {
           App.flash.error('Request timed out');
         }
-        done({ error: 'Request timed out' }, true);
+        done({ message: 'Request timed out' }, true);
       }, 10 * 1000);
 
       subscriptionGet = pubsub.subscribeToClient(channel, function (message) {
@@ -64,7 +66,9 @@ module.exports = function (App, Faye, RSVP, endPoint, clientChannelId, localStor
       });
 
       subscriptionError = pubsub.subscribeToClient('/error' + channel, function (message) {
-        console.log('/error' + channel, message);
+        if (App) {
+          console.log('/error' + channel, message);
+        }
         done(message, true);
       });
 

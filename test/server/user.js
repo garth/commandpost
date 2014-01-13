@@ -5,7 +5,7 @@ var config = require('../../server/config/config')('test');
 var db = require('../../server/config/mongoose')(config);
 var User = mongoose.model('User');
 
-describe('user', function () {
+describe('user model', function () {
 
   beforeEach(function (done) {
     require('../fixtures')(done);

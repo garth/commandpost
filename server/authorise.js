@@ -18,6 +18,7 @@ module.exports = function (app, config, db) {
   app.bayeux.addExtension({
     // verify incomming messages
     incoming: function (message, callback) {
+      var errorMessage;
 
       // all subscriptions (except /private/ channels) need to be pre-authorised
       if ((message.channel === '/meta/subscribe' &&
@@ -29,7 +30,13 @@ module.exports = function (app, config, db) {
         // session is required
         var sessionId = message.ext && message.ext.sessionId;
         if (!sessionId) {
-          message.error = '401::Authentication required';
+          errorMessage = 'Authentication required';
+          message.error = '401::' + errorMessage;
+          app.pubsub.publishError('/session', {
+            errorCode: 401,
+            message: errorMessage,
+            context: message.data
+          });
           callback(message);
         }
         else  if (sessionId === serverSecret) {
@@ -40,13 +47,18 @@ module.exports = function (app, config, db) {
           // if this is a subscription, check if clients are allowed to subscibe to this channel
           if (message.channel === '/meta/subscribe' &&
             message.subscription.match(/^\/(\*|server)/)) {
-            message.error = '403::Not authorised';
+            errorMessage = 'Not authorised';
+            message.error = '403::' + errorMessage;
+            app.pubsub.publishError('/session', {
+              errorCode: 403,
+              message: errorMessage,
+              context: message.data
+            });
             return callback(message);
           }
 
           // check the session
           Session.findById(sessionId, function (err, session) {
-            var errorMessage;
             if (err) {
               errorMessage = 'Failed to lookup session';
               message.error = '500::' + errorMessage;
@@ -61,7 +73,7 @@ module.exports = function (app, config, db) {
               errorMessage = 'Session has expired';
               message.error = '401::' + errorMessage;
               app.pubsub.publishError('/session', {
-                code: 401,
+                errorCode: 401,
                 message: errorMessage,
                 context: message.data
               });

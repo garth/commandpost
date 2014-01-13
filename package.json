@@ -14,7 +14,8 @@
     "rsvp": "~2.0.4",
     "underscore": "~1.5.2",
     "underscore.string": "~2.3.3",
-    "faye": "~1.0.1"
+    "faye": "~1.0.1",
+    "node-uuid": "~1.4.1"
   },
   "devDependencies": {
     "browserify": "~2.36.1",

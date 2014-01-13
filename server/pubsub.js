@@ -23,7 +23,7 @@ module.exports = function (app, config, db) {
     }
     // notifiy client
     app.pubsub.publishToClient('/error' + clientChannel, {
-      code: error.code || 500,
+      errorCode: error.errorCode || 500,
       message: error.message,
       context: error.context
     }, error.context);
@@ -42,6 +42,9 @@ module.exports = function (app, config, db) {
   // });
   // app.bayeux.on('subscribe', function (clientId, channel) {
   //   console.log('subscribe', clientId, channel);
+  // });
+  // app.bayeux.on('unsubscribe', function (clientId, channel) {
+  //   console.log('unsubscribe', clientId, channel);
   // });
   // app.bayeux.on('publish', function (clientId, channel, data) {
   //   console.log('publish', clientId, channel, data);
