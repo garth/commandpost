@@ -11,14 +11,17 @@ describe('board api', function () {
     pubsub.publishAwait('/boards/create', {
       board: { name: 'Board X' }
     }).then(function (message) {
-      expect(message.board).to.exist;
-      expect(message.board.id.length).to.equal(24);
-      expect(message.board.createdByUserId).to.equal('12875455e3e2812b6e000001');
-      expect(message.board.lanes).to.exist;
-      expect(message.board.lanes.length).to.equal(4);
-      expect(message.board.cardTypes).to.exist;
-      expect(message.board.cardTypes.length).to.equal(3);
-      done();
+      try {
+        expect(message.board).to.exist;
+        expect(message.board.id.length).to.equal(24);
+        expect(message.board.createdByUserId).to.equal('12875455e3e2812b6e000001');
+        expect(message.board.lanes).to.exist;
+        expect(message.board.lanes.length).to.equal(4);
+        expect(message.board.cardTypes).to.exist;
+        expect(message.board.cardTypes.length).to.equal(3);
+        done();
+      }
+      catch (ex) { done(ex); }
     }, done);
   });
 
@@ -55,9 +58,12 @@ describe('board api', function () {
 
   it('retrieves a board collection', function (done) {
     pubsub.publishAwait('/boards').then(function (message) {
-      expect(message.boards).to.exist;
-      expect(message.boards.length).to.equal(2);
-      done();
+      try {
+        expect(message.boards).to.exist;
+        expect(message.boards.length).to.equal(2);
+        done();
+      }
+      catch (ex) { done(ex); }
     }, done);
   });
 
