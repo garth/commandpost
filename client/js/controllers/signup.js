@@ -17,6 +17,9 @@ App.SignupController = App.Controller.extend({
   password: '',
 
   privateSubscriptions: {
+    '/error/user/create': function (message) {
+      this.set('errorMessage', message.message);
+    },
     '/user/create': function (message) {
       this.set('errorMessage', '');
       this.setProperties({ name: '', initials: '', login: '', password: '' });

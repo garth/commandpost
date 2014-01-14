@@ -66,17 +66,11 @@ module.exports = function (app, config, db) {
 
   app.pubsub.subscribe('/server/boards/get', function (message) {
     Board.findById(message.board.id, function (err, board) {
-      if (err) {
+      if (err || !board) {
         return app.pubsub.publishError('/boards/get', '/boards/get', {
-          message: 'Failed to get board',
+          errorCode: err ? 500 : 404,
+          message: err ? 'Failed to get board' : 'Board not found',
           details: err,
-          context: message
-        });
-      }
-      if (!board) {
-        return app.pubsub.publishError('/boards/get', {
-          errorCode: 404,
-          message: 'Board not found',
           context: message
         });
       }
@@ -86,17 +80,11 @@ module.exports = function (app, config, db) {
 
   app.pubsub.subscribe('/server/boards/update', function (message) {
     Board.findById(message.board.id, function (err, board) {
-      if (err) {
+      if (err || !board) {
         return app.pubsub.publishError('/boards/update', '/boards/update', {
-          message: 'Failed to update board',
+          errorCode: err ? 500 : 404,
+          message: err ? 'Failed to update board' : 'Board not found',
           details: err,
-          context: message
-        });
-      }
-      if (!board) {
-        return app.pubsub.publishError('/boards/update', {
-          errorCode: 404,
-          message: 'Board not found',
           context: message
         });
       }
@@ -117,17 +105,11 @@ module.exports = function (app, config, db) {
 
   app.pubsub.subscribe('/server/boards/destroy', function (message) {
     Board.findByIdAndRemove(message.board.id, function (err, board) {
-      if (err) {
+      if (err || !board) {
         return app.pubsub.publishError('/boards/destroy', '/boards/destroy', {
-          message: 'Failed to get board',
+          errorCode: err ? 500 : 404,
+          message: err ? 'Failed to get board' : 'Board not found',
           details: err,
-          context: message
-        });
-      }
-      if (!board) {
-        return app.pubsub.publishError('/boards/destroy', {
-          errorCode: 404,
-          message: 'Board not found',
           context: message
         });
       }

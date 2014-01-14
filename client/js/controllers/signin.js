@@ -15,7 +15,7 @@ App.SigninController = App.Controller.extend({
   password: '',
 
   privateSubscriptions: {
-    '/error/session': function (message) {
+    '/error/session/create': function (message) {
       this.set('errorMessage', message.message);
       Ember.$('#signin-view').effect('shake');
     },
