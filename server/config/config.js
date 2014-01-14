@@ -3,6 +3,18 @@ var path = require('path');
 
 var clientConfig = require('../../client/js/config');
 
+var transformDates = function (obj) {
+  for (var prop in obj) {
+    var val = obj[prop];
+    if (val instanceof Date && !isNaN(val.valueOf())) {
+      obj[prop] = val.toJSON();
+    }
+    else if (typeof val === 'object') {
+      transformDates(val);
+    }
+  }
+};
+
 module.exports = function (env) {
 
   var config = {
@@ -25,6 +37,7 @@ module.exports = function (env) {
           delete ret._id;
           delete ret.password;
           delete ret.login;
+          transformDates(ret);
         }
       }
     },
