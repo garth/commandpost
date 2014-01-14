@@ -1,5 +1,30 @@
 var faye = require('faye');
 
+var setErrorCode = function (err) {
+  // check for db errors
+  if (err.details && err.details.name === 'MongoError') {
+    var code = err.details.code || err.details.lastErrorObject.code;
+    switch (code) {
+    case 11000:
+      err.errorCode = 409;
+      err.message = err.message + ', attempting to add duplicate';
+      break;
+    case 11001:
+      err.errorCode = 409;
+      err.message = err.message + ', value is in use';
+      break;
+    default:
+      console.log(err);
+      err.dbCode = code;
+      err.errorCode = err.errorCode || 500;
+      err.message = err.message + ', Unexpected database error';
+    }
+  }
+  else {
+    err.errorCode = err.errorCode || 500;
+  }
+};
+
 module.exports = function (app, config, db) {
 
   // setup faye pub sub
@@ -16,8 +41,10 @@ module.exports = function (app, config, db) {
       // no server notification
       error = clientChannel;
       clientChannel = serverChannel;
+      setErrorCode(error);
     }
     else {
+      setErrorCode(error);
       // notify server
       app.pubsub.publish('/error' + serverChannel, error);
     }

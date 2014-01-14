@@ -268,7 +268,7 @@ module.exports = function (grunt) {
   //   'develop:testServer', 'waitForPort', 'mocha_phantomjs'
   // ]);
   grunt.registerTask('testServerWithoutBuild', [
-    'develop:testServer', 'waitForPort', 'mochaTest:full'
+    'develop:testServer', 'waitForPort', 'mochaTest:quick'
   ]);
   grunt.registerTask('production', [
     'jshint', 'build', 'concat:production', 'uglify', 'cssmin'
