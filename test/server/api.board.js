@@ -25,36 +25,38 @@ describe('board api', function () {
     }, done);
   });
 
-  // it('cannot create duplicate boards', function (done) {
-  //   superagent.post(root).send({
-  //     board: { name: 'Board' }
-  //   })
-  //   .set('Cookie', 'session=62875455e3e2812b6e000001;')
-  //   .end(function (err, res) {
-  //     expect(err).to.equal(null);
-  //     expect(res.status).to.equal(409);
-  //     done();
-  //   });
-  // });
+  it('cannot create duplicate boards', function (done) {
+    pubsub.publishAwait('/boards/create', {
+      board: { name: 'Board' }
+    }).then(function (message) {
+      done(new Error('Duplicat board created'));
+    }, function (error) {
+      try {
+        expect(error.data.errorCode).to.equal(409);
+        done();
+      }
+      catch (ex) { done(ex); }
+    });
+  });
 
-  // it('retrieves a board', function (done) {
-  //   superagent.get(root + '/22875455e3e2812b6e000001')
-  //   .set('Cookie', 'session=62875455e3e2812b6e000001;')
-  //   .end(function (err, res) {
-  //     expect(err).to.eql(null);
-  //     expect(res.status).to.equal(200);
-  //     expect(res.body).to.exist;
-  //     expect(res.body.board).to.exist;
-  //     expect(res.body.board.name).to.equal('Board');
-  //     expect(res.body.board.createdByUser).to.equal('12875455e3e2812b6e000001');
-  //     expect(res.body.board.createdOn).to.equal('2013-11-20T00:00:00.000Z');
-  //     expect(res.body.board.lanes).to.exist;
-  //     expect(res.body.board.lanes.length).to.equal(3);
-  //     expect(res.body.board.cardTypes).to.exist;
-  //     expect(res.body.board.cardTypes.length).to.equal(3);
-  //     done();
-  //   });
-  // });
+  it('retrieves a board', function (done) {
+    pubsub.publishAwait('/boards/get', {
+      board: { id: '22875455e3e2812b6e000001' }
+    }).then(function (message) {
+      try {
+        expect(message.board).to.exist;
+        expect(message.board.name).to.equal('Board');
+        expect(message.board.createdByUserId).to.equal('12875455e3e2812b6e000001');
+        expect(message.board.createdOn).to.equal('2013-11-20T00:00:00.000Z');
+        expect(message.board.lanes).to.exist;
+        expect(message.board.lanes.length).to.equal(3);
+        expect(message.board.cardTypes).to.exist;
+        expect(message.board.cardTypes.length).to.equal(3);
+        done();
+      }
+      catch (ex) { done(ex); }
+    }, done);
+  });
 
   it('retrieves a board collection', function (done) {
     pubsub.publishAwait('/boards').then(function (message) {
@@ -67,15 +69,19 @@ describe('board api', function () {
     }, done);
   });
 
-  // it('gives 404 for missing board', function (done) {
-  //   superagent.get(root + '/22875455e3e2812b6e000099')
-  //   .set('Cookie', 'session=62875455e3e2812b6e000001;')
-  //   .end(function (err, res) {
-  //     expect(err).to.eql(null);
-  //     expect(res.status).to.equal(404);
-  //     done();
-  //   });
-  // });
+  it('gives 404 for missing board', function (done) {
+    pubsub.publishAwait('/boards/get', {
+      board: { id: '22875455e3e2812b6e000099' }
+    }).then(function (message) {
+      done(new Error('Missing board returned'));
+    }, function (error) {
+      try {
+        expect(error.data.errorCode).to.equal(404);
+        done();
+      }
+      catch (ex) { done(ex); }
+    });
+  });
 
   // it('updates a board', function (done) {
   //   superagent.put(root + '/22875455e3e2812b6e000001').send({
@@ -90,22 +96,22 @@ describe('board api', function () {
   //   });
   // });
 
-  // it('removes a board', function (done) {
-  //   superagent.del(root + '/22875455e3e2812b6e000001')
-  //   .set('Cookie', 'session=62875455e3e2812b6e000001;')
-  //   .end(function (err, res) {
-  //     expect(err).to.equal(null);
-  //     expect(res.status).to.equal(200);
-  //     expect(res.body).to.exist;
-  //     //check the lanes are gone also
-  //     superagent.get('http://localhost:3001/api/lanes/32875455e3e2812b6e000001')
-  //     .set('Cookie', 'session=62875455e3e2812b6e000001;')
-  //     .end(function (err, res) {
-  //       expect(err).to.eql(null);
-  //       expect(res.status).to.equal(404);
-  //       done();
-  //     });
-  //   });
-  // });
+  it('removes a board', function (done) {
+    pubsub.publishAwait('/boards/destroy', {
+      board: { id: '22875455e3e2812b6e000001' }
+    }).then(function (message) {
+      pubsub.publishAwait('/boards/get', {
+        board: { id: '22875455e3e2812b6e000001' }
+      }).then(function (message) {
+        done(new Error('Missing board returned'));
+      }, function (error) {
+        try {
+          expect(error.data.errorCode).to.equal(404);
+          done();
+        }
+        catch (ex) { done(ex); }
+      });
+    }, done);
+  });
 
 });

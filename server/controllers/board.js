@@ -64,21 +64,25 @@ module.exports = function (app, config, db) {
     });
   });
 
-  // app.get('/api/boards/:id', authorise, function (req, res, next) {
-  //   Board.findById(req.params.id, function (err, board) {
-  //     if (err) { return next(err); }
-  //     if (!board) { res.send(404); }
-  //     else {
-  //       User.find(function (err, users) {
-  //         if (err) { return next(err); }
-  //         var container = prepareToSend('board', board, ['lanes', 'cardTypes', 'cards']);
-  //         container.board.users = _.map(users, function (user) { return user.id; });
-  //         container.users = users;
-  //         res.send(container);
-  //       });
-  //     }
-  //   });
-  // });
+  app.pubsub.subscribe('/server/boards/get', function (message) {
+    Board.findById(message.board.id, function (err, board) {
+      if (err) {
+        return app.pubsub.publishError('/boards/get', '/boards/get', {
+          message: 'Failed to get board',
+          details: err,
+          context: message
+        });
+      }
+      if (!board) {
+        return app.pubsub.publishError('/boards/get', {
+          errorCode: 404,
+          message: 'Board not found',
+          context: message
+        });
+      }
+      app.pubsub.publishToClient('/boards/get', { board: board.toJSON() }, message);
+    });
+  });
 
   // app.put('/api/boards/:id', authorise, function (req, res, next) {
   //   Board.findById(req.params.id, function (err, board) {
@@ -92,14 +96,30 @@ module.exports = function (app, config, db) {
   //   });
   // });
 
-  // app.del('/api/boards/:id', authorise, function (req, res, next) {
-  //   Board.findById(req.params.id, function (err, board) {
-  //     if (err) { return next(err); }
-  //     recordHistory(req.user, 'board', 'delete', board.toJSON());
-  //     board.remove(function (err) {
-  //       if (err) { return next(err); }
-  //       res.send({});
-  //     });
-  //   });
-  // });
+  app.pubsub.subscribe('/server/boards/destroy', function (message) {
+    Board.findByIdAndRemove(message.board.id, function (err, board) {
+      if (err) {
+        return app.pubsub.publishError('/boards/destroy', '/boards/destroy', {
+          message: 'Failed to get board',
+          details: err,
+          context: message
+        });
+      }
+      if (!board) {
+        return app.pubsub.publishError('/boards/destroy', {
+          errorCode: 404,
+          message: 'Board not found',
+          context: message
+        });
+      }
+      recordHistory(message, 'board', 'delete', board.toJSON());
+      app.pubsub.publishToClient('/boards/destroy', {}, message);
+
+      // notify all subscribers
+      app.pubsub.publish('/boards', {
+        action: 'destroy',
+        board: { id: board.id }
+      });
+    });
+  });
 };
