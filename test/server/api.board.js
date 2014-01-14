@@ -83,18 +83,60 @@ describe('board api', function () {
     });
   });
 
-  // it('updates a board', function (done) {
-  //   superagent.put(root + '/22875455e3e2812b6e000001').send({
-  //     board: { name: 'Next Proj' }
-  //   })
-  //   .set('Cookie', 'session=62875455e3e2812b6e000001;')
-  //   .end(function (err, res) {
-  //     expect(err).to.equal(null);
-  //     expect(res.status).to.equal(200);
-  //     expect(res.body).to.exist;
-  //     done();
-  //   });
-  // });
+  it('updates a board', function (done) {
+    pubsub.publishAwait('/boards/update', {
+      board: {
+        id: '22875455e3e2812b6e000001',
+        name: 'Updated Board',
+        defaultCardTypeId: '72875455e3e2812b6e001234',
+        cardTypes: [
+          {
+            id: '72875455e3e2812b6e000001',
+            name: 'Story',
+            icon: 'book',
+            pointScale: '1,2,3',
+            priority: 0
+          },
+          {
+            id: '72875455e3e2812b6e000002',
+            name: 'Bug',
+            icon: 'bug',
+            pointScale: '',
+            priority: 1
+          },
+          {
+            id: '72875455e3e2812b6e001234', // new id
+            name: 'ToDo',
+            icon: 'cog',
+            pointScale: '',
+            priority: 0
+          }
+        ],
+        lanes: [
+          { id: '32875455e3e2812b6e000001', name: 'Updated One', order: 3 },
+          { id: '32875455e3e2812b6e001234', name: '2nd', order: 2 }, // new id
+          { id: '32875455e3e2812b6e000003', name: 'Three', order: 1 }
+        ]
+      }
+    }).then(function (message) {
+      try {
+        var board = message.board;
+        expect(board).to.exist;
+        expect(board.name).to.equal('Updated Board');
+        expect(board.createdByUserId).to.equal('12875455e3e2812b6e000001');
+        expect(board.lanes).to.exist;
+        expect(board.lanes.length).to.equal(3);
+        expect(board).to.have.deep.property('lanes[2].name', '2nd');
+        expect(board.cardTypes).to.exist;
+        expect(board.cardTypes.length).to.equal(3);
+        expect(board).to.have.deep.property('cardTypes[2].name', 'ToDo');
+        expect(board.defaultCardTypeId).to.not.equal('72875455e3e2812b6e001234');
+        expect(board.defaultCardTypeId).to.equal(board.cardTypes[2].id);
+        done();
+      }
+      catch (ex) { done(ex); }
+    }, done);
+  });
 
   it('removes a board', function (done) {
     pubsub.publishAwait('/boards/destroy', {

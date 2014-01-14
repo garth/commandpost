@@ -84,6 +84,25 @@ module.exports = function (app, config, db) {
     });
   });
 
+  app.pubsub.subscribe('/server/boards/update', function (message) {
+    Board.findById(message.board.id, function (err, board) {
+      if (err) {
+        return app.pubsub.publishError('/boards/update', '/boards/update', {
+          message: 'Failed to update board',
+          details: err,
+          context: message
+        });
+      }
+      if (!board) {
+        return app.pubsub.publishError('/boards/update', {
+          errorCode: 404,
+          message: 'Board not found',
+          context: message
+        });
+      }
+      app.pubsub.publishToClient('/boards/update', { board: board.toJSON() }, message);
+    });
+  });
   // app.put('/api/boards/:id', authorise, function (req, res, next) {
   //   Board.findById(req.params.id, function (err, board) {
   //     if (err) { return next(err); }
