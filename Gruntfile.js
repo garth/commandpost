@@ -113,9 +113,16 @@ module.exports = function (grunt) {
       ]
     },
     mochaTest: {
-      test: {
+      full: {
         options: {
           reporter: 'spec',
+          colors: true
+        },
+        src: ['test/server/*.js']
+      },
+      quick: {
+        options: {
+          reporter: 'dot',
           colors: true
         },
         src: ['test/server/*.js']
@@ -252,16 +259,16 @@ module.exports = function (grunt) {
     'jshint', 'build', 'develop:testServer', 'watch'
   ]);
   grunt.registerTask('test', [
-    'jshint', 'build', 'testWithoutBuild'
+    'jshint', 'build', 'develop:testServer', 'waitForPort', 'mochaTest:full'
   ]);
   grunt.registerTask('testWithoutBuild', [
-    'develop:testServer', 'waitForPort', 'mochaTest'//, 'mocha_phantomjs'
+    'develop:testServer', 'waitForPort', 'mochaTest:quick'//, 'mocha_phantomjs'
   ]);
   // grunt.registerTask('testClientWithoutBuild', [
   //   'develop:testServer', 'waitForPort', 'mocha_phantomjs'
   // ]);
   grunt.registerTask('testServerWithoutBuild', [
-    'develop:testServer', 'waitForPort', 'mochaTest'
+    'develop:testServer', 'waitForPort', 'mochaTest:full'
   ]);
   grunt.registerTask('production', [
     'jshint', 'build', 'concat:production', 'uglify', 'cssmin'
