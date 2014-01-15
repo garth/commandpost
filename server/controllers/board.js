@@ -4,6 +4,16 @@ var Board = mongoose.model('Board');
 var updateProperties = require('../helpers/update').properties;
 var updateCollection = require('../helpers/update').collection;
 
+var getUsedCardTypeIds = function (board) {
+  var used = [];
+  _.forEach(board.lanes, function (lane) {
+    used = _.union(used, _.map(lane.cards, function (card) {
+      return card.cardTypeId.toString();
+    }));
+  });
+  return used;
+};
+
 module.exports = function (app, config, db) {
 
   var recordHistory = require('../helpers/history')(app.pubsub);
@@ -94,22 +104,36 @@ module.exports = function (app, config, db) {
         });
       }
 
-      // update the changed values
+      // update the changed board values
       var oldValues = updateProperties(board, message.board, ['name', 'defaultCardType']);
+
+      // update the changed card types
+      var cardTypesInUse = null;
+      var cardTypesNotDeleted = [];
       oldValues.cardTypes = updateCollection(board.cardTypes, message.board.cardTypes, [
         'name', 'icon', 'pointScale', 'priority', 'isHidden'
-      ]);
+      ], function (cardType) {
+        // check if the card type can be deleted
+        cardTypesInUse = cardTypesInUse || getUsedCardTypeIds(board);
+        var canDelete = cardTypesInUse.indexOf(cardType.id.toString()) === -1;
+        if (!canDelete) {
+          cardTypesNotDeleted.push(cardType.id);
+        }
+        return canDelete;
+      });
+
+      // update the changed lanes
       var lanesNotDeleted = [];
       oldValues.lanes = updateCollection(board.lanes, message.board.lanes, [
         'name', 'order', 'defaultIsVisible'
       ], function (lane) {
+        // check if the lane can be deleted
         var canDelete = lane.cards.length === 0;
         if (!canDelete) {
           lanesNotDeleted.push(lane.id);
         }
         return canDelete;
       });
-      console.log(JSON.stringify(oldValues));
 
       // save changes
       board.save(function (err, board) {
@@ -130,9 +154,11 @@ module.exports = function (app, config, db) {
 
         // notify the client
         var doc = { board: board };
-        if (lanesNotDeleted.length) {
-          doc.message = 'Some lanes could not be removed becuase they are not empty';
+        if (lanesNotDeleted.length || cardTypesNotDeleted.length) {
+          doc.message =
+            'Some lanes and/or card types could not be removed becuase they are in use';
           doc.lanesNotDeleted = lanesNotDeleted;
+          doc.cardTypesNotDeleted = cardTypesNotDeleted;
         }
         app.pubsub.publishToClient('/boards/update', doc, message);
 
