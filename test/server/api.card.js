@@ -59,13 +59,19 @@ describe('cards api', function () {
       try {
         if (message.action === 'destroy') {
           moved = true;
-          expect(message.action).to.equal('destroy');
           expect(message.card).to.exist;
           expect(message.card.id).to.equal('42875455e3e2812b6e000001');
         }
         if (message.action === 'move') {
           destroyed = true;
-          console.log(message);
+          expect(message.cards).to.exist;
+          expect(message.cards.length).to.equal(3);
+          expect(message.cards[0].id).to.equal('42875455e3e2812b6e000002');
+          expect(message.cards[0].order).to.equal(0);
+          expect(message.cards[1].id).to.equal('42875455e3e2812b6e000003');
+          expect(message.cards[1].order).to.equal(1);
+          expect(message.cards[2].id).to.equal('42875455e3e2812b6e000004');
+          expect(message.cards[2].order).to.equal(2);
         }
         if (moved && destroyed) {
           sub.cancel();
