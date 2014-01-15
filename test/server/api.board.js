@@ -124,9 +124,14 @@ describe('board api', function () {
         expect(board).to.exist;
         expect(board.name).to.equal('Updated Board');
         expect(board.createdByUserId).to.equal('12875455e3e2812b6e000001');
+        expect(message.lanesNotDeleted).to.exist;
+        expect(message.lanesNotDeleted.length).to.equal(1);
+        expect(message.lanesNotDeleted[0]).to.equal('32875455e3e2812b6e000002');
+        expect(message.cardTypesNotDeleted).to.exist;
+        expect(message.cardTypesNotDeleted.length).to.equal(0);
         expect(board.lanes).to.exist;
-        expect(board.lanes.length).to.equal(3);
-        expect(board).to.have.deep.property('lanes[2].name', '2nd');
+        expect(board.lanes.length).to.equal(4); // extra lane added, deleted lane not empty
+        expect(board).to.have.deep.property('lanes[3].name', '2nd');
         expect(board.cardTypes).to.exist;
         expect(board.cardTypes.length).to.equal(3);
         expect(board).to.have.deep.property('cardTypes[2].name', 'ToDo');

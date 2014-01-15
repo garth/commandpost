@@ -105,7 +105,7 @@ module.exports = function (app, config, db) {
       }
 
       // update the changed board values
-      var oldValues = updateProperties(board, message.board, ['name', 'defaultCardType']);
+      var oldValues = updateProperties(board, message.board, ['name', 'defaultCardTypeId']);
 
       // update the changed card types
       var cardTypesInUse = null;
@@ -120,6 +120,11 @@ module.exports = function (app, config, db) {
           cardTypesNotDeleted.push(cardType.id);
         }
         return canDelete;
+      }, function (oldId, newId) {
+        if (message.board.defaultCardTypeId === oldId) {
+          message.board.defaultCardTypeId = newId;
+          board.defaultCardTypeId = newId;
+        }
       });
 
       // update the changed lanes
