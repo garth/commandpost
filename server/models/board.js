@@ -10,11 +10,11 @@ module.exports = function (config, db) {
     defaultCardTypeId: { type: ObjectId },
     createdByUserId: { type: ObjectId, required: true },
     createdOn: { type: Date, required: true, 'default': Date.now },
-    lanes: [{
+    lanes: [new Schema({
       name: { type: String, required: true },
       order: { type: Number, required: true, 'default': 0 },
       defaultIsVisible: { type: Boolean, required: true, 'default': true },
-      cards: [{
+      cards: [new Schema({
         cardTypeId: { type: ObjectId, required: true },
         title: { type: String, required: true },
         description: { type: String },
@@ -24,20 +24,20 @@ module.exports = function (config, db) {
         createdOn: { type: Date, required: true, 'default': Date.now },
         assignedToUserId: { type: ObjectId, index: true },
         order: { type: Number, required: true, 'default': 0 },
-        comments: [{
+        comments: [new Schema({
           text: { type: String, required: true },
           userId: { type: ObjectId, required: true },
           createdOn: { type: Date, required: true, 'default': Date.now }
-        }]
-      }]
-    }],
-    cardTypes: [{
+        }, config.schemaOptions)]
+      }, config.schemaOptions)]
+    }, config.schemaOptions)],
+    cardTypes: [new Schema({
       name: { type: String, required: true },
       icon: { type: String, required: true },
       pointScale: { type: String },
       priority: { type: Number, required: true, 'default': 0 },
       isHidden: { type: Boolean, required: true, 'default': false }
-    }]
+    }, config.schemaOptions)]
   }, config.schemaOptions);
 
   // register board with mongoose
