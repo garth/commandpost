@@ -1,73 +1,184 @@
+var _ = require('lodash');
 var mongoose = require('mongoose');
-//var Card = mongoose.model('Card');
-//var updateProperties = require('../helpers/update-properties');
-//var recordHistory = require('../helpers/history').record;
+var Board = mongoose.model('Board');
+var updateProperties = require('../helpers/update').properties;
 
 module.exports = function (app, config, db) {
 
-  // var authorise = require('../authorise')(config);
+  var recordHistory = require('../helpers/history')(app.pubsub);
 
-  // app.get('/api/cards', authorise, function (req, res, next) {
-  //   Card.find(prepareQuery(req.query), function (err, cards) {
-  //     if (err) { return next(err); }
-  //     res.send({ cards: cards });
-  //   });
-  // });
+  var sortLane = function (board, lane) {
+    var cards = _.sortBy(lane.cards, 'order');
+    var newPositions = [];
+    for (var order = 0; order < cards.length; order++) {
+      var card = cards[order];
+      if (card.order !== order) {
+        newPositions.push({ id: card.id, order: order });
+        card.order = order;
+      }
+    }
+    if (newPositions.length) {
+      app.pubsub.publish('/boards/' + board.id + '/cards', {
+        action: 'move',
+        board: { id: board.id },
+        lane: { id: lane.id },
+        cards: newPositions
+      });
+    }
+  };
 
-  // app.post('/api/cards', authorise, function (req, res, next) {
-  //   var card = req.body.card;
-  //   card.createdByUser = req.user.id;
-  //   card.createdOn = Date.now();
-  //   (new Card(card)).save(function (err, card) {
-  //     if (err) { return next(err); }
-  //     recordHistory(req.user, 'card', 'create', card.toJSON());
-  //     res.send({ card: card });
+  app.pubsub.subscribe('/server/cards/create', function (message) {
+    Board.findById(message.board.id, function (err, board) {
+      if (err || !board) {
+        return app.pubsub.publishError('/cards/create', '/cards/create', {
+          errorCode: err ? 500 : 404,
+          message: err ? 'Failed to get board' : 'Board not found',
+          details: err,
+          context: message
+        });
+      }
 
-  //     // lane card order might need updating
-  //     app.pubsub.publish('/card/move', { cardId: card.id });
+      // find the lane where the card will be added
+      var lane = board.lanes.id(message.lane.id);
+      if (!lane) {
+        return app.pubsub.publishError('/cards/create', '/cards/create', {
+          errorCode: 404,
+          message: 'Lane not found',
+          context: message
+        });
+      }
 
-  //   });
-  // });
+      // add the card to the lane
+      var card = message.card;
+      card.createdByUserId = message.meta.userId;
+      card.createdOn = Date.now();
+      card = lane.cards[lane.cards.push(card) - 1];
+      sortLane(board, lane);
 
-  // app.get('/api/cards/:id', authorise, function (req, res, next) {
-  //   Card.findById(req.params.id, function (err, card) {
-  //     if (err) { return next(err); }
-  //     res.send(card ? { card: card } : 404);
-  //   });
-  // });
+      board.save(function (err, board) {
+        if (err) {
+          return app.pubsub.publishError('/cards/create', '/cards/create', {
+            message: 'Failed to create card',
+            details: err,
+            context: message
+          });
+        }
+        card = card.toJSON();
+        recordHistory(message, 'card', 'create', card);
 
-  // app.put('/api/cards/:id', authorise, function (req, res, next) {
-  //   Card.findById(req.params.id, function (err, card) {
-  //     if (err) { return next(err); }
-  //     var oldValues = updateProperties(card, req.body.card, [
-  //       'cardType', 'title', 'description', 'points', 'tags', 'assignedToUser'
-  //     ]);
-  //     recordHistory(req.user, 'card', 'update', card.toJSON(), oldValues);
-  //     card.save(function (err, card) {
-  //       if (err) { return next(err); }
-  //       res.send({});
+        // notify the client
+        app.pubsub.publishToClient('/cards/create', { card: card }, message);
 
-  //       // if the card type changed, then lane card order might need updating
-  //       if (oldValues.cardType) {
-  //         app.pubsub.publish('/card/move', {
-  //           cardId: card.id,
-  //           oldCardType: oldValues.cardType,
-  //           cardType: card.cardType
-  //         });
-  //       }
+        // notify all subscribers
+        app.pubsub.publish('/boards/' + board.id + '/cards', {
+          action: 'create',
+          board: { id: board.id },
+          lane: { id: lane.id },
+          card: card
+        });
+      });
+    });
+  });
 
-  //     });
-  //   });
-  // });
+  app.pubsub.subscribe('/server/cards/update', function (message) {
+    Board.findById(message.board.id, function (err, board) {
+      if (err || !board) {
+        return app.pubsub.publishError('/cards/update', '/cards/update', {
+          errorCode: err ? 500 : 404,
+          message: err ? 'Failed to get board' : 'Board not found',
+          details: err,
+          context: message
+        });
+      }
 
-  // app.del('/api/cards/:id', authorise, function (req, res, next) {
-  //   Card.findById(req.params.id, function (err, card) {
-  //     if (err) { return next(err); }
-  //     recordHistory(req.user, 'card', 'delete', card.toJSON());
-  //     card.remove(function (err) {
-  //       if (err) { return next(err); }
-  //       res.send({});
-  //     });
-  //   });
-  // });
+      // find the lane where the card will be added
+      var lane = board.lanes.id(message.lane.id);
+      if (!lane) {
+        return app.pubsub.publishError('/cards/update', '/cards/update', {
+          errorCode: 404,
+          message: 'Lane not found',
+          context: message
+        });
+      }
+
+      // remove the card from the lane
+      var card = lane.cards.id(message.card.id);
+      var oldValues = updateProperties(card, message.card, [
+        'cardTypeId', 'title', 'description', 'points', 'tags', 'assignedToUserId'
+      ]);
+
+      board.save(function (err, board) {
+        if (err) {
+          return app.pubsub.publishError('/cards/update', '/cards/update', {
+            message: 'Failed to update card',
+            details: err,
+            context: message
+          });
+        }
+        card = card.toJSON();
+        recordHistory(message, 'card', 'update', card, oldValues);
+
+        // notify the client
+        app.pubsub.publishToClient('/cards/update', {}, message);
+
+        // notify all subscribers
+        app.pubsub.publish('/boards/' + board.id + '/cards', {
+          action: 'update',
+          board: { id: board.id },
+          lane: { id: lane.id },
+          card: card
+        });
+      });
+    });
+  });
+
+  app.pubsub.subscribe('/server/cards/destroy', function (message) {
+    Board.findById(message.board.id, function (err, board) {
+      if (err || !board) {
+        return app.pubsub.publishError('/cards/destroy', '/cards/destroy', {
+          errorCode: err ? 500 : 404,
+          message: err ? 'Failed to get board' : 'Board not found',
+          details: err,
+          context: message
+        });
+      }
+
+      // find the lane where the card will be added
+      var lane = board.lanes.id(message.lane.id);
+      if (!lane) {
+        return app.pubsub.publishError('/cards/destroy', '/cards/destroy', {
+          errorCode: 404,
+          message: 'Lane not found',
+          context: message
+        });
+      }
+
+      // remove the card from the lane
+      var card = lane.cards.id(message.card.id).remove();
+      sortLane(board, lane);
+
+      board.save(function (err, board) {
+        if (err) {
+          return app.pubsub.publishError('/cards/destroy', '/cards/destroy', {
+            message: 'Failed to delete card',
+            details: err,
+            context: message
+          });
+        }
+        card = card.toJSON();
+        recordHistory(message, 'card', 'delete', card);
+
+        // notify the client
+        app.pubsub.publishToClient('/cards/destroy', {}, message);
+
+        // notify all subscribers
+        app.pubsub.publish('/boards/' + board.id + '/cards', {
+          action: 'destroy',
+          board: { id: board.id },
+          lane: { id: lane.id },
+          card: { id: card.id }
+        });
+      });
+    });
+  });
 };
