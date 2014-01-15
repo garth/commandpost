@@ -8,25 +8,31 @@ module.exports = function (app, config, db) {
   var recordHistory = require('../helpers/history')(app.pubsub);
 
   var sortLane = function (board, lane, card, position) {
+    _.forEach(lane.cards, function (card) {
+      card.cardTypePriority = board.cardTypes.id(card.cardTypeId).priority;
+    });
     // sort existing cards
-    var cards = _.sortBy(lane.cards, 'order');
+    var cards = _.sortBy(lane.cards, ['cardTypePriority', 'order']);
 
     // if we are moving a card
     if (card) {
       // add the card to the lane
       card = lane.cards[lane.cards.push(card) - 1];
+      card.cardTypePriority = board.cardTypes.id(card.cardTypeId).priority;
       // set the card position
       if (position < 1) {
+        card.order = -1;
         cards.unshift(card);
       }
       else if (position >= cards.length) {
-        cards.push(card);
+        card.order = cards.push(card);
       }
       else {
+        card.order = cards[position -1].order + 0.5;
         cards.splice(position, 0, card);
       }
-      // ensure that the card order in the new lane gets published
-      card.order = -1;
+      // update sort order after insert to ensure priority is kept
+      cards = _.sortBy(cards, ['cardTypePriority', 'order']);
     }
 
     // update each card order
@@ -118,7 +124,7 @@ module.exports = function (app, config, db) {
         });
       }
 
-      // find the lane where the card will be added
+      // find the lane where the card is
       var lane = board.lanes.id(message.lane.id);
       if (!lane) {
         return app.pubsub.publishError('/cards/update', '/cards/update', {
@@ -128,12 +134,18 @@ module.exports = function (app, config, db) {
         });
       }
 
-      // remove the card from the lane
+      // find and update update the card
       var card = lane.cards.id(message.card.id);
       var oldValues = updateProperties(card, message.card, [
         'cardTypeId', 'title', 'description', 'points', 'tags', 'assignedToUserId'
       ]);
 
+      // if card type changed, ensure that the order is still correct
+      if (oldValues.cardTypeId) {
+        sortLane(board, lane);
+      }
+
+      // save the changes
       board.save(function (err, board) {
         if (err) {
           return app.pubsub.publishError('/cards/update', '/cards/update', {
