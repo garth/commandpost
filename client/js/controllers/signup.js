@@ -17,10 +17,10 @@ App.SignupController = App.Controller.extend({
   password: '',
 
   privateSubscriptions: {
-    '/error/user/create': function (message) {
+    '/error/users/create': function (message) {
       this.set('errorMessage', message.message);
     },
-    '/user/create': function (message) {
+    '/users/create': function (message) {
       this.set('errorMessage', '');
       this.setProperties({ name: '', initials: '', login: '', password: '' });
       this.transitionToRoute('signin');
@@ -29,7 +29,7 @@ App.SignupController = App.Controller.extend({
 
   actions: {
     signup: function() {
-      App.pubsub.publish('/server/user/create',
+      App.pubsub.publish('/server/users/create',
         { user: this.getProperties('name', 'initials', 'login', 'password') });
     }
   }

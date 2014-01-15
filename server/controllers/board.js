@@ -27,12 +27,8 @@ module.exports = function (app, config, db) {
           context: message
         });
       }
-      var boardList = [];
-      boards.forEach(function (board) {
-        boardList.push({
-          id: board.id,
-          name: board.name
-        });
+      var boardList = _.map(boards, function (board) {
+        return _.pick(board, ['id', 'name']);
       });
       app.pubsub.publishToClient('/boards', { boards: boardList }, message);
     });
