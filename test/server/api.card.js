@@ -52,6 +52,69 @@ describe('cards api', function () {
     }).then(function (message) {}, done);
   });
 
+  it('sorts cards', function (done) {
+    var sub = pubsub.subscribe('/boards/22875455e3e2812b6e000001/cards', function (message) {
+      try {
+        sub.cancel();
+        expect(message.action).to.equal('move');
+        expect(message.cards).to.exist;
+        expect(message.cards.length).to.equal(3);
+        expect(message.cards[0].id).to.equal('42875455e3e2812b6e000002');
+        expect(message.cards[0].order).to.equal(0);
+        expect(message.cards[1].id).to.equal('42875455e3e2812b6e000003');
+        expect(message.cards[1].order).to.equal(1);
+        expect(message.cards[2].id).to.equal('42875455e3e2812b6e000001');
+        expect(message.cards[2].order).to.equal(2);
+        done();
+      }
+      catch (ex) { done(ex); }
+    });
+    pubsub.publishAwait('/cards/move', {
+      board: { id: '22875455e3e2812b6e000001' },
+      lane: { id: '32875455e3e2812b6e000001' },
+      card: { id: '42875455e3e2812b6e000001', order: 2 }
+    }).then(function (message) {}, done);
+  });
+
+  it('moves cards', function (done) {
+    var count = 0;
+    var sub = pubsub.subscribe('/boards/22875455e3e2812b6e000001/cards', function (message) {
+      try {
+        if (message.action === 'move') {
+          count++;
+          expect(message.cards).to.exist;
+          if (message.lane.id === '32875455e3e2812b6e000001') {
+            expect(message.cards.length).to.equal(3);
+            expect(message.cards[0].id).to.equal('42875455e3e2812b6e000002');
+            expect(message.cards[0].order).to.equal(0);
+            expect(message.cards[1].id).to.equal('42875455e3e2812b6e000003');
+            expect(message.cards[1].order).to.equal(1);
+            expect(message.cards[2].id).to.equal('42875455e3e2812b6e000004');
+            expect(message.cards[2].order).to.equal(2);
+          }
+          if (message.lane.id === '32875455e3e2812b6e000002') {
+            expect(message.cards.length).to.equal(2);
+            expect(message.cards[0].id).to.equal('42875455e3e2812b6e000001');
+            expect(message.cards[0].order).to.equal(0);
+            expect(message.cards[1].id).to.equal('42875455e3e2812b6e000005');
+            expect(message.cards[1].order).to.equal(1);
+          }
+          if (count === 2) {
+            sub.cancel();
+            done();
+          }
+        }
+      }
+      catch (ex) { done(ex); }
+    });
+    pubsub.publishAwait('/cards/move', {
+      board: { id: '22875455e3e2812b6e000001' },
+      oldLane: { id: '32875455e3e2812b6e000001' },
+      lane: { id: '32875455e3e2812b6e000002' },
+      card: { id: '42875455e3e2812b6e000001', order: 0 }
+    }).then(function (message) {}, done);
+  });
+
   it('removes a card', function (done) {
     var moved = false;
     var destroyed = false;

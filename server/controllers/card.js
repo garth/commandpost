@@ -25,6 +25,8 @@ module.exports = function (app, config, db) {
       else {
         cards.splice(position, 0, card);
       }
+      // ensure that the card order in the new lane gets published
+      card.order = -1;
     }
 
     // update each card order
@@ -199,7 +201,7 @@ module.exports = function (app, config, db) {
           userId: message.meta.userId,
           date: Date.now(),
           action: 'move',
-          lane: lane.name
+          laneName: lane.name
         });
       }
 

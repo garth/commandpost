@@ -34,7 +34,7 @@ module.exports = [
       {
         _id: new ObjectId("32875455e3e2812b6e000001"),
         name: 'One',
-        order: 1,
+        order: 0,
         cards: [
           {
             _id: new ObjectId("42875455e3e2812b6e000001"),
@@ -45,7 +45,7 @@ module.exports = [
             createdByUserId: new ObjectId("12875455e3e2812b6e000001"),
             createdOn: new Date('2013-11-20'),
             assignedToUserId: null,
-            order: 1,
+            order: 0,
             comments: [
               {
                 _id: new ObjectId("52875455e3e2812b6e000001"),
@@ -70,7 +70,7 @@ module.exports = [
             createdByUserId: new ObjectId("12875455e3e2812b6e000001"),
             createdOn: new Date('2013-11-20'),
             assignedToUserId: null,
-            order: 2,
+            order: 1,
             comments: [
               {
                 _id: new ObjectId("52875455e3e2812b6e000003"),
@@ -89,7 +89,7 @@ module.exports = [
             createdByUserId: new ObjectId("12875455e3e2812b6e000001"),
             createdOn: new Date('2013-11-20'),
             assignedToUserId: null,
-            order: 3
+            order: 2
           },
           {
             _id: new ObjectId("42875455e3e2812b6e000004"),
@@ -100,14 +100,14 @@ module.exports = [
             createdByUserId: new ObjectId("12875455e3e2812b6e000001"),
             createdOn: new Date('2013-11-20'),
             assignedToUserId: null,
-            order: 4
+            order: 3
           }
         ]
       },
       {
         _id: new ObjectId("32875455e3e2812b6e000002"),
         name: 'Two',
-        order: 2,
+        order: 1,
         cards: [
           {
             _id: new ObjectId("42875455e3e2812b6e000005"),
@@ -118,14 +118,14 @@ module.exports = [
             createdByUserId: new ObjectId("12875455e3e2812b6e000001"),
             createdOn: new Date('2013-11-20'),
             assignedToUserId: null,
-            order: 1
+            order: 0
           }
         ]
       },
       {
         _id: new ObjectId("32875455e3e2812b6e000003"),
         name: 'Three',
-        order: 3
+        order: 2
       }
     ]
   },
