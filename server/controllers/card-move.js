@@ -5,7 +5,7 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 //var Lane = mongoose.model('Lane');
 //var Card = mongoose.model('Card');
 //var CardType = mongoose.model('CardType');
-var _ = require('underscore');
+var _ = require('lodash');
 
 module.exports = function (app, config, db) {
 

@@ -1,7 +1,7 @@
 'use strict';
 
 var portscanner = require('portscanner');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var components = [
   'bower_components/jquery/jquery.js',
@@ -26,7 +26,7 @@ var components = [
   'bower_components/typeahead.js/dist/typeahead.js',
   'bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js',
   'bower_components/keymaster/keymaster.js',
-  'node_modules/underscore/underscore.js',
+  'node_modules/lodash/dist/lodash.js',
   'node_modules/faye/browser/faye-browser.js',
   'bower_components/momentjs/moment.js',
   'bower_components/toastr/toastr.js'
