@@ -1,9 +1,7 @@
 var mongoose = require('mongoose');
 // var Lane = mongoose.model('Lane');
-var prepareQuery = require('../helpers/prepare-query');
-var updateProperties = require('../helpers/update-properties');
-var recordHistory = require('../helpers/history').record;
-//var prepareToSend = require('../helpers/prepare-to-send');
+//var updateProperties = require('../helpers/update-properties');
+//var recordHistory = require('../helpers/history').record;
 
 module.exports = function (app, config, db) {
 

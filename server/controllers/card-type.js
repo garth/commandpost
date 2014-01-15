@@ -1,8 +1,7 @@
 var mongoose = require('mongoose');
 //var CardType = mongoose.model('CardType');
-var prepareQuery = require('../helpers/prepare-query');
-var updateProperties = require('../helpers/update-properties');
-var recordHistory = require('../helpers/history').record;
+//var updateProperties = require('../helpers/update-properties');
+//var recordHistory = require('../helpers/history').record;
 
 module.exports = function (app, config, db) {
 

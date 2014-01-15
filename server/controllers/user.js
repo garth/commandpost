@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
-var prepareQuery = require('../helpers/prepare-query');
-var updateProperties = require('../helpers/update-properties');
-var recordHistory = require('../helpers/history').record;
+var updateProperties = require('../helpers/update').properties;
 
 module.exports = function (app, config, db) {
+
+  var recordHistory = require('../helpers/history')(app.pubsub);
 
   // var authorise = require('../authorise')(config);
 
@@ -16,6 +16,7 @@ module.exports = function (app, config, db) {
   // });
 
   app.pubsub.subscribe('/server/user/create', function (message) {
+    // create the user
     (new User(message.user)).save(function (err, user) {
       if (err) {
         return app.publishError('/user', '/server', {
@@ -24,10 +25,19 @@ module.exports = function (app, config, db) {
           context: message
         });
       }
-      //recordHistory(user, 'user', 'create', user.toJSON());
+      user = user.toJSON();
+      recordHistory(message, 'user', 'create', user);
+
+      // notify the client
       app.pubsub.publishToClient('/user/create', {
-        user: user.toJSON()
+        user: user
       }, message);
+
+      // notify all subscribers
+      app.pubsub.publish('/users', {
+        action: 'create',
+        user: user
+      });
     });
   });
 

@@ -1,6 +1,8 @@
 var _ = require('lodash');
 var mongoose = require('mongoose');
 var Board = mongoose.model('Board');
+var updateProperties = require('../helpers/update').properties;
+var updateCollection = require('../helpers/update').collection;
 
 module.exports = function (app, config, db) {
 
@@ -27,6 +29,7 @@ module.exports = function (app, config, db) {
   });
 
   app.pubsub.subscribe('/server/boards/create', function (message) {
+    // create a board with a default set of card types and lanes
     var board = new Board(message.board);
     board.createdByUserId = message.meta.userId;
     board.createdOn = Date.now();
@@ -41,6 +44,7 @@ module.exports = function (app, config, db) {
       { name: 'In Progress', order: 2 },
       { name: 'Done', order: 3 });
 
+    // save the new board
     board.save(function (err, board) {
       if (err) {
         return app.pubsub.publishError('/boards/create', '/boards/create', {
@@ -51,20 +55,19 @@ module.exports = function (app, config, db) {
       }
       board = board.toJSON();
       recordHistory(message, 'board', 'create', board);
+      // notify the client
       app.pubsub.publishToClient('/boards/create', { board: board }, message);
 
       // notify all subscribers
       app.pubsub.publish('/boards', {
         action: 'create',
-        board: {
-          id: board.id,
-          name: board.name
-        }
+        board: { id: board.id, name: board.name }
       });
     });
   });
 
   app.pubsub.subscribe('/server/boards/get', function (message) {
+    // find the board
     Board.findById(message.board.id, function (err, board) {
       if (err || !board) {
         return app.pubsub.publishError('/boards/get', '/boards/get', {
@@ -74,11 +77,13 @@ module.exports = function (app, config, db) {
           context: message
         });
       }
+      // notify the client
       app.pubsub.publishToClient('/boards/get', { board: board.toJSON() }, message);
     });
   });
 
   app.pubsub.subscribe('/server/boards/update', function (message) {
+    // find the board
     Board.findById(message.board.id, function (err, board) {
       if (err || !board) {
         return app.pubsub.publishError('/boards/update', '/boards/update', {
@@ -88,22 +93,63 @@ module.exports = function (app, config, db) {
           context: message
         });
       }
-      app.pubsub.publishToClient('/boards/update', { board: board.toJSON() }, message);
+
+      // update the changed values
+      var oldValues = updateProperties(board, message.board, ['name', 'defaultCardType']);
+      oldValues.cardTypes = updateCollection(board.cardTypes, message.board.cardTypes, [
+        'name', 'icon', 'pointScale', 'priority', 'isHidden'
+      ]);
+      var lanesNotDeleted = [];
+      oldValues.lanes = updateCollection(board.lanes, message.board.lanes, [
+        'name', 'order', 'defaultIsVisible'
+      ], function (lane) {
+        var canDelete = lane.cards.length === 0;
+        if (!canDelete) {
+          lanesNotDeleted.push(lane.id);
+        }
+        return canDelete;
+      });
+      console.log(JSON.stringify(oldValues));
+
+      // save changes
+      board.save(function (err, board) {
+        if (err) {
+          return app.pubsub.publishError('/boards/update', '/boards/update', {
+            message: 'Failed to update board',
+            details: err,
+            context: message
+          });
+        }
+
+        // remove all cards from the board
+        board.lanes.forEach(function (lane) { delete lane.cards; });
+        board = board.toJSON();
+
+        // record the update
+        recordHistory(message, 'board', 'update', board, oldValues);
+
+        // notify the client
+        var doc = { board: board };
+        if (lanesNotDeleted.length) {
+          doc.message = 'Some lanes could not be removed becuase they are not empty';
+          doc.lanesNotDeleted = lanesNotDeleted;
+        }
+        app.pubsub.publishToClient('/boards/update', doc, message);
+
+        // notify all subscribers
+        app.pubsub.publish('/boards/' + board.id + '/update', { board: board });
+        if (oldValues.name) {
+          app.pubsub.publish('/boards', {
+            action: 'update',
+            board: { id: board.id, name: board.name }
+          });
+        }
+      });
     });
   });
-  // app.put('/api/boards/:id', authorise, function (req, res, next) {
-  //   Board.findById(req.params.id, function (err, board) {
-  //     if (err) { return next(err); }
-  //     var oldValues = updateProperties(board, req.body.board, ['name', 'defaultCardType']);
-  //     recordHistory(req.user, 'board', 'update', board.toJSON(), oldValues);
-  //     board.save(function (err, board) {
-  //       if (err) { return next(err); }
-  //       res.send({});
-  //     });
-  //   });
-  // });
 
   app.pubsub.subscribe('/server/boards/destroy', function (message) {
+    // remove the board
     Board.findByIdAndRemove(message.board.id, function (err, board) {
       if (err || !board) {
         return app.pubsub.publishError('/boards/destroy', '/boards/destroy', {
@@ -114,6 +160,8 @@ module.exports = function (app, config, db) {
         });
       }
       recordHistory(message, 'board', 'delete', board.toJSON());
+
+      // notify the client
       app.pubsub.publishToClient('/boards/destroy', {}, message);
 
       // notify all subscribers

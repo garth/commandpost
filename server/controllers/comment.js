@@ -1,8 +1,7 @@
 var mongoose = require('mongoose');
 //var Comment = mongoose.model('Comment');
-var prepareQuery = require('../helpers/prepare-query');
-var updateProperties = require('../helpers/update-properties');
-var recordHistory = require('../helpers/history').record;
+//var updateProperties = require('../helpers/update-properties');
+//var recordHistory = require('../helpers/history').record;
 
 module.exports = function (app, config, db) {
 
