@@ -227,6 +227,16 @@ module.exports = function (app, config, db) {
         }
         // notify the client
         app.pubsub.publishToClient('/cards/move', {}, message);
+
+        if (message.oldLane) {
+          // notify all subscribers (history changed)
+          app.pubsub.publish('/boards/' + board.id + '/cards', {
+            action: 'update',
+            board: { id: board.id },
+            lane: { id: lane.id },
+            card: card
+          });
+        }
       });
     });
   });
