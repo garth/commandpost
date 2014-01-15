@@ -71,13 +71,13 @@ module.exports = function (app, config, db) {
 
       // add the card to the lane
       var card = message.card;
+      card = lane.cards[lane.cards.push(card) - 1];
       card.history.push({
         userId: message.meta.userId,
         date: Date.now(),
         action: 'create',
-        lane: lane.name
+        laneName: lane.name
       });
-      card = lane.cards[lane.cards.push(card) - 1];
       sortLane(board, lane);
 
       board.save(function (err, board) {
