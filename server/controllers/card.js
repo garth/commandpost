@@ -7,16 +7,37 @@ module.exports = function (app, config, db) {
 
   var recordHistory = require('../helpers/history')(app.pubsub);
 
-  var sortLane = function (board, lane) {
+  var sortLane = function (board, lane, card, position) {
+    // sort existing cards
     var cards = _.sortBy(lane.cards, 'order');
+
+    // if we are moving a card
+    if (card) {
+      // add the card to the lane
+      card = lane.cards[lane.cards.push(card) - 1];
+      // set the card position
+      if (position < 1) {
+        cards.unshift(card);
+      }
+      else if (position >= cards.length) {
+        cards.push(card);
+      }
+      else {
+        cards.splice(position, 0, card);
+      }
+    }
+
+    // update each card order
     var newPositions = [];
     for (var order = 0; order < cards.length; order++) {
-      var card = cards[order];
+      card = cards[order];
       if (card.order !== order) {
         newPositions.push({ id: card.id, order: order });
         card.order = order;
       }
     }
+
+    // notify subscribers
     if (newPositions.length) {
       app.pubsub.publish('/boards/' + board.id + '/cards', {
         action: 'move',
@@ -50,8 +71,12 @@ module.exports = function (app, config, db) {
 
       // add the card to the lane
       var card = message.card;
-      card.createdByUserId = message.meta.userId;
-      card.createdOn = Date.now();
+      card.history.push({
+        userId: message.meta.userId,
+        date: Date.now(),
+        action: 'create',
+        lane: lane.name
+      });
       card = lane.cards[lane.cards.push(card) - 1];
       sortLane(board, lane);
 
@@ -132,6 +157,66 @@ module.exports = function (app, config, db) {
     });
   });
 
+  app.pubsub.subscribe('/server/cards/move', function (message) {
+    Board.findById(message.board.id, function (err, board) {
+      if (err || !board) {
+        return app.pubsub.publishError('/cards/move', '/cards/move', {
+          errorCode: err ? 500 : 404,
+          message: err ? 'Failed to get board' : 'Board not found',
+          details: err,
+          context: message
+        });
+      }
+
+      // find the lanes where the card will be moved from and to
+      var oldLane = null;
+      if (message.oldLane) {
+        oldLane = board.lanes.id(message.oldLane.id);
+      }
+      var lane = board.lanes.id(message.lane.id);
+      oldLane = oldLane || lane;
+      if (!lane) {
+        return app.pubsub.publishError('/cards/move', '/cards/move', {
+          errorCode: 404,
+          message: 'Lane not found',
+          context: message
+        });
+      }
+
+      // remove the card from the old lane
+      var card = oldLane.cards.id(message.card.id).remove();
+      if (message.oldLane) {
+        // sort the old lane
+        sortLane(board, oldLane);
+      }
+
+      // sort the new lane and insert the card
+      sortLane(board, lane, card, message.card.order);
+
+      // store the move in the card history
+      if (message.oldLane) {
+        card.history.push({
+          userId: message.meta.userId,
+          date: Date.now(),
+          action: 'move',
+          lane: lane.name
+        });
+      }
+
+      board.save(function (err, board) {
+        if (err) {
+          return app.pubsub.publishError('/cards/move', '/cards/move', {
+            message: 'Failed to move card',
+            details: err,
+            context: message
+          });
+        }
+        // notify the client
+        app.pubsub.publishToClient('/cards/move', {}, message);
+      });
+    });
+  });
+
   app.pubsub.subscribe('/server/cards/destroy', function (message) {
     Board.findById(message.board.id, function (err, board) {
       if (err || !board) {
@@ -143,7 +228,7 @@ module.exports = function (app, config, db) {
         });
       }
 
-      // find the lane where the card will be added
+      // find the lane where the card will be removed
       var lane = board.lanes.id(message.lane.id);
       if (!lane) {
         return app.pubsub.publishError('/cards/destroy', '/cards/destroy', {

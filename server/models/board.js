@@ -20,10 +20,14 @@ module.exports = function (config, db) {
         description: { type: String },
         points: { type: Number },
         tags: { type: [String], 'default': [] },
-        createdByUserId: { type: ObjectId, required: true },
-        createdOn: { type: Date, required: true, 'default': Date.now },
         assignedToUserId: { type: ObjectId, index: true },
         order: { type: Number, required: true, 'default': 0 },
+        history: [new Schema({
+          userId: { type: ObjectId, required: true },
+          date: { type: Date, required: true, 'default': Date.now },
+          laneName: { type: String, required: true },
+          action: { type: String, required: true }
+        }, config.schemaOptions)],
         comments: [new Schema({
           text: { type: String, required: true },
           userId: { type: ObjectId, required: true },
