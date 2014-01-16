@@ -12,10 +12,9 @@ module.exports = function (config, db) {
     createdOn: { type: Date, required: true, 'default': Date.now },
     lanes: [new Schema({
       name: { type: String, required: true },
-      type: { type: String, enum: ['queue', 'in-progress', 'done'],
+      type: { type: String, enum: ['hidden', 'queue', 'in-progress', 'done'],
         require: true, 'default': 'queue' },
       order: { type: Number, required: true, 'default': 0 },
-      defaultIsVisible: { type: Boolean, required: true, 'default': true },
       cards: [new Schema({
         cardTypeId: { type: ObjectId, required: true },
         title: { type: String, required: true },

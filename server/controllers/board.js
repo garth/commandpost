@@ -40,12 +40,12 @@ module.exports = function (app, config, db) {
     board.createdByUserId = message.meta.userId;
     board.createdOn = Date.now();
     board.cardTypes.push(
-      { board: board, name: 'Story', icon: 'book', pointScale: '1,2,3,5,8', isDefault: true },
+      { board: board, name: 'Story', icon: 'book', pointScale: '1,2,3,5,8' },
       { board: board, name: 'Bug', icon: 'bug', priority: 1 },
       { board: board, name: 'Task', icon: 'wrench' });
     board.defaultCardTypeId = board.cardTypes[0].id;
     board.lanes.push(
-      { name: 'Unplanned', type: 'queue', order: 0, defaultIsVisible: false },
+      { name: 'Unplanned', type: 'hidden', order: 0 },
       { name: 'Backlog', type: 'queue', order: 1 },
       { name: 'In Progress', type: 'in-progress', order: 2 },
       { name: 'Done', type: 'done', order: 3 });
@@ -126,7 +126,7 @@ module.exports = function (app, config, db) {
       // update the changed lanes
       var lanesNotDeleted = [];
       oldValues.lanes = updateCollection(board.lanes, message.board.lanes, [
-        'name', 'type', 'order', 'defaultIsVisible'
+        'name', 'type', 'order'
       ], function (lane) {
         // check if the lane can be deleted
         var canDelete = lane.cards.length === 0;
