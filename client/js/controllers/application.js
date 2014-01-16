@@ -8,7 +8,6 @@ App.ApplicationRoute = Ember.Route.extend({
   }
 });
 
-
 App.ApplicationController = Ember.Controller.extend({
 
   // when a user enters the app unauthenticated, the transition
@@ -18,7 +17,6 @@ App.ApplicationController = Ember.Controller.extend({
 
   actions: {
     signout: function() {
-
       App.pubsub.publishAwait('/session/destroy', {
         sessionId: localStorage.sessionId
       }).then(function () {

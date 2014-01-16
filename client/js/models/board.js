@@ -2,23 +2,41 @@
 // require('./lane');
 // require('./card-type');
 
-App.Board = Ember.Object.extend({
+App.BoardSummary = Ember.Object.extend({
   id: null,
-  name: null,
+  name: null
+});
+
+App.Board = App.BoardSummary.extend({
   createdByUserId: null,
   createdOn: null,
   lanes: null,
   defaultCardTypeId: null,
   cardTypes: null,
-  users: null,
 
-  cards: function () {
-    var cards = [];
-    this.get('lanes').forEach(function (lane) {
-      cards.pushObjects(lane.get('cards'));
-    });
-    return cards;
-  }.property('lanes.@each.cards')
+  defaultCardType: function () {
+    var cardTypes = this.get('cardTypes');
+    var defaultCardTypeId = this.get('defaultCardTypeId');
+    if (cardTypes && defaultCardTypeId) {
+      return cardTypes.findBy('id', defaultCardTypeId);
+    }
+  }.property('defaultCardTypeId', 'cardTypes'),
+
+  createdByuser: function () {
+    var users = App.get('users');
+    var createdByUserId = this.get('createdByUserId');
+    if (users && createdByUserId) {
+      return users.findBy('id', createdByUserId);
+    }
+  }.property('createdByUserId', 'App.users')
+
+  // cards: function () {
+  //   var cards = [];
+  //   this.get('lanes').forEach(function (lane) {
+  //     cards.pushObjects(lane.get('cards'));
+  //   });
+  //   return cards;
+  // }.property('lanes.@each.cards')
 });
 
 // App.serverEvents.addEventListener('createBoard', function(e) {

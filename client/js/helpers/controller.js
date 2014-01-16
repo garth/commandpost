@@ -1,4 +1,4 @@
-App.Controller = Ember.Controller.extend({
+var mixin = Ember.Mixin.create({
   subscriptions: {},
   privateSubscriptions: {},
 
@@ -38,3 +38,6 @@ App.Controller = Ember.Controller.extend({
     });
   },
 });
+
+App.Controller = Ember.Controller.extend(mixin, {});
+App.ArrayController = Ember.ArrayController.extend(mixin, {});

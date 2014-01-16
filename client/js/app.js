@@ -12,6 +12,7 @@ App = Ember.Application.extend({
 
   isConnected: true,
   user: null,
+  users: null,
 
   config: config,
 
@@ -50,7 +51,8 @@ require('./controllers/index');
 require('./controllers/error');
 require('./controllers/signin');
 require('./controllers/signup');
-require('./controllers/board');
-require('./controllers/board-edit');
+require('./controllers/boards-index');
+require('./controllers/boards-view');
+require('./controllers/boards-edit');
 require('./controllers/lane');
 require('./controllers/card');
