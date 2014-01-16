@@ -34,6 +34,7 @@ module.exports = [
       {
         _id: new ObjectId("32875455e3e2812b6e000001"),
         name: 'One',
+        type: 'queue',
         order: 0,
         cards: [
           {
@@ -107,6 +108,7 @@ module.exports = [
       {
         _id: new ObjectId("32875455e3e2812b6e000002"),
         name: 'Two',
+        type: 'in-progress',
         order: 1,
         cards: [
           {
@@ -125,7 +127,8 @@ module.exports = [
       {
         _id: new ObjectId("32875455e3e2812b6e000003"),
         name: 'Three',
-        order: 2
+        order: 2,
+        type: 'done'
       }
     ]
   },
@@ -149,6 +152,7 @@ module.exports = [
         _id: new ObjectId("32875455e3e2812b6e000004"),
         board: new ObjectId("22875455e3e2812b6e000002"),
         name: 'One',
+        type: 'queue',
         order: 1
       }
     ]

@@ -45,10 +45,10 @@ module.exports = function (app, config, db) {
       { board: board, name: 'Task', icon: 'wrench' });
     board.defaultCardTypeId = board.cardTypes[0].id;
     board.lanes.push(
-      { name: 'Unplanned', order: 0, defaultIsVisible: false },
-      { name: 'Backlog', order: 1 },
-      { name: 'In Progress', order: 2 },
-      { name: 'Done', order: 3 });
+      { name: 'Unplanned', type: 'queue', order: 0, defaultIsVisible: false },
+      { name: 'Backlog', type: 'queue', order: 1 },
+      { name: 'In Progress', type: 'in-progress', order: 2 },
+      { name: 'Done', type: 'done', order: 3 });
 
     // save the new board
     board.save(function (err, board) {
@@ -126,7 +126,7 @@ module.exports = function (app, config, db) {
       // update the changed lanes
       var lanesNotDeleted = [];
       oldValues.lanes = updateCollection(board.lanes, message.board.lanes, [
-        'name', 'order', 'defaultIsVisible'
+        'name', 'type', 'order', 'defaultIsVisible'
       ], function (lane) {
         // check if the lane can be deleted
         var canDelete = lane.cards.length === 0;

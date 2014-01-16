@@ -207,14 +207,20 @@ module.exports = function (app, config, db) {
       // sort the new lane and insert the card
       sortLane(board, lane, card, message.card.order);
 
-      // store the move in the card history
       if (message.oldLane) {
+        // store the move in the card history
         card.history.push({
           userId: message.meta.userId,
           date: Date.now(),
           action: 'move',
           laneName: lane.name
         });
+
+        // when moving to an 'active' lane, auto assign the
+        // card to the user who moved it
+        if (lane.type === 'in-progress') {
+          card.assignedToUserId = message.meta.userId;
+        }
       }
 
       board.save(function (err, board) {
