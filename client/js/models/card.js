@@ -20,6 +20,18 @@ App.Card = Ember.Object.extend({
 
   isEditing: false,
 
+  init: function() {
+    this._super();
+    var self = this;
+    var comments = this.get('comments');
+    if (comments) {
+      this.set('comments', _.map(comments, function (comment) {
+        comment.card = self;
+        return App.Comment.create(comment);
+      }));
+    }
+  },
+
   priority: function () {
     return (this.get('cardType.priority') || 0) * -1;
   }.property()

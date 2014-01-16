@@ -1,21 +1,20 @@
 require('../views/board');
 
+App.BoardsViewRoute = Ember.Route.extend({
+  model: function (params) {
+    return App.pubsub.publishAwait('/boards/get', {
+      board: { id: params.board_id }
+    }, function (message) {
+      return App.Board.create(message.board);
+    });
+  }
+});
+
 App.BoardsViewController = Ember.ObjectController.extend({
   laneStyle: function () {
     var count = this.get('visibleLanes').length;
     return 'width: ' + (count > 0 ? 100.0 / count : 0) + '%';
   }.property('visibleLanes'),
-
-  sortedLanes: function () {
-    var lanes = Ember.A(this.get('content.lanes.content'));
-    return lanes.sortBy('order');
-  }.property('content.lanes.@each.order'),
-
-  visibleLanes: function () {
-    return this.get('sortedLanes').filter(function (lane) {
-      return lane.get('isVisible');
-    });
-  }.property('sortedLanes.@each.isVisible'),
 
   actions: {
 

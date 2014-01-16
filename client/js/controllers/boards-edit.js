@@ -2,22 +2,23 @@ var Promise = Ember.RSVP.Promise;
 
 App.BoardsNewRoute = Ember.Route.extend({
   redirect: function () {
-    var store = this.store;
-    var board = store.createRecord('board', {
-      name: 'New' // + moment().format('YYYYMMDDHHmmss')
-    });
-    var self = this;
-    this.transitionTo('boards.edit', new Promise(function (resolve, reject) {
-      board.save().then(resolve, function (err) {
-        board.deleteRecord();
-        App.flash.serverError('Failed to create board', err);
-        self.transitionTo('boards');
-      });
+    this.transitionTo('boards.edit', App.pubsub.publishAwait('/boards/create', {
+      board: { name: 'New' }
+    }, function (message) {
+      return App.Board.create(message.board);
     }));
   }
 });
 
 App.BoardsEditRoute = Ember.Route.extend({
+  model: function (params) {
+    return App.pubsub.publishAwait('/boards/get', {
+      board: { id: params.board_id }
+    }, function (message) {
+      console.log(message.board);
+      return App.Board.create(message.board);
+    });
+  },
   setupController: function (controller, board) {
     controller.setProperties({
       confirmDelete: null,
@@ -29,17 +30,6 @@ App.BoardsEditRoute = Ember.Route.extend({
 App.BoardsEditController = Ember.ObjectController.extend({
 
   confirmDelete: null,
-
-  sortedLanes: function () {
-    var lanes = Ember.A(this.get('content.lanes.content'));
-    return lanes.sortBy('order');
-  }.property('content.lanes.@each.order'),
-
-  visibleCardTypes: function () {
-    return this.get('content.cardTypes').filter(function (cardType) {
-      return !cardType.get('isHidden');
-    });
-  }.property('content.cardTypes.@each.isHidden'),
 
   actions: {
 
