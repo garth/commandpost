@@ -1,7 +1,20 @@
 require('../views/lane');
 
-App.BoardsLaneController = Ember.ObjectController.extend({
+App.BoardLaneController = Ember.ObjectController.extend({
   sortedCards: null,
+
+  icon: function () {
+    switch (this.get('model.type')) {
+    case 'hidden':
+      return 'fa-archive';
+    case 'done':
+      return 'fa-check';
+    case 'in-progress':
+      return 'fa-cog';
+    default:
+      return 'fa-inbox';
+    }
+  }.property('model.type'),
 
   cardsChanged: function () {
     Ember.run.once(this, 'sortCards');

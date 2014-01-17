@@ -3,6 +3,7 @@
     {{#if cards.length}}
       <span class="badge pull-right">{{cards.length}} cards</span>
     {{/if}}
+    <i {{bind-attr class=":fa icon"}}></i>
     {{name}}
   </div>
   <div class="panel-body lane-container" {{bind-attr style="view.laneStyle"}}>

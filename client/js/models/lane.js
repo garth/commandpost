@@ -33,9 +33,13 @@ App.Lane = Ember.Object.extend({
     return allTags;
   }.property('cards.@each.tags'),
 
+  defaultIsVisible: function () {
+    return this.get('type') !== 'hidden';
+  }.property('type'),
+
   isVisible: function (key, value) {
     var id = this.get('id');
-    var defaultValue = this.get('type') !== 'hidden';
+    var defaultValue = this.get('defaultIsVisible');
     if (key && value !== undefined) {
       if (value === defaultValue) {
         delete window.localStorage['lane_' + id + '_isHidden'];
