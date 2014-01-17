@@ -1,5 +1,4 @@
-// require('./board');
-// require('./card');
+require('./card');
 
 App.Lane = Ember.Object.extend({
   board: null,
@@ -53,38 +52,3 @@ App.Lane = Ember.Object.extend({
     return defaultValue;
   }.property()
 });
-
-// App.serverEvents.addEventListener('createLane', function(e) {
-//   var store = App.Lane.store;
-//   var laneData = JSON.parse(e.data).document;
-//   var lane = store.getById('lane', laneData.id);
-//   if (!lane) {
-//     var board = store.getById('board', laneData.board);
-//     // add the lane if the board is in the store
-//     if (board) {
-//       lane = store.push('lane', laneData);
-//       board.get('lanes.content').pushObject(lane);
-//     }
-//   }
-// }, false);
-
-// App.serverEvents.addEventListener('updateLane', function(e) {
-//   var store = App.Lane.store;
-//   var laneData = JSON.parse(e.data).document;
-//   var lane = store.getById('lane', laneData.id);
-//   // update the lane if it's in the store
-//   if (lane) {
-//     store.push('lane', laneData);
-//   }
-// }, false);
-
-// App.serverEvents.addEventListener('deleteLane', function(e) {
-//   var store = App.Lane.store;
-//   var laneData = JSON.parse(e.data).document;
-//   var lane = store.getById('lane', laneData.id);
-//   // remove the lane from the store
-//   if (lane && !lane.get('isDeleted')) {
-//     lane.get('board.lanes.content').removeObject(lane);
-//     store.unloadRecord(lane);
-//   }
-// }, false);

@@ -1,6 +1,5 @@
-// require('./user');
-// require('./lane');
-// require('./card-type');
+require('./lane');
+require('./card-type');
 
 App.BoardSummary = Ember.Object.extend({
   id: null,
@@ -41,7 +40,7 @@ App.Board = App.BoardSummary.extend({
     }
   }.property('defaultCardTypeId', 'cardTypes'),
 
-  createdByuser: function () {
+  createdByUser: function () {
     var users = App.get('users');
     var createdByUserId = this.get('createdByUserId');
     if (users && createdByUserId) {
@@ -60,47 +59,9 @@ App.Board = App.BoardSummary.extend({
     });
   }.property('sortedLanes.@each.isVisible'),
 
-
   visibleCardTypes: function () {
     return this.get('cardTypes').filter(function (cardType) {
       return !cardType.get('isHidden');
     });
-  }.property('cardTypes.@each.isHidden'),
-
-  // cards: function () {
-  //   var cards = [];
-  //   this.get('lanes').forEach(function (lane) {
-  //     cards.pushObjects(lane.get('cards'));
-  //   });
-  //   return cards;
-  // }.property('lanes.@each.cards')
+  }.property('cardTypes.@each.isHidden')
 });
-
-// App.serverEvents.addEventListener('createBoard', function(e) {
-//   var store = App.Board.store;
-//   var boardData = JSON.parse(e.data).document;
-//   var board = store.getById('board', boardData.id);
-//   if (!board) {
-//     store.push('board', boardData);
-//   }
-// }, false);
-
-// App.serverEvents.addEventListener('updateBoard', function(e) {
-//   var store = App.Board.store;
-//   var boardData = JSON.parse(e.data).document;
-//   var board = store.getById('board', boardData.id);
-//   // update the board if it's in the store
-//   if (board) {
-//     store.push('board', boardData);
-//   }
-// }, false);
-
-// App.serverEvents.addEventListener('deleteBoard', function(e) {
-//   var store = App.Board.store;
-//   var boardData = JSON.parse(e.data).document;
-//   var board = store.getById('board', boardData.id);
-//   // remove the board from the store
-//   if (board && !board.get('isDeleted')) {
-//     store.unloadRecord(board);
-//   }
-// }, false);
