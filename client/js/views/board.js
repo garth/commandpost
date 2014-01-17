@@ -1,4 +1,4 @@
-App.BoardsViewView = Ember.View.extend({
+App.BoardViewView = Ember.View.extend({
   setup: function () {
     this.bindKey('n', 'addCard');
   }.on('didInsertElement'),

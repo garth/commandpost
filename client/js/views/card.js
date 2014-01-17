@@ -1,4 +1,4 @@
-App.BoardsCardView = Ember.View.extend({
+App.BoardCardView = Ember.View.extend({
   setup: function () {
     // auto focus the first input
     if (this.controller.get('model.isEditing')) {

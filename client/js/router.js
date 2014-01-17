@@ -9,8 +9,10 @@ App.Router.map(function() {
   this.resource('index', { path: '/' }, function () {
     this.resource('boards', function () {
       this.route('new');
-      this.route('view', { path: ':board_id' });
-      this.route('edit', { path: ':board_id/edit' });
+      this.resource('board', { path: ':board_id' }, function () {
+        this.route('view', { path: '/' });
+        this.route('edit', { path: 'edit' });
+      });
     });
   });
 });

@@ -1,7 +1,7 @@
 <h1><i class="fa fa-bar-chart-o fa-rotate-180"></i> Boards</h1>
 <ul>
   {{#each}}
-    <li>{{#link-to 'boards.view' this}}{{name}}{{/link-to}}</li>
+    <li>{{#link-to 'board.view' this.id}}{{name}}{{/link-to}}</li>
   {{/each}}
 </ul>
 {{#link-to 'boards.new' class="btn btn-default"}}

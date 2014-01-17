@@ -20,7 +20,7 @@
         {{/each}}
       </ul>
     </div>
-    {{#link-to 'boards.edit' content class="btn btn-default"}}
+    {{#link-to 'board.edit' class="btn btn-default"}}
       <i class="fa fa-wrench"></i> Edit Board
     {{/link-to}}
     <div class="btn-group">
@@ -50,7 +50,7 @@
 <div class="board-lanes">
   {{#each lane in visibleLanes}}
     <div class="board-lane" {{bind-attr style="laneStyle"}}>
-      {{render "boards/lane" lane}}
+      {{render "board/lane" lane}}
     </div>
   {{/each}}
 </div>

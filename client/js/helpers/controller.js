@@ -41,3 +41,4 @@ var mixin = Ember.Mixin.create({
 
 App.Controller = Ember.Controller.extend(mixin, {});
 App.ArrayController = Ember.ArrayController.extend(mixin, {});
+App.ObjectController = Ember.ObjectController.extend(mixin, {});

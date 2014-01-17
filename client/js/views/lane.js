@@ -1,4 +1,4 @@
-App.BoardsLaneView = Ember.View.extend({
+App.BoardLaneView = Ember.View.extend({
   laneStyle: null,
 
   updateStyle: function () {

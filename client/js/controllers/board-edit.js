@@ -1,33 +1,14 @@
-var Promise = Ember.RSVP.Promise;
-
-App.BoardsNewRoute = Ember.Route.extend({
-  redirect: function () {
-    this.transitionTo('boards.edit', App.pubsub.publishAwait('/boards/create', {
-      board: { name: 'New' }
-    }, function (message) {
-      return App.Board.create(message.board);
-    }));
-  }
-});
-
-App.BoardsEditRoute = Ember.Route.extend({
-  model: function (params) {
-    return App.pubsub.publishAwait('/boards/get', {
-      board: { id: params.board_id }
-    }, function (message) {
-      console.log(message.board);
-      return App.Board.create(message.board);
-    });
-  },
+App.BoardEditRoute = Ember.Route.extend({
   setupController: function (controller, board) {
     controller.setProperties({
-      confirmDelete: null,
-      content: board
+      confirmDelete: null
     });
   }
 });
 
-App.BoardsEditController = Ember.ObjectController.extend({
+App.BoardEditController = Ember.ObjectController.extend({
+  needs: ['board'],
+  modelBinding: 'controllers.board.model',
 
   confirmDelete: null,
 

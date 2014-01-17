@@ -1,16 +1,9 @@
 require('../views/board');
 
-App.BoardsViewRoute = Ember.Route.extend({
-  model: function (params) {
-    return App.pubsub.publishAwait('/boards/get', {
-      board: { id: params.board_id }
-    }, function (message) {
-      return App.Board.create(message.board);
-    });
-  }
-});
+App.BoardViewController = App.ObjectController.extend({
+  needs: ['board'],
+  modelBinding: 'controllers.board.model',
 
-App.BoardsViewController = Ember.ObjectController.extend({
   laneStyle: function () {
     var count = this.get('visibleLanes').length;
     return 'width: ' + (count > 0 ? 100.0 / count : 0) + '%';
