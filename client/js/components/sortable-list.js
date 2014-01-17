@@ -5,11 +5,11 @@ App.SortableListComponent = Ember.Component.extend({
   classNameBindings: ['connectWith'],
 
   collection: null,
-  parent: null,
-  childrenKey: null,
-  parentKey: null,
+  //parent: null,
+  //childrenKey: null,
+  //parentKey: null,
   sortKey: null,
-  autoSave: false,
+  //autoSave: false,
   connectWith: null,
   itemClass: '',
 
@@ -22,61 +22,62 @@ App.SortableListComponent = Ember.Component.extend({
     var connectWith = this.get('connectWith');
     this.$().sortable({
       update: function (event, ui) {
-        // when moving cols, online process event on destination col
+        // when moving lanes, only process event on destination lane
         if (ui.item[0].parentElement === event.target) {
           //console.log('update', event, ui);
-          var list = self.getProperties('sortKey', 'autoSave', 'parent','childrenKey','parentKey');
+          var list = self.getProperties('sortKey');//, 'parent', 'childrenKey','parentKey');
 
-          // which item moved
-          var movedItem = ui.item[0].sortableItem;
+          //   // which item moved
+          //   var movedItem = ui.item[0].sortableItem;
 
-          // find the new position
-          var position;
-          var items = self.$('li');
-          for (position = 0; position < items.length; position++) {
-            if (movedItem.id === items[position].sortableItem.id) {
-              break;
-            }
+          //   // find the new position
+          //   var position;
+          //   var items = self.$('li');
+          //   for (position = 0; position < items.length; position++) {
+          //     if (movedItem.id === items[position].sortableItem.id) {
+          //       break;
+          //     }
+          //   }
+
+          //   // publish the move
+          //   App.pubsub.publish('/card/move', {
+          //     cardId: movedItem.get('id'),
+          //     lane: list.parent.get('id'),
+          //     position: position
+          //   });
+          // }
+
+
+          //console.log(position);
+          var sort = 0;
+          if (list.sortKey) {
+            _.each(self.$('li'), function (item) {
+              var child = item.sortableItem;
+              if (child) {
+                // set the order
+                child.set(list.sortKey, sort++);
+                // // update the parent
+                // var movedLane = false;
+                // if (list.parent && list.parentKey &&
+                //   child.get(list.parentKey) !== list.parent) {
+                //   // update the parents childrent collections
+                //   if (list.childrenKey) {
+                //     var collectionPath = list.childrenKey + '.content';
+                //     child.get(list.parentKey + '.' + collectionPath).removeObject(child);
+                //     list.parent.get(collectionPath).pushObject(child);
+                //   }
+                //   // update the childs parent
+                //   child.set(list.parentKey, list.parent);
+                //   movedLane = true;
+                // }
+                // // save changes
+                // if (list.autoSave && (movedLane || child.get('isDirty'))) {
+                //   child.save();
+                // }
+              }
+            });
           }
-
-          // publish the move
-          App.pubsub.publish('/card/move', {
-            cardId: movedItem.get('id'),
-            lane: list.parent.get('id'),
-            position: position
-          });
         }
-
-
-        //console.log(position);
-        // var sort = 0;
-        // if (list.sortKey) {
-        //   _.each(self.$('li'), function (item) {
-        //     var child = item.sortableItem;
-        //     if (child) {
-        //       // set the order
-        //       child.set(list.sortKey, sort++);
-        //       // update the parent
-        //       var movedLane = false;
-        //       if (list.parent && list.parentKey &&
-        //         child.get(list.parentKey) !== list.parent) {
-        //         // update the parents childrent collections
-        //         if (list.childrenKey) {
-        //           var collectionPath = list.childrenKey + '.content';
-        //           child.get(list.parentKey + '.' + collectionPath).removeObject(child);
-        //           list.parent.get(collectionPath).pushObject(child);
-        //         }
-        //         // update the childs parent
-        //         child.set(list.parentKey, list.parent);
-        //         movedLane = true;
-        //       }
-        //       // save changes
-        //       if (list.autoSave && (movedLane || child.get('isDirty'))) {
-        //         child.save();
-        //       }
-        //     }
-        //   });
-        // }
       }
     });
     if (connectWith) {
