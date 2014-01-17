@@ -9,6 +9,8 @@ App.Lane = Ember.Object.extend({
   order: null,
   cards: null,
 
+  types: ['hidden', 'queue', 'in-progress', 'done'],
+
   init: function() {
     this._super();
     var self = this;
@@ -32,6 +34,19 @@ App.Lane = Ember.Object.extend({
     allTags.sort();
     return allTags;
   }.property('cards.@each.tags'),
+
+  icon: function () {
+    switch (this.get('type')) {
+    case 'hidden':
+      return 'fa-archive';
+    case 'done':
+      return 'fa-check';
+    case 'in-progress':
+      return 'fa-cog';
+    default:
+      return 'fa-inbox';
+    }
+  }.property('type'),
 
   defaultIsVisible: function () {
     return this.get('type') !== 'hidden';

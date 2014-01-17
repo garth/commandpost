@@ -57,10 +57,8 @@
           {{input class="form-control" value=name}}
           <div class="row">
             <div class="col-xs-8">
-              <label>
-                {{input type="checkbox" checked=defaultIsVisible}}
-                Visible by default
-              </label>
+              Type <i {{bind-attr class=":fa icon"}}></i>
+              {{view Ember.Select content=types value=type}}
             </div>
             <div class="col-xs-4 text-right">
               {{cards.length}} cards
@@ -84,13 +82,6 @@
         <ul class="list-group">
           {{#each cardType in cardTypes}}
             <li class="list-group-item card-type-edit">
-              {{#unless cardType.cards.length}}
-                <div class="right-margin">
-                  <button class="btn btn-danger btn-xs" {{action 'deleteCardType' cardType}}>
-                    <i class="fa fa-times"></i>
-                  </button>
-                </div>
-              {{/unless}}
               <form class="form-horizontal">
                 <div class="form-group">
                   <label class="col-xs-3 control-label">Name</label>
