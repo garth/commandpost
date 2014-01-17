@@ -22,7 +22,7 @@ App.BoardsController = App.ArrayController.extend({
           board.setProperties(message.board);
         }
         break;
-      case 'delete':
+      case 'destroy':
         if (boards) {
           this.set('model', boards.rejectBy('id', message.board.id));
         }

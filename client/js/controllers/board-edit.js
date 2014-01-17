@@ -17,27 +17,30 @@ App.BoardEditController = Ember.ObjectController.extend({
     addLane: function () {
       var board = this.get('content');
       var lanes = board.get('lanes');
-      var lane = this.get('store').createRecord('lane', {
+      var lane = App.Lane.create({
         board: board,
         name: 'New Lane',
-        order: lanes.get('content').length,
-        defaultIsVisible: true
+        type: 'queue',
+        order: lanes.length,
+        cards: []
       });
       lanes.pushObject(lane);
-      lane.save();
     },
 
     deleteLane: function (lane) {
       var lanes = this.get('content.lanes');
-      lanes.removeObject(lane);
-      lane.deleteRecord();
-      lane.save();
+      if (lane.get('cards.length') === 0) {
+        lanes.removeObject(lane);
+      }
+      else {
+        App.flash.error('Lanes with cards cannot be deleted');
+      }
     },
 
     addCardType: function () {
       var board = this.get('content');
       var cardTypes = board.get('cardTypes');
-      var cardType = this.get('store').createRecord('cardType', {
+      var cardType = App.CardType.create({
         board: board,
         name: 'New Card Type',
         icon: 'thumbs-up',
@@ -46,34 +49,33 @@ App.BoardEditController = Ember.ObjectController.extend({
         isHidden: false
       });
       cardTypes.pushObject(cardType);
-      cardType.save();
     },
 
-    deleteCardType: function (cardType) {
-      var cardTypes = this.get('content.cardTypes');
-      cardTypes.removeObject(cardType);
-      cardType.deleteRecord();
-      cardType.save();
-    },
+    // deleteCardType: function (cardType) {
+    //   var cardTypes = this.get('content.cardTypes');
+    //   cardTypes.removeObject(cardType);
+    // },
 
     save: function () {
       var board = this.get('content');
-      var lanes = board.get('lanes.content');
-      var cardTypes = board.get('cardTypes.content');
+      var lanes = board.get('lanes');
+      var cardTypes = board.get('cardTypes');
       var self = this;
-      // save any lane changes
-      _.each(lanes, function (lane) {
-        if (lane.get('isDirty')) { lane.save(); }
+      // prepare to save the board
+      board = board.getProperties('id', 'name', 'defaultCardTypeId');
+      // save lanes
+      board.lanes = lanes.map(function (lane) {
+        return lane.getProperties('id', 'name', 'type', 'order');
       });
-      // save any card type changes
-      _.each(cardTypes, function (cardType) {
-        if (cardType.get('isDirty')) { cardType.save(); }
+      // save card type
+      board.cardTypes = cardTypes.map(function (cardType) {
+        return cardType.getProperties('id', 'name', 'icon', 'pointScale', 'priority', 'isHidden');
       });
       // save the board
-      board.save().then(function (board) {
-        self.transitionToRoute('boards.view', board);
-      }, function (err) {
-        App.flash.serverError('Failed to save board', err);
+      App.pubsub.publishAwait('/boards/update', {
+        board: board
+      }).then(function (message) {
+        self.transitionToRoute('board.view');
       });
     },
 
@@ -81,12 +83,15 @@ App.BoardEditController = Ember.ObjectController.extend({
       var board = this.get('content');
       var self = this;
       if (this.get('confirmDelete') === board.get('name')) {
-        board.deleteRecord();
-        board.save().then(function () {
+        // delete the board
+        App.pubsub.publishAwait('/boards/destroy', {
+          board: { id: board.get('id') }
+        }).then(function (message) {
           self.transitionToRoute('boards.index');
-        }, function (err) {
-          App.flash.serverError('Failed to delete board', err);
         });
+      }
+      else {
+        App.flash.error('Please confirm the board name to delete');
       }
     }
   }
