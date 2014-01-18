@@ -81,14 +81,14 @@ module.exports = function (App, Faye, RSVP, endPoint, clientChannelId, localStor
 
   if (App && App.flash) {
     pubsub.on('transport:down', function() {
-      App.flash.error('Failed to connect to server');
+      App.flash.error('Server connection failed');
       App.set('isConnected', false);
     });
 
     pubsub.on('transport:up', function() {
       if (!App.get('isConnected')) {
         App.set('isConnected', true);
-        App.flash.success('Connected to server');
+        App.flash.success('Reconnected to server');
       }
     });
   }

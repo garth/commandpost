@@ -155,6 +155,7 @@ module.exports = function (app, config, db) {
           });
         }
         card = card.toJSON();
+        delete card.comments;
         recordHistory(message, 'card', 'update', card, oldValues);
 
         // notify the client

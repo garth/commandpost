@@ -164,7 +164,10 @@ module.exports = function (app, config, db) {
         app.pubsub.publishToClient('/boards/update', doc, message);
 
         // notify all subscribers
-        app.pubsub.publish('/boards/' + board.id, { board: board });
+        app.pubsub.publish('/boards/' + board.id, {
+          action: 'update',
+          board: board
+        });
         if (oldValues.name) {
           app.pubsub.publish('/boards', {
             action: 'update',
