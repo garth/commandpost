@@ -175,11 +175,11 @@ module.exports = function (app, config, db) {
     });
   });
 
-  app.pubsub.subscribe('/server/boards/destroy', function (message) {
+  app.pubsub.subscribe('/server/boards/delete', function (message) {
     // remove the board
     Board.findByIdAndRemove(message.board.id, function (err, board) {
       if (err || !board) {
-        return app.pubsub.publishError('/boards/destroy', '/boards/destroy', {
+        return app.pubsub.publishError('/boards/delete', '/boards/delete', {
           errorCode: err ? 500 : 404,
           message: err ? 'Failed to get board' : 'Board not found',
           details: err,
@@ -189,15 +189,15 @@ module.exports = function (app, config, db) {
       recordHistory(message, 'board', 'delete', board.toJSON());
 
       // notify the client
-      app.pubsub.publishToClient('/boards/destroy', {}, message);
+      app.pubsub.publishToClient('/boards/delete', {}, message);
 
       // notify all subscribers
       app.pubsub.publish('/boards', {
-        action: 'destroy',
+        action: 'delete',
         board: { id: board.id }
       });
       app.pubsub.publish('/boards/' + board.id, {
-        action: 'destroy',
+        action: 'delete',
         board: { id: board.id }
       });
     });

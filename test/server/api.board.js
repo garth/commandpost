@@ -144,7 +144,7 @@ describe('board api', function () {
   });
 
   it('removes a board', function (done) {
-    pubsub.publishAwait('/boards/destroy', {
+    pubsub.publishAwait('/boards/delete', {
       board: { id: '22875455e3e2812b6e000001' }
     }).then(function (message) {
       pubsub.publishAwait('/boards/get', {

@@ -17,7 +17,7 @@ App.ApplicationController = Ember.Controller.extend({
 
   actions: {
     signout: function() {
-      App.pubsub.publishAwait('/session/destroy', {
+      App.pubsub.publishAwait('/session/delete', {
         sessionId: localStorage.sessionId
       }).then(function () {
         delete localStorage.sessionId;

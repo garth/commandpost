@@ -58,7 +58,7 @@ App.BoardCardController = Ember.ObjectController.extend({
       var card = this.get('model');
       var lane = card.get('lane');
       if (card.get('id')) {
-        App.pubsub.publish('/cards/destroy', {
+        App.pubsub.publish('/cards/delete', {
           board: { id: lane.get('board.id') },
           lane: { id: lane.get('id') },
           card: { id: card.get('id') }

@@ -33,7 +33,7 @@ describe('sessions api', function () {
   });
 
   it('can delete a session', function (done) {
-    pubsub.publishAwait('/session/destroy', {
+    pubsub.publishAwait('/session/delete', {
       sessionId: '62875455e3e2812b6e000001'
     }).then(function (message) {
       try {
@@ -53,7 +53,7 @@ describe('sessions api', function () {
       }
       catch (ex) { done(ex); }
     }).then(function () {
-      pubsubNoSession.publishAwait('/session/destroy', {
+      pubsubNoSession.publishAwait('/session/delete', {
         sessionId: '62875455e3e2812b6e000001'
       }).then(function (message) {
         done(new Error('Invalid session deleted'));
@@ -64,7 +64,7 @@ describe('sessions api', function () {
   });
 
   it('cannot delete a session with an invalid id', function (done) {
-    pubsub.publishAwait('/session/destroy', {
+    pubsub.publishAwait('/session/delete', {
       sessionId: '62875455e3e2812b6e000099'
     }).then(function (message) {
       done(new Error('Invalid session deleted'));

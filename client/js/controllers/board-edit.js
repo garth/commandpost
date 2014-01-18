@@ -84,7 +84,7 @@ App.BoardEditController = Ember.ObjectController.extend({
       var self = this;
       if (this.get('confirmDelete') === board.get('name')) {
         // delete the board
-        App.pubsub.publishAwait('/boards/destroy', {
+        App.pubsub.publishAwait('/boards/delete', {
           board: { id: board.get('id') }
         }).then(function (message) {
           self.transitionToRoute('boards.index');

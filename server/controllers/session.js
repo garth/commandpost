@@ -46,17 +46,17 @@ module.exports = function (app, config, db) {
     });
   });
 
-  app.pubsub.subscribe('/server/session/destroy', function (message) {
+  app.pubsub.subscribe('/server/session/delete', function (message) {
     Session.findByIdAndRemove(message.sessionId, function (err, session) {
       if (err || !session) {
-        return app.pubsub.publishError('/session/destroy', '/session/destroy', {
+        return app.pubsub.publishError('/session/delete', '/session/delete', {
           errorCode: err ? 500 : 404,
-          message: err ? 'Failed to destroy session' : 'Session not found',
+          message: err ? 'Failed to delete session' : 'Session not found',
           details: err,
           context: message
         });
       }
-      app.pubsub.publishToClient('/session/destroy', {}, message);
+      app.pubsub.publishToClient('/session/delete', {}, message);
     });
   });
 };

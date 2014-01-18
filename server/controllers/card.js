@@ -247,10 +247,10 @@ module.exports = function (app, config, db) {
     });
   });
 
-  app.pubsub.subscribe('/server/cards/destroy', function (message) {
+  app.pubsub.subscribe('/server/cards/delete', function (message) {
     Board.findById(message.board.id, function (err, board) {
       if (err || !board) {
-        return app.pubsub.publishError('/cards/destroy', '/cards/destroy', {
+        return app.pubsub.publishError('/cards/delete', '/cards/delete', {
           errorCode: err ? 500 : 404,
           message: err ? 'Failed to get board' : 'Board not found',
           details: err,
@@ -261,7 +261,7 @@ module.exports = function (app, config, db) {
       // find the lane where the card will be removed
       var lane = board.lanes.id(message.lane.id);
       if (!lane) {
-        return app.pubsub.publishError('/cards/destroy', '/cards/destroy', {
+        return app.pubsub.publishError('/cards/delete', '/cards/delete', {
           errorCode: 404,
           message: 'Lane not found',
           context: message
@@ -274,7 +274,7 @@ module.exports = function (app, config, db) {
 
       board.save(function (err, board) {
         if (err) {
-          return app.pubsub.publishError('/cards/destroy', '/cards/destroy', {
+          return app.pubsub.publishError('/cards/delete', '/cards/delete', {
             message: 'Failed to delete card',
             details: err,
             context: message
@@ -284,11 +284,11 @@ module.exports = function (app, config, db) {
         recordHistory(message, 'card', 'delete', card);
 
         // notify the client
-        app.pubsub.publishToClient('/cards/destroy', {}, message);
+        app.pubsub.publishToClient('/cards/delete', {}, message);
 
         // notify all subscribers
         app.pubsub.publish('/boards/' + board.id + '/cards', {
-          action: 'destroy',
+          action: 'delete',
           board: { id: board.id },
           lane: { id: lane.id },
           card: { id: card.id }

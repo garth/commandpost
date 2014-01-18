@@ -117,16 +117,16 @@ describe('cards api', function () {
 
   it('removes a card', function (done) {
     var moved = false;
-    var destroyed = false;
+    var deleted = false;
     var sub = pubsub.subscribe('/boards/22875455e3e2812b6e000001/cards', function (message) {
       try {
-        if (message.action === 'destroy') {
+        if (message.action === 'delete') {
           moved = true;
           expect(message.card).to.exist;
           expect(message.card.id).to.equal('42875455e3e2812b6e000001');
         }
         if (message.action === 'move') {
-          destroyed = true;
+          deleted = true;
           expect(message.cards).to.exist;
           expect(message.cards.length).to.equal(3);
           expect(message.cards[0].id).to.equal('42875455e3e2812b6e000002');
@@ -136,14 +136,14 @@ describe('cards api', function () {
           expect(message.cards[2].id).to.equal('42875455e3e2812b6e000004');
           expect(message.cards[2].order).to.equal(2);
         }
-        if (moved && destroyed) {
+        if (moved && deleted) {
           sub.cancel();
           done();
         }
       }
       catch (ex) { done(ex); }
     });
-    pubsub.publishAwait('/cards/destroy', {
+    pubsub.publishAwait('/cards/delete', {
       board: { id: '22875455e3e2812b6e000001' },
       lane: { id: '32875455e3e2812b6e000001' },
       card: { id: '42875455e3e2812b6e000001' }
