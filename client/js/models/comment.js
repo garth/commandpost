@@ -6,6 +6,10 @@ App.Comment = Ember.Object.extend({
   userId: null,
   createdOn: null,
 
+  me: function () {
+    return this.get('userId') === App.get('user.id');
+  }.property('userId'),
+
   user: function () {
     var users = App.get('users');
     var userId = this.get('userId');

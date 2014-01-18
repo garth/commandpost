@@ -52,8 +52,23 @@ App.BoardController = App.ObjectController.extend({
       }
     };
 
+    subscriptions['/boards/' + boardId + '/cards/comments'] = function (message) {
+      switch (message.action) {
+      case 'create':
+        self.createComment(message);
+        break;
+      }
+    };
+
     this.subscribe(subscriptions);
   }.observes('model'),
+
+  createComment: function (message) {
+    var card = this.get('model').cardIndex[message.card.id];
+    var comment = App.Comment.create(message.comment);
+    card.get('comments').pushObject(comment);
+    App.flash.info(comment.get('user.name') + ' commented on "' + card.get('title') + '"');
+  },
 
   createCard: function (message) {
     App.flash.info('"' + message.card.title + '" Card has been created');

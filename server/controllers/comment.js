@@ -1,56 +1,63 @@
 var mongoose = require('mongoose');
-//var Comment = mongoose.model('Comment');
-//var updateProperties = require('../helpers/update-properties');
-//var recordHistory = require('../helpers/history').record;
+var Board = mongoose.model('Board');
 
 module.exports = function (app, config, db) {
 
-  // var authorise = require('../authorise')(config);
+  app.pubsub.subscribe('/server/cards/comments/create', function (message) {
+    Board.findById(message.board.id, function (err, board) {
+      if (err || !board) {
+        return app.pubsub.publishError('/cards/comments/create', '/cards/comments/create', {
+          errorCode: err ? 500 : 404,
+          message: err ? 'Failed to get board' : 'Board not found',
+          details: err,
+          context: message
+        });
+      }
 
-  // app.get('/api/comments', authorise, function (req, res, next) {
-  //   Comment.find(prepareQuery(req.query), function (err, comments) {
-  //     if (err) { return next(err); }
-  //     res.send({ comments: comments });
-  //   });
-  // });
+      // find the lane where the comment will be added
+      var lane = board.lanes.id(message.lane.id);
+      if (!lane) {
+        return app.pubsub.publishError('/cards/comments/create', '/cards/comments/create', {
+          errorCode: 404,
+          message: 'Lane not found',
+          context: message
+        });
+      }
 
-  // app.post('/api/comments', authorise, function (req, res, next) {
-  //   var comment = req.body.comment;
-  //   comment.user = req.user.id;
-  //   (new Comment(comment)).save(function (err, comment) {
-  //     if (err) { return next(err); }
-  //     recordHistory(req.user, 'comment', 'create', comment.toJSON());
-  //     res.send({ comment: comment });
-  //   });
-  // });
+      // find the card where the comment will be added
+      var card = lane.cards.id(message.card.id);
+      if (!card) {
+        return app.pubsub.publishError('/cards/comments/create', '/cards/comments/create', {
+          errorCode: 404,
+          message: 'Card not found',
+          context: message
+        });
+      }
 
-  // app.get('/api/comments/:id', authorise, function (req, res, next) {
-  //   Comment.findById(req.params.id, function (err, comment) {
-  //     if (err) { return next(err); }
-  //     res.send(comment ? { comment: comment } : 404);
-  //   });
-  // });
+      // add the comment to the card
+      var comment = message.comment;
+      comment.createdOn = Date.now();
+      comment.userId = message.meta.userId;
+      comment = card.comments[card.comments.push(comment) - 1];
 
-  // app.put('/api/comments/:id', authorise, function (req, res, next) {
-  //   Comment.findById(req.params.id, function (err, comment) {
-  //     if (err) { return next(err); }
-  //     var oldValues = updateProperties(comment, req.body.comment, ['text']);
-  //     recordHistory(req.user, 'comment', 'update', comment.toJSON(), oldValues);
-  //     comment.save(function (err, comment) {
-  //       if (err) { return next(err); }
-  //       res.send({});
-  //     });
-  //   });
-  // });
+      board.save(function (err, board) {
+        if (err) {
+          return app.pubsub.publishError('/cards/comments/create', '/cards/comments/create', {
+            message: 'Failed to create comment',
+            details: err,
+            context: message
+          });
+        }
 
-  // app.del('/api/comments/:id', authorise, function (req, res, next) {
-  //   Comment.findById(req.params.id, function (err, comment) {
-  //     if (err) { return next(err); }
-  //     recordHistory(req.user, 'comment', 'delete', comment.toJSON());
-  //     comment.remove(function (err) {
-  //       if (err) { return next(err); }
-  //       res.send({});
-  //     });
-  //   });
-  // });
+        // notify all subscribers
+        app.pubsub.publish('/boards/' + board.id + '/cards/comments', {
+          action: 'create',
+          board: { id: board.id },
+          lane: { id: lane.id },
+          card: { id: card.id },
+          comment: comment.toJSON()
+        });
+      });
+    });
+  });
 };

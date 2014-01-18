@@ -2,6 +2,9 @@ require('../views/card');
 
 App.BoardCardController = Ember.ObjectController.extend({
 
+  newComment: '',
+  showNewComment: false,
+
   users: function () {
     return this.get('model.lane.board.users');
   }.property('model.lane.board.users'),
@@ -43,7 +46,7 @@ App.BoardCardController = Ember.ObjectController.extend({
         board: { id: lane.get('board.id') },
         lane: { id: lane.get('id') },
         card: card.getProperties(
-          'id', 'cardTypeId', 'title', 'description', 'point', 'tags', 'assignedToUserId')
+          'id', 'cardTypeId', 'title', 'description', 'points', 'tags', 'assignedToUserId')
       }).then(function (message) {
         if (action === 'create') {
           lane.get('cards').removeObject(card);
@@ -52,6 +55,20 @@ App.BoardCardController = Ember.ObjectController.extend({
           card.set('isEditing', false);
         }
       });
+    },
+
+    addComment: function () {
+      this.set('showNewComment', true);
+    },
+
+    saveComment: function () {
+      App.pubsub.publish('/server/cards/comments/create', {
+        board: { id: this.get('model.lane.board.id') },
+        lane: { id: this.get('model.lane.id') },
+        card: { id: this.get('model.id') },
+        comment: { text: this.get('newComment') }
+      });
+      this.setProperties({ newComment: null, showNewComment: false });
     },
 
     toggleHistory: function () {
