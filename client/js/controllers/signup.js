@@ -7,30 +7,25 @@ App.SignupRoute = Ember.Route.extend({
   }
 });
 
-App.SignupController = App.Controller.extend({
+App.SignupController = Ember.Controller.extend({
 
   errorMessage: '',
-
   name: '',
   initials: '',
   login: '',
   password: '',
 
-  privateSubscriptions: {
-    '/error/users/create': function (message) {
-      this.set('errorMessage', message.message);
-    },
-    '/users/create': function (message) {
-      this.set('errorMessage', '');
-      this.setProperties({ name: '', initials: '', login: '', password: '' });
-      this.transitionToRoute('signin');
-    }
-  },
-
   actions: {
     signup: function() {
-      App.pubsub.publish('/server/users/create',
-        { user: this.getProperties('name', 'initials', 'login', 'password') });
+      var self = this;
+      App.pubsub.publishAwait('/users/create', {
+        user: this.getProperties('name', 'initials', 'login', 'password')
+      }).then(function (message) {
+        self.setProperties({ errorMessage: '', name: '', initials: '', login: '', password: '' });
+        self.transitionToRoute('signin');
+      }, function (message) {
+        self.set('errorMessage', message.message);
+      });
     }
   }
 });

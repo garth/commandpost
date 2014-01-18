@@ -7,40 +7,38 @@ App.SigninRoute = Ember.Route.extend({
   }
 });
 
-App.SigninController = App.Controller.extend({
+App.SigninController = Ember.Controller.extend({
   needs: ['application'],
 
   errorMessage: '',
   name: '',
   password: '',
 
-  privateSubscriptions: {
-    '/error/session/create': function (message) {
-      this.set('errorMessage', message.message);
-      Ember.$('#signin-view').effect('shake');
-    },
-    '/session/create': function (message) {
-      // login the user
-      localStorage.sessionId = message.sessionId;
-      App.set('user', App.User.create(message.user));
-      // navigate
-      var applicationController = this.get('controllers.application');
-      var transition = applicationController.get('savedTransition');
-      applicationController.set('savedTransition', null);
-      // if the user was going somewhere, send them along, otherwise
-      // default to root
-      if (transition) {
-        transition.retry();
-      }
-      else {
-        this.transitionToRoute('index');
-      }
-    }
-  },
-
   actions: {
     signin: function() {
-      App.pubsub.publish('/server/session/create', this.getProperties('name', 'password'));
+      var self = this;
+      var applicationController = this.get('controllers.application');
+      var message = this.getProperties('name', 'password');
+      App.pubsub.publishAwait('/session/create', message).then(function (message) {
+        self.setProperties({ errorMessage: '', name: '', password: '' });
+        // login the user
+        localStorage.sessionId = message.sessionId;
+        App.set('user', App.User.create(message.user));
+        // navigate
+        var transition = applicationController.get('savedTransition');
+        applicationController.set('savedTransition', null);
+        // if the user was going somewhere, send them along, otherwise
+        // default to root
+        if (transition) {
+          transition.retry();
+        }
+        else {
+          self.transitionToRoute('index');
+        }
+      }, function (message) {
+        self.set('errorMessage', message.message);
+        Ember.$('#signin-view').effect('shake');
+      });
     }
   }
 

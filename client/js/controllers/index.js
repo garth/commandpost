@@ -28,6 +28,7 @@ App.IndexController = App.Controller.extend({
       var users = App.get('users');
       switch (message.action) {
       case 'create':
+        App.flash.info(message.user.name + ' signed up for Command Post');
         users && users.pushObject(App.User.create(message.user));
         break;
       case 'update':

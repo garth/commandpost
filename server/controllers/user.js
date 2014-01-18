@@ -27,13 +27,14 @@ module.exports = function (app, config, db) {
     // create the user
     (new User(message.user)).save(function (err, user) {
       if (err) {
-        return app.publishError('/users/create', '/users/create', {
+        return app.pubsub.publishError('/users/create', '/users/create', {
           message: 'Failed to create user',
           details: err,
           context: message
         });
       }
       user = user.toJSON();
+      message.meta.userId = user.id;
       recordHistory(message, 'user', 'create', user);
 
       // notify the client

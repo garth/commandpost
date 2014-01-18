@@ -25,7 +25,7 @@ module.exports = function (app, config, db) {
         !message.subscription.match(/^\/private\//)) ||
         // all messages (except /meta/, /server/session/create and
         // /server/user/create need to be pre-authorised
-        !message.channel.match(/^\/(meta|server\/session\/create|server\/user\/create)/)) {
+        !message.channel.match(/^\/(meta|server\/session\/create|server\/users\/create)/)) {
 
         // session is required
         var sessionId = message.ext && message.ext.sessionId;
