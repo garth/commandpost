@@ -1,21 +1,39 @@
 require('./sortable-list-item');
 
+Ember.Handlebars.registerHelper('group', function(options) {
+  var data = options.data,
+      fn   = options.fn,
+      view = data.view,
+      childView;
+
+  childView = view.createChildView(Ember._MetamorphView, {
+    context: Ember.get(view, 'context'),
+
+    template: function(context, options) {
+      options.data.insideGroup = true;
+      return fn(context, options);
+    }
+  });
+
+  view.appendChild(childView);
+});
+
 App.SortableListComponent = Ember.Component.extend({
   tagName: 'ul',
   classNameBindings: ['connectWith'],
 
   collection: null,
-  //parent: null,
-  //childrenKey: null,
-  //parentKey: null,
+  parent: null,
+  childrenKey: null,
+  parentKey: null,
   sortKey: null,
-  //autoSave: false,
+  onMove: null,
   connectWith: null,
   itemClass: '',
 
-  collectionObserver: function () {
-    this.$().sortable('refresh');
-  }.observes('collection'),
+  // collectionObserver: function () {
+  //   this.$().sortable('refresh');
+  // }.observes('collection'),
 
   setup: function () {
     var self = this;
@@ -24,56 +42,46 @@ App.SortableListComponent = Ember.Component.extend({
       update: function (event, ui) {
         // when moving lanes, only process event on destination lane
         if (ui.item[0].parentElement === event.target) {
-          //console.log('update', event, ui);
-          var list = self.getProperties('sortKey');//, 'parent', 'childrenKey','parentKey');
 
-          //   // which item moved
-          //   var movedItem = ui.item[0].sortableItem;
+          var list = self.getProperties('sortKey', 'onMove', 'parent', 'childrenKey', 'parentKey');
 
-          //   // find the new position
-          //   var position;
-          //   var items = self.$('li');
-          //   for (position = 0; position < items.length; position++) {
-          //     if (movedItem.id === items[position].sortableItem.id) {
-          //       break;
-          //     }
-          //   }
+          // which item moved
+          var movedItem = ui.item[0].sortableItem;
 
-          //   // publish the move
-          //   App.pubsub.publish('/card/move', {
-          //     cardId: movedItem.get('id'),
-          //     lane: list.parent.get('id'),
-          //     position: position
-          //   });
-          // }
+          // check for a lane move
+          //console.log(list.parent, list.parentKey);
+          if (list.parent && list.parentKey && movedItem.get(list.parentKey) !== list.parent) {
+            //console.log('new lane');
+            // update the parents children collections
+            if (list.childrenKey) {
+              movedItem.get(list.parentKey + '.' + list.childrenKey).removeObject(movedItem);
+              list.parent.get(list.childrenKey).pushObject(movedItem);
+            }
+            // update the childs parent
+            movedItem.set(list.parentKey, list.parent);
+          }
 
+          if (typeof list.onMove === 'function') {
+            // find the new position
+            var position;
+            var items = self.$('li');
+            for (position = 0; position < items.length; position++) {
+              if (movedItem === items[position].sortableItem) {
+                break;
+              }
+            }
 
-          //console.log(position);
-          var sort = 0;
+            // notify
+            list.onMove(list.parent, movedItem, position);
+          }
+
           if (list.sortKey) {
+            var sort = 0;
             _.each(self.$('li'), function (item) {
               var child = item.sortableItem;
               if (child) {
                 // set the order
                 child.set(list.sortKey, sort++);
-                // // update the parent
-                // var movedLane = false;
-                // if (list.parent && list.parentKey &&
-                //   child.get(list.parentKey) !== list.parent) {
-                //   // update the parents childrent collections
-                //   if (list.childrenKey) {
-                //     var collectionPath = list.childrenKey + '.content';
-                //     child.get(list.parentKey + '.' + collectionPath).removeObject(child);
-                //     list.parent.get(collectionPath).pushObject(child);
-                //   }
-                //   // update the childs parent
-                //   child.set(list.parentKey, list.parent);
-                //   movedLane = true;
-                // }
-                // // save changes
-                // if (list.autoSave && (movedLane || child.get('isDirty'))) {
-                //   child.save();
-                // }
               }
             });
           }
