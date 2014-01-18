@@ -24,7 +24,7 @@
             <span class="input-group-addon">{{card-icon icon=defaultCardType.icon}}</span>
             {{view Ember.Select
               content=visibleCardTypes
-              selection=defaultCardType
+              value=defaultCardTypeId
               optionValuePath="content.id"
               optionLabelPath="content.name"
               class="form-control"}}

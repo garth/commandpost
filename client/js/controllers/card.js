@@ -42,11 +42,16 @@ App.BoardCardController = Ember.ObjectController.extend({
       var card = this.get('model');
       var lane = card.get('lane');
       var action = card.get('id') ? 'update' : 'create';
+      var properties = [
+        'id', 'cardTypeId', 'title', 'description', 'points', 'tags', 'assignedToUserId'
+      ];
+      if (action === 'create') {
+        properties.push('order');
+      }
       App.pubsub.publishAwait('/cards/' + action, {
         board: { id: lane.get('board.id') },
         lane: { id: lane.get('id') },
-        card: card.getProperties(
-          'id', 'cardTypeId', 'title', 'description', 'points', 'tags', 'assignedToUserId')
+        card: card.getProperties(properties)
       }).then(function (message) {
         if (action === 'create') {
           lane.get('cards').removeObject(card);

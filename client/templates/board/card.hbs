@@ -13,7 +13,7 @@
         <div class="col-xs-6">
           {{view Ember.Select
             content=cardTypes
-            selection=cardType
+            value=cardTypeId
             optionValuePath="content.id"
             optionLabelPath="content.name"
             class="form-control input-sm"}}
@@ -48,7 +48,7 @@
           Assigned to
           {{view Ember.Select
             content=App.users
-            selection=assignedToUser
+            value=assignedToUserId
             optionValuePath="content.id"
             optionLabelPath="content.name"
             prompt="Not Assigned"

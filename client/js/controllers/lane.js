@@ -5,18 +5,10 @@ App.BoardLaneController = Ember.ObjectController.extend({
 
   cardsChanged: function () {
     Ember.run.once(this, 'sortCards');
-  }.observes('model.cards', 'model.cards.@each.priority', 'model.cards.@each.order').on('init'),
+  }.observes('model.cards.@each.order').on('init'),
 
   sortCards: function () {
-    //console.log('sort lane');
-    var list = this.get('model.cards').sortBy('priority', 'order');
-    for (var order = 0; order < list.length; order++) {
-      var card = list[order];
-      if (card.get('order') !== order) {
-        card.set('order', order);
-        //card.save();
-      }
-    }
+    var list = this.get('model.cards').sortBy('order');
     this.set('sortedCards', list);
   },
 

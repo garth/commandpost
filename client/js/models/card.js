@@ -39,38 +39,20 @@ App.Card = Ember.Object.extend({
     }
   },
 
-  cardType: function (key, value) {
-    if (value) {
-      this.set('cardTypeId', value.get('id'));
-    }
-    else {
-      var cardTypes = this.get('lane.board.cardTypes');
-      var cardTypeId = this.get('cardTypeId');
-      if (cardTypes && cardTypeId) {
-        return cardTypes.findBy('id', cardTypeId);
-      }
-    }
+  cardType: function () {
+    var board = this.get('lane.board');
+    var cardTypeId = this.get('cardTypeId');
+    return board.cardTypeIndex[cardTypeId];
   }.property('cardTypeId', 'lane.board.cardTypes'),
 
   createdByUser: function () {
-    var users = App.get('users');
     var createdByUserId = this.get('createdByUserId');
-    if (users && createdByUserId) {
-      return users.findBy('id', createdByUserId);
-    }
+    return App.userIndex[createdByUserId];
   }.property('createdByUserId', 'App.users'),
 
-  assignedToUser: function (key, value) {
-    if (value) {
-      this.set('assignedToUserId', value.get('id'));
-    }
-    else {
-      var users = App.get('users');
-      var assignedToUserId = this.get('assignedToUserId');
-      if (users && assignedToUserId) {
-        return users.findBy('id', assignedToUserId);
-      }
-    }
+  assignedToUser: function () {
+    var assignedToUserId = this.get('assignedToUserId');
+    return App.userIndex[assignedToUserId];
   }.property('assignedToUserId', 'App.users'),
 
   priority: function () {

@@ -7,9 +7,12 @@ App.IndexRoute = Ember.Route.extend({
       this.transitionTo('signin');
     }
     else {
+      App.userIndex = {};
       App.pubsub.publishAwait('/users', function (message) {
         App.set('users', _.map(message.users, function (user) {
-          return App.User.create(user);
+          var userObj = App.User.create(user);
+          App.userIndex[user.id] = userObj;
+          return userObj;
         }));
       });
     }
@@ -28,8 +31,12 @@ App.IndexController = App.Controller.extend({
       var users = App.get('users');
       switch (message.action) {
       case 'create':
-        App.flash.info(message.user.name + ' signed up for Command Post');
-        users && users.pushObject(App.User.create(message.user));
+        if (users) {
+          App.flash.info(message.user.name + ' signed up for Command Post');
+          var userObj = App.User.create(message.user);
+          App.userIndex[message.user.id] = userObj;
+          users.pushObject(userObj);
+        }
         break;
       case 'update':
         var user = users && users.findBy('id', message.board.id);

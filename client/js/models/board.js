@@ -18,6 +18,16 @@ App.Board = App.BoardSummary.extend({
     var self = this;
     this.laneIndex = {};
     this.cardIndex = {};
+    this.cardTypeIndex = {};
+    var cardTypes = this.get('cardTypes');
+    if (cardTypes) {
+      this.set('cardTypes', _.map(cardTypes, function (cardType) {
+        cardType.board = self;
+        var cardTypeObj = App.CardType.create(cardType);
+        self.cardTypeIndex[cardType.id] = cardTypeObj;
+        return cardTypeObj;
+      }));
+    }
     var lanes = this.get('lanes');
     if (lanes) {
       this.set('lanes', _.map(lanes, function (lane) {
@@ -27,29 +37,16 @@ App.Board = App.BoardSummary.extend({
         return laneObj;
       }));
     }
-    var cardTypes = this.get('cardTypes');
-    if (cardTypes) {
-      this.set('cardTypes', _.map(cardTypes, function (cardType) {
-        cardType.board = self;
-        return App.CardType.create(cardType);
-      }));
-    }
   },
 
   defaultCardType: function () {
-    var cardTypes = this.get('cardTypes');
     var defaultCardTypeId = this.get('defaultCardTypeId');
-    if (cardTypes && defaultCardTypeId) {
-      return cardTypes.findBy('id', defaultCardTypeId);
-    }
+    this.cardTypeIndex[defaultCardTypeId];
   }.property('defaultCardTypeId', 'cardTypes'),
 
   createdByUser: function () {
-    var users = App.get('users');
     var createdByUserId = this.get('createdByUserId');
-    if (users && createdByUserId) {
-      return users.findBy('id', createdByUserId);
-    }
+    return App.userIndex[createdByUserId];
   }.property('createdByUserId', 'App.users'),
 
   sortedLanes: function () {

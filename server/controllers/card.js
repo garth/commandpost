@@ -9,7 +9,7 @@ module.exports = function (app, config, db) {
 
   var sortLane = function (board, lane, card, position) {
     _.forEach(lane.cards, function (card) {
-      card.cardTypePriority = board.cardTypes.id(card.cardTypeId).priority;
+      card.cardTypePriority = board.cardTypes.id(card.cardTypeId).priority * -1;
     });
     // sort existing cards
     var cards = _.sortBy(lane.cards, ['cardTypePriority', 'order']);
@@ -18,7 +18,7 @@ module.exports = function (app, config, db) {
     if (card) {
       // add the card to the lane
       card = lane.cards[lane.cards.push(card) - 1];
-      card.cardTypePriority = board.cardTypes.id(card.cardTypeId).priority;
+      card.cardTypePriority = board.cardTypes.id(card.cardTypeId).priority * -1;
       // set the card position
       if (position < 1) {
         card.order = -1;
@@ -237,7 +237,7 @@ module.exports = function (app, config, db) {
 
         if (message.oldLane) {
           // notify all subscribers (history changed)
-          var card = card.toJSON();
+          card = card.toJSON();
           delete card.comments;
           app.pubsub.publish('/boards/' + board.id + '/cards', {
             action: 'update',
