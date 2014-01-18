@@ -23,6 +23,7 @@ App = Ember.Application.extend({
 }).create();
 
 //load helpers
+require('./helpers/handlebars');
 require('./helpers/helper-methods');
 App.pubsub = require('./helpers/pubsub')(
   App, window.Faye, Ember.RSVP, '/pubsub', App.createUuid(), localStorage);
@@ -33,6 +34,7 @@ require('./models/board');
 require('./models/card-type');
 require('./models/card');
 require('./models/comment');
+require('./models/history');
 require('./models/lane');
 require('./models/user');
 

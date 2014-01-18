@@ -68,6 +68,13 @@ App.BoardController = App.ObjectController.extend({
   updateCard: function (message) {
     var card = this.get('model').cardIndex[message.card.id];
     card.setProperties(message.card);
+    var history = message.card.history;
+    if (history) {
+      card.set('history', _.map(history, function (history) {
+        history.card = card;
+        return App.History.create(history);
+      }));
+    }
     //App.flash.info('"' + card.get('title') + '" Card has been updated');
   },
 

@@ -1,10 +1,11 @@
-App.Comment = Ember.Object.extend({
+App.History = Ember.Object.extend({
   card: null,
 
   id: null,
-  text: null,
   userId: null,
-  createdOn: null,
+  date: null,
+  laneName: null,
+  action: null,
 
   user: function () {
     var users = App.get('users');

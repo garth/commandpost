@@ -54,6 +54,11 @@ App.BoardCardController = Ember.ObjectController.extend({
       });
     },
 
+    toggleHistory: function () {
+      var card = this.get('model');
+      card.set('showHistory', !card.get('showHistory'));
+    },
+
     'delete': function () {
       var card = this.get('model');
       var lane = card.get('lane');

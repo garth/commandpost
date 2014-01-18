@@ -61,6 +61,25 @@
         </div>
       </div>
     </form>
+    {{#if showHistory}}
+      <button class="btn btn-default btn-xs" {{action toggleHistory}}>
+        <i class="fa fa-caret-down"></i> History
+      </button>
+      <table class="table">
+        <tr>
+          <th>Lane</th><th>User</th><th>When</th>
+        </tr>
+        {{#each h in history}}
+          <tr>
+            <td>{{h.laneName}}</td><td>{{h.user.initials}}</td><td>{{time-since h.date}}</td>
+          </tr>
+        {{/each}}
+      </table>
+    {{else}}
+      <button class="btn btn-default btn-xs" {{action toggleHistory}}>
+        <i class="fa fa-caret-right"></i> History
+      </button>
+    {{/if}}
   </div>
 {{else}}
   <div class="closed">

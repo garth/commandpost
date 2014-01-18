@@ -1,4 +1,5 @@
 require('./comment');
+require('./history');
 
 App.Card = Ember.Object.extend({
   lane: null,
@@ -14,8 +15,10 @@ App.Card = Ember.Object.extend({
   assignedToUserId: null,
   order: null,
   comments: null,
+  history: null,
 
   isEditing: false,
+  showHistory: false,
 
   init: function() {
     this._super();
@@ -25,6 +28,13 @@ App.Card = Ember.Object.extend({
       this.set('comments', _.map(comments, function (comment) {
         comment.card = self;
         return App.Comment.create(comment);
+      }));
+    }
+    var history = this.get('history');
+    if (history) {
+      this.set('history', _.map(history, function (history) {
+        history.card = self;
+        return App.History.create(history);
       }));
     }
   },

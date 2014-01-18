@@ -237,11 +237,13 @@ module.exports = function (app, config, db) {
 
         if (message.oldLane) {
           // notify all subscribers (history changed)
+          var card = card.toJSON();
+          delete card.comments;
           app.pubsub.publish('/boards/' + board.id + '/cards', {
             action: 'update',
             board: { id: board.id },
             lane: { id: lane.id },
-            card: card.toJSON()
+            card: card
           });
         }
       });
