@@ -9,14 +9,14 @@
   <div class="panel-body lane-container" {{bind-attr style="view.laneStyle"}}>
     {{#sortable-list
       collection=sortedCards
-      parent=content
+      parent=model
       childrenKey="cards"
       parentKey="lane"
-      sortKey="order"
+      onMove=cardMoved
       connectWith="board-lane-list"
       class="list-group"
       itemClass="list-group-item"}}
-      {{render "boards/card" .}}
+      {{render "board/card" .}}
     {{/sortable-list}}
   </div>
 </div>

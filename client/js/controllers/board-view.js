@@ -17,23 +17,22 @@ App.BoardViewController = App.ObjectController.extend({
 
     addCard: function (begining) {
       // find the first lane that defaults to being visible
-      var lane = this.get('sortedLanes').find(function (lane) {
+      var lane = this.get('model.sortedLanes').find(function (lane) {
         return lane.get('defaultIsVisible');
       });
       var cards = lane.get('cards');
-      var card = this.get('store').createRecord('card', {
+      var card = App.Card.create({
         lane: lane,
+        cardTypeId: lane.get('model.defaultCardTypeId'),
         title: 'New Card',
-        order: begining ? -1 : cards.get('content').length,
-        cardType: lane.get('board.defaultCardType'),
+        description: '',
         points: 0,
+        tags: [],
+        order: begining ? -1 : cards.length,
+        comments: [],
         isEditing: true
       });
       cards.pushObject(card);
-      // only save if at the end, since sorting will auto-save
-      if (!begining) {
-        card.save();
-      }
     }
   }
 });

@@ -1,6 +1,6 @@
 require('../views/card');
 
-App.BoardsCardController = Ember.ObjectController.extend({
+App.BoardCardController = Ember.ObjectController.extend({
 
   users: function () {
     return this.get('model.lane.board.users');
