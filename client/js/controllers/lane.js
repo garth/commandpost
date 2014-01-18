@@ -5,23 +5,7 @@ App.BoardLaneController = Ember.ObjectController.extend({
 
   cardsChanged: function () {
     Ember.run.once(this, 'sortCards');
-  }.observes('content.cards', 'content.cards.@each.priority', 'content.cards.@each.order')
-   .on('init'),
-
-
-  cardMoved: function (lane, card, position) {
-    //console.log(lane, card, position);
-    App.flash.info(card.get('title') + ' moved to ' +
-      lane.get('name') + ' position ' + position);
-
-    //   // publish the move
-    //   App.pubsub.publish('/card/move', {
-    //     cardId: movedItem.get('id'),
-    //     lane: list.parent.get('id'),
-    //     position: position
-    //   });
-    // }
-  },
+  }.observes('model.cards', 'model.cards.@each.priority', 'model.cards.@each.order').on('init'),
 
   sortCards: function () {
     //console.log('sort lane');
@@ -34,5 +18,22 @@ App.BoardLaneController = Ember.ObjectController.extend({
       }
     }
     this.set('sortedCards', list);
+  },
+
+  cardMoved: function (lane, card, position, oldLane) {
+    // until the server responds, ensure that the card stays where we put it
+    if (oldLane) {
+      card.set('order', position - 0.5);
+    }
+    // publish the move
+    var message = {
+      board: { id: card.get('lane.board.id') },
+      lane: { id: card.get('lane.id') },
+      card: { id: card.get('id'), order: position }
+    };
+    if (oldLane) {
+      message.oldLane = { id: oldLane.get('id') };
+    }
+    App.pubsub.publish('/server/cards/move', message);
   }
 });

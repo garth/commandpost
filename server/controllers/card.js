@@ -240,7 +240,7 @@ module.exports = function (app, config, db) {
             action: 'update',
             board: { id: board.id },
             lane: { id: lane.id },
-            card: card
+            card: card.toJSON()
           });
         }
       });

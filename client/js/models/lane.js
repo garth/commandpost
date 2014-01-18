@@ -14,11 +14,14 @@ App.Lane = Ember.Object.extend({
   init: function() {
     this._super();
     var self = this;
+    var board = this.get('board');
     var cards = this.get('cards');
     if (cards) {
       this.set('cards', _.map(cards, function (card) {
         card.lane = self;
-        return App.Card.create(card);
+        var cardObj = App.Card.create(card);
+        board.cardIndex[card.id] = cardObj;
+        return cardObj;
       }));
     }
   },

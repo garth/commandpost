@@ -5,37 +5,35 @@ var mixin = Ember.Mixin.create({
   init: function () {
     this._super();
 
-    var self = this;
+    // subscribe to channels
     this.subscriptionList = [];
+    this.subscribe(this.get('subscriptions'));
+    this.subscribe(this.get('privateSubscriptions'), true);
+  },
 
-    // subscribe to public channels
-    var subscriptions = this.get('subscriptions');
-    for (var sub in subscriptions) {
-      (function (sub) {
-        self.subscriptionList.push(App.pubsub.subscribe(sub, function (message) {
-          subscriptions[sub].call(self, message);
+  subscribe: function (subscriptions, privateSubscription) {
+    var self = this;
+    var subscribe = privateSubscription ? App.pubsub.subscribeToClient : App.pubsub.subscribe;
+    for (var subscription in subscriptions) {
+      (function (subscription) {
+        self.subscriptionList.push(subscribe.call(App.pubsub, subscription, function (message) {
+          subscriptions[subscription].call(self, message);
         }));
-      })(sub);
+      })(subscription);
     }
+  },
 
-    // subscribe to private channels
-    var privateSubscriptions = this.get('privateSubscriptions');
-    for (var privateSub in privateSubscriptions) {
-      (function (privateSub) {
-        self.subscriptionList.push(App.pubsub.subscribeToClient(privateSub, function (message) {
-          privateSubscriptions[privateSub].call(self, message);
-        }));
-      })(privateSub);
-    }
+  unsubscribeAll: function () {
+     // unsubscribe all channels
+    this.subscriptionList.forEach(function (subscription) {
+      subscription.cancel();
+    });
+    this.subscriptionList = [];
   },
 
   willDestroy: function () {
     this._super();
-
-    // unsubscribe all channels
-    this.subscriptionList.forEach(function (subscription) {
-      subscription.cancel();
-    });
+    this.unsubscribeAll();
   },
 });
 

@@ -8,5 +8,5 @@ App.BoardRoute = Ember.Route.extend({
   }
 });
 
-App.BoardViewController = App.ObjectController.extend({
+App.BoardController = App.ObjectController.extend({
 });

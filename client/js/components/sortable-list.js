@@ -1,23 +1,5 @@
 require('./sortable-list-item');
 
-Ember.Handlebars.registerHelper('group', function(options) {
-  var data = options.data,
-      fn   = options.fn,
-      view = data.view,
-      childView;
-
-  childView = view.createChildView(Ember._MetamorphView, {
-    context: Ember.get(view, 'context'),
-
-    template: function(context, options) {
-      options.data.insideGroup = true;
-      return fn(context, options);
-    }
-  });
-
-  view.appendChild(childView);
-});
-
 App.SortableListComponent = Ember.Component.extend({
   tagName: 'ul',
   classNameBindings: ['connectWith'],
@@ -47,34 +29,21 @@ App.SortableListComponent = Ember.Component.extend({
 
           // which item moved
           var movedItem = ui.item[0].sortableItem;
+          var oldParent;
 
           // check for a lane move
-          //console.log(list.parent, list.parentKey);
           if (list.parent && list.parentKey && movedItem.get(list.parentKey) !== list.parent) {
-            //console.log('new lane');
+            oldParent = movedItem.get(list.parentKey);
             // update the parents children collections
             if (list.childrenKey) {
-              movedItem.get(list.parentKey + '.' + list.childrenKey).removeObject(movedItem);
+              oldParent.get(list.childrenKey).removeObject(movedItem);
               list.parent.get(list.childrenKey).pushObject(movedItem);
             }
             // update the childs parent
             movedItem.set(list.parentKey, list.parent);
           }
 
-          if (typeof list.onMove === 'function') {
-            // find the new position
-            var position;
-            var items = self.$('li');
-            for (position = 0; position < items.length; position++) {
-              if (movedItem === items[position].sortableItem) {
-                break;
-              }
-            }
-
-            // notify
-            list.onMove(list.parent, movedItem, position);
-          }
-
+          // update sort order properties
           if (list.sortKey) {
             var sort = 0;
             _.each(self.$('li'), function (item) {
@@ -84,6 +53,20 @@ App.SortableListComponent = Ember.Component.extend({
                 child.set(list.sortKey, sort++);
               }
             });
+          }
+
+          // notify callback
+          if (typeof list.onMove === 'function') {
+            // find the new position
+            var position;
+            var items = self.$('li');
+            for (position = 0; position < items.length; position++) {
+              if (movedItem === items[position].sortableItem) {
+                break;
+              }
+            }
+            // notify
+            list.onMove(list.parent, movedItem, position, oldParent);
           }
         }
       }

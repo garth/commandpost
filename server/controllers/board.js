@@ -164,7 +164,7 @@ module.exports = function (app, config, db) {
         app.pubsub.publishToClient('/boards/update', doc, message);
 
         // notify all subscribers
-        app.pubsub.publish('/boards/' + board.id + '/update', { board: board });
+        app.pubsub.publish('/boards/' + board.id, { board: board });
         if (oldValues.name) {
           app.pubsub.publish('/boards', {
             action: 'update',
@@ -193,6 +193,10 @@ module.exports = function (app, config, db) {
 
       // notify all subscribers
       app.pubsub.publish('/boards', {
+        action: 'destroy',
+        board: { id: board.id }
+      });
+      app.pubsub.publish('/boards/' + board.id, {
         action: 'destroy',
         board: { id: board.id }
       });

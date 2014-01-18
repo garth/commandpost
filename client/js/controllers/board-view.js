@@ -23,7 +23,7 @@ App.BoardViewController = App.ObjectController.extend({
       var cards = lane.get('cards');
       var card = App.Card.create({
         lane: lane,
-        cardTypeId: lane.get('model.defaultCardTypeId'),
+        cardTypeId: lane.get('board.defaultCardTypeId'),
         title: 'New Card',
         description: '',
         points: 0,

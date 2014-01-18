@@ -16,11 +16,15 @@ App.Board = App.BoardSummary.extend({
   init: function() {
     this._super();
     var self = this;
+    this.laneIndex = {};
+    this.cardIndex = {};
     var lanes = this.get('lanes');
     if (lanes) {
       this.set('lanes', _.map(lanes, function (lane) {
         lane.board = self;
-        return App.Lane.create(lane);
+        var laneObj = App.Lane.create(lane);
+        self.laneIndex[lane.id] = laneObj;
+        return laneObj;
       }));
     }
     var cardTypes = this.get('cardTypes');

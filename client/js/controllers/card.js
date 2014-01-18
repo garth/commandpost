@@ -37,16 +37,36 @@ App.BoardCardController = Ember.ObjectController.extend({
 
     close: function () {
       var card = this.get('model');
-      card.set('isEditing', false);
-      card.save();
+      var lane = card.get('lane');
+      var action = card.get('id') ? 'update' : 'create';
+      App.pubsub.publishAwait('/cards/' + action, {
+        board: { id: lane.get('board.id') },
+        lane: { id: lane.get('id') },
+        card: card.getProperties(
+          'id', 'cardTypeId', 'title', 'description', 'point', 'tags', 'assignedToUserId')
+      }).then(function (message) {
+        if (action === 'create') {
+          lane.get('cards').removeObject(card);
+        }
+        else {
+          card.set('isEditing', false);
+        }
+      });
     },
 
     'delete': function () {
       var card = this.get('model');
-      var cards = card.get('lane.cards');
-      cards.removeObject(card);
-      card.deleteRecord();
-      card.save();
+      var lane = card.get('lane');
+      if (card.get('id')) {
+        App.pubsub.publish('/cards/destroy', {
+          board: { id: lane.get('board.id') },
+          lane: { id: lane.get('id') },
+          card: { id: card.get('id') }
+        });
+      }
+      else {
+        lane.get('cards').removeObject(card);
+      }
     }
   }
 });
