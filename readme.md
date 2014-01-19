@@ -1,8 +1,9 @@
-Background
+Motivation
 ----------
 
-Command Post was built to be used on-site by individuals or organisations where using one of the
-many available online services is prohibited for any reason.
+Whilst there are many great online SAS backlog tools, Command Post was built to be used within
+your own network by organisations where using one of the many available online services is
+prohibited for any reason.
 
 Overview
 --------
@@ -20,10 +21,8 @@ Technology
 The client application is based on primarily on [EmberJS](http://emberjs.com),
 [Bootstrap](http://getbootstrap.com) and some [jQuery UI](http://jqueryui.com). The server uses
 [NodeJS](http://nodejs.org), [Express](http://expressjs.com) and
-[mongoDB](http://www.mongodb.org). Command Post uses REST to push/pull data from the client and
-[Server-Sent Events](http://en.wikipedia.org/wiki/Server-sent_events) to push data from the
-server. So it should work with older proxies and servers where web sockets are an issue, however
-IE still does not support the SSE standard so cannot be used with Command Post at this time.
+[mongoDB](http://www.mongodb.org). Client server communication is done via
+[FAYE](http://faye.jcoglan.com/) pub/sub.
 
 Status
 ------
@@ -35,14 +34,29 @@ Command Post is in beta. Currently you can:
 * Create and configure boards
 * Manage board lanes
 * Manage board card types
-* Add and order cards
+* Add, edit and order cards
 * Move cards between lanes
+* Add comments to cards
 * View changes by team members in near real-time
 
 If you find an bug, please open a github issue.
 
 Changelog
 ---------
+
+#### 1.0.0.beta.3
+
+* [fix] Improved realtime communication by replacing ember-data/REST with pub/sub
+* [fix] Login name is no longer case sensitive
+* [feature] Users can comment on cards
+* [feature] Cards store lane changes in history
+* [feature] Added lane types ("hidden", "queue", "in-progress" and "done")
+* [feature] Moving to an "in-progress" lane, auto assignes the card to the current user
+* [feature] Added initials and login name to signup form
+* [feature] Users can change their name and initials on the profile page
+* [feature] Various minor visual enhancements
+* [performance] Improved the performance of sorting and moving cards on larger boards
+* [performance] Production builds now use producion versions of client libraries
 
 #### 1.0.0-beta.2
 
@@ -61,19 +75,13 @@ Roadmap
 
 The following features are planned (in no particular order):
 
-* Add comments to cards
 * Improved security constraints - Per board, roles, etc...
+* Add attachments to cards
 * Release management - Archive completed cards and create release notes
 * Velocity estimations based on history
 * Iteration markers/grouping - allow distant backlog iterations to be collapsed
-* Improved emberjs automated testing
-* Make change history/log viewable
-* Highlight real-time changes
-
-The following are being considered:
-
-* Replace Ember data (REST) with pub-sub style communications
-* Replace mongoDB with postgresql
+* Improved automated client testing
+* Improve real-time change highlighting
 
 To contribute to one of these features, open an issue and we can discuss.
 
@@ -85,7 +93,8 @@ Install
 3. Clone this repository to your target machine
 4. `npm install`
 5. `npm install -g bower`
-6. `npm install -g grunt-cli` & `grunt`
+6. `npm install -g grunt-cli`
+7. `grunt`
 
 For installation on Windows see the [iisnode readme](docs/iisnode/readme.md).
 
