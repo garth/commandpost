@@ -50,15 +50,41 @@ module.exports = function (app, config, db) {
     });
   });
 
-  // app.put('/api/users/:id', authorise, function (req, res, next) {
-  //   User.findById(req.params.id, function (err, user) {
-  //     if (err) { return next(err); }
-  //     var oldValues = updateProperties('user', user, req.body.user, ['name', 'password']);
-  //     recordHistory(req.user, 'user', 'update', user.toJSON(), oldValues);
-  //     user.save(function (err, user) {
-  //       if (err) { return next(err); }
-  //       res.send({});
-  //     });
-  //   });
-  // });
+  app.pubsub.subscribe('/server/users/update', function (message) {
+    User.findById(message.user.id, function (err, user) {
+      if (err || !user) {
+        return app.pubsub.publishError('/users/update', '/users/update', {
+          errorCode: err ? 500 : 404,
+          message: err ? 'Failed to get user' : 'User not found',
+          details: err,
+          context: message
+        });
+      }
+
+      // find and update update the card
+      var oldValues = updateProperties(user, message.user, ['name', 'initials']);
+
+      // save the changes
+      user.save(function (err, user) {
+        if (err) {
+          return app.pubsub.publishError('/users/update', '/users/update', {
+            message: 'Failed to update user',
+            details: err,
+            context: message
+          });
+        }
+        user = user.toJSON();
+        recordHistory(message, 'user', 'update', user, oldValues);
+
+        // notify the client
+        app.pubsub.publishToClient('/users/update', {}, message);
+
+        // notify all subscribers
+        app.pubsub.publish('/users', {
+          action: 'update',
+          user: user
+        });
+      });
+    });
+  });
 };

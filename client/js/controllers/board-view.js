@@ -30,6 +30,7 @@ App.BoardViewController = App.ObjectController.extend({
         tags: [],
         order: begining ? -1 : cards.length,
         comments: [],
+        history: [],
         isEditing: true
       });
       cards.pushObject(card);

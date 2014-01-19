@@ -7,6 +7,7 @@ App.Router.map(function() {
   this.route('signup');
   //everything under index requires authentication
   this.resource('index', { path: '/' }, function () {
+    this.resource('profile');
     this.resource('boards', function () {
       this.route('new');
       this.resource('board', { path: ':board_id' }, function () {

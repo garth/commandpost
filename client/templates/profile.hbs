@@ -1,0 +1,30 @@
+<div class="signin container">
+  <h1>Profile</h1>
+</div>
+
+<div id="signin-view">
+  <div class="signin container">
+
+    <form role="form" {{action "save" on="submit"}}>
+      <div {{bind-attr class=":panel errorMessage:panel-danger:panel-default"}}>
+        <div class="panel-body">
+          {{input-text label="Name" placeholder="name" value=name}}
+          {{input-text label="Initials" placeholder="initials" value=initials}}
+        </div>
+        <div {{bind-attr class=":panel-footer errorMessage:panel-footer-danger"}}>
+          <div class="row">
+            <div class="col-md-8 text-right">
+              {{errorMessage}}
+            </div>
+            <div class="col-md-4 text-right">
+              <button type="submit" class="btn btn-primary">
+                <i class="fa fa-check"></i> Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>

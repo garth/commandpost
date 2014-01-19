@@ -39,7 +39,7 @@ App.IndexController = App.Controller.extend({
         }
         break;
       case 'update':
-        var user = users && users.findBy('id', message.board.id);
+        var user = App.userIndex[message.user.id];
         if (user) {
           user.setProperties(message.user);
         }
