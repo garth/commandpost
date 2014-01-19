@@ -46,6 +46,9 @@ Changelog
 
 #### 1.0.0.beta.3
 
+> Warning: beta 3 has breaking changes in the data storage format. If you have an
+> installation of beta 1 or 2, an upgrade script will be available soon.
+
 * [fix] Improved realtime communication by replacing ember-data/REST with pub/sub
 * [fix] Login name is no longer case sensitive
 * [feature] Users can comment on cards
