@@ -8,6 +8,10 @@ App.createUuid = function() {
 // enable flash messages
 App.flash = window.toastr;
 
+App.flash.options = {
+  "positionClass": "toast-bottom-right"
+};
+
 App.flash.serverError = function (title, err) {
   var message;
   if (err.responseJSON && err.responseJSON.error) {
