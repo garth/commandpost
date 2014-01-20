@@ -47,7 +47,10 @@ Changelog
 #### 1.0.0.beta.3
 
 > Warning: beta 3 has breaking changes in the data storage format. If you have an
-> installation of beta 1 or 2, an upgrade script will be available soon.
+> installation of beta 1 or 2 you'll need to run the following upgrade script (be
+> sure to backup your production data before running the script).
+>
+> `node scripts\migrationToBeta3.js`
 
 * [fix] Improved realtime communication by replacing ember-data/REST with pub/sub
 * [fix] Login name is no longer case sensitive

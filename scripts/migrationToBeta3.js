@@ -25,8 +25,30 @@ var Board = mongoose.model('Board');
 var CardType = mongoose.model('CardType');
 var Card = mongoose.model('Card');
 var Lane = mongoose.model('Lane');
+var User = mongoose.model('User');
 
 console.log('Upgrading production database: ' + config.db);
+
+User.find({}, function (err, users) {
+  if (err) { return console.log(err); }
+
+  var i = 0;
+  console.log(users);
+  _.forEach(users, function (user) {
+    if (!user.login) {
+      console.log('Transforming user: ' + user.name);
+      user.login = user.name;
+      user.initials = user.name[0] + (++i);
+      console.log(user);
+      user.save(function (err) {
+        if (err) { return console.log(err); }
+      });
+    }
+    else {
+      console.log(user.name + ' has already been transformed');
+    }
+  });
+});
 
 var boardPromises = [];
 
@@ -101,15 +123,14 @@ Board.find({}, function (err, boards) {
           });
 
           RSVP.all(lanePromises).then(function () {
-            console.log('Save board: ', board);
+            //console.log('Save board: ', board);
 
-            // board.save(function(err) {
-            //   if (err) { return console.log(err); }
-            // });
+            board.save(function(err) {
+              if (err) { return console.log(err); }
+              resolveBoard();
+            });
 
-            resolveBoard();
           });
-
         });
       });
     }));
