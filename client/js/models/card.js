@@ -39,6 +39,14 @@ App.Card = Ember.Object.extend({
     }
   },
 
+  isAdmin: function () {
+    return this.get('lane.isAdmin');
+  }.property('lane.isAdmin'),
+
+  isUser: function () {
+    return this.get('lane.isUser');
+  }.property('lane.isUser'),
+
   cardType: function () {
     var board = this.get('lane.board');
     var cardTypeId = this.get('cardTypeId');

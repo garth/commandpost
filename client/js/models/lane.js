@@ -26,6 +26,14 @@ App.Lane = Ember.Object.extend({
     }
   },
 
+  isAdmin: function () {
+    return this.get('board.isAdmin');
+  }.property('board.isAdmin'),
+
+  isUser: function () {
+    return this.get('board.isUser');
+  }.property('board.isUser'),
+
   tags: function () {
     var allTags = [];
     this.get('cards').forEach(function (card) {

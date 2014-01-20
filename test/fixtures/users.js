@@ -6,6 +6,7 @@ module.exports = [
     name: 'Garth',
     initials: 'G',
     login: 'garth',
+    role: 'admin',
     password: 'sha1$87eb07a6$1$40c17198317550debf1a7cf19bf793d8d97b51e3', //test
   },
   {

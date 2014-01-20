@@ -31,6 +31,7 @@ require('./helpers/controller');
 
 //load models
 require('./models/board');
+require('./models/board-user');
 require('./models/card-type');
 require('./models/card');
 require('./models/comment');

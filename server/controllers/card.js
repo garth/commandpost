@@ -67,6 +67,16 @@ module.exports = function (app, config, db) {
         });
       }
 
+      // check the user permissions
+      var role = board.getUserRole(message.meta.user);
+      if (role !== 'admin' && role !== 'user') {
+        return app.pubsub.publishError('/cards/create', '/cards/create', {
+          errorCode: 403,
+          message: 'Not authorised',
+          context: message
+        });
+      }
+
       // find the lane where the card will be added
       var lane = board.lanes.id(message.lane.id);
       if (!lane) {
@@ -81,7 +91,7 @@ module.exports = function (app, config, db) {
       var card = message.card;
       card = lane.cards[lane.cards.push(card) - 1];
       card.history.push({
-        userId: message.meta.userId,
+        userId: message.meta.user.id,
         date: Date.now(),
         action: 'create',
         laneName: lane.name
@@ -120,6 +130,16 @@ module.exports = function (app, config, db) {
           errorCode: err ? 500 : 404,
           message: err ? 'Failed to get board' : 'Board not found',
           details: err,
+          context: message
+        });
+      }
+
+      // check the user permissions
+      var role = board.getUserRole(message.meta.user);
+      if (role !== 'admin' && role !== 'user') {
+        return app.pubsub.publishError('/cards/update', '/cards/update', {
+          errorCode: 403,
+          message: 'Not authorised',
           context: message
         });
       }
@@ -183,6 +203,16 @@ module.exports = function (app, config, db) {
         });
       }
 
+      // check the user permissions
+      var role = board.getUserRole(message.meta.user);
+      if (role !== 'admin' && role !== 'user') {
+        return app.pubsub.publishError('/cards/move', '/cards/move', {
+          errorCode: 403,
+          message: 'Not authorised',
+          context: message
+        });
+      }
+
       // find the lanes where the card will be moved from and to
       var oldLane = null;
       if (message.oldLane) {
@@ -211,7 +241,7 @@ module.exports = function (app, config, db) {
       if (message.oldLane) {
         // store the move in the card history
         card.history.push({
-          userId: message.meta.userId,
+          userId: message.meta.user.id,
           date: Date.now(),
           action: 'move',
           laneName: lane.name
@@ -220,7 +250,7 @@ module.exports = function (app, config, db) {
         // when moving to an 'active' lane, auto assign the
         // card to the user who moved it
         if (lane.type === 'in-progress') {
-          card.assignedToUserId = message.meta.userId;
+          card.assignedToUserId = message.meta.user.id;
         }
       }
 
@@ -257,6 +287,16 @@ module.exports = function (app, config, db) {
           errorCode: err ? 500 : 404,
           message: err ? 'Failed to get board' : 'Board not found',
           details: err,
+          context: message
+        });
+      }
+
+      // check the user permissions
+      var role = board.getUserRole(message.meta.user);
+      if (role !== 'admin') {
+        return app.pubsub.publishError('/cards/delete', '/cards/delete', {
+          errorCode: 403,
+          message: 'Not authorised',
           context: message
         });
       }

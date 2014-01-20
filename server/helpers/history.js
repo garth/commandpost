@@ -4,7 +4,7 @@ var History = mongoose.model('History');
 module.exports = function (pubsub) {
   return function (message, type, action, document, previousValues) {
     var history = {
-      userId: message.meta.userId,
+      userId: message.meta.user.id,
       action: action,
       documentType: type,
       document: document

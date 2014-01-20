@@ -24,33 +24,57 @@ module.exports = function (app, config, db) {
   });
 
   app.pubsub.subscribe('/server/users/create', function (message) {
-    // create the user
-    (new User(message.user)).save(function (err, user) {
+    User.find({}, function (err, users) {
       if (err) {
         return app.pubsub.publishError('/users/create', '/users/create', {
-          message: 'Failed to create user',
+          message: 'Failed to lookup users',
           details: err,
           context: message
         });
       }
-      user = user.toJSON();
-      message.meta.userId = user.id;
-      recordHistory(message, 'user', 'create', user);
 
-      // notify the client
-      app.pubsub.publishToClient('/users/create', {
-        user: user
-      }, message);
+      // first user gets admin permission
+      message.user.role = users.length === 0 ? 'admin' : 'user';
 
-      // notify all subscribers
-      app.pubsub.publish('/users', {
-        action: 'create',
-        user: user
+      // create the user
+      (new User(message.user)).save(function (err, user) {
+        if (err) {
+          return app.pubsub.publishError('/users/create', '/users/create', {
+            message: 'Failed to create user',
+            details: err,
+            context: message
+          });
+        }
+        user = user.toJSON();
+        message.meta.user = user;
+        recordHistory(message, 'user', 'create', user);
+
+        // notify the client
+        app.pubsub.publishToClient('/users/create', {
+          user: user
+        }, message);
+
+        // notify all subscribers
+        app.pubsub.publish('/users', {
+          action: 'create',
+          user: user
+        });
       });
+
     });
   });
 
   app.pubsub.subscribe('/server/users/update', function (message) {
+    // check the user permissions
+    var role = message.meta.user.role;
+    if (role !== 'admin' || message.meta.user.id !== message.user.id) {
+      return app.pubsub.publishError('/users/update', '/users/update', {
+        errorCode: 403,
+        message: 'Not authorised',
+        context: message
+      });
+    }
+
     User.findById(message.user.id, function (err, user) {
       if (err || !user) {
         return app.pubsub.publishError('/users/update', '/users/update', {
@@ -61,8 +85,13 @@ module.exports = function (app, config, db) {
         });
       }
 
-      // find and update update the card
-      var oldValues = updateProperties(user, message.user, ['name', 'initials']);
+      // update the user
+      var properties = ['name', 'initials'];
+      if (message.meta.user.role === 'admin' && message.meta.user.id !== message.user.id) {
+        // admins can update a users role (but not their own role)
+        properties.push('role');
+      }
+      var oldValues = updateProperties(user, message.user, properties);
 
       // save the changes
       user.save(function (err, user) {

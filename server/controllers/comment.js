@@ -14,6 +14,16 @@ module.exports = function (app, config, db) {
         });
       }
 
+      // check the user permissions
+      var role = board.getUserRole(message.meta.user);
+      if (role !== 'admin' && role !== 'user') {
+        return app.pubsub.publishError('/cards/comments/create', '/cards/comments/create', {
+          errorCode: 403,
+          message: 'Not authorised',
+          context: message
+        });
+      }
+
       // find the lane where the comment will be added
       var lane = board.lanes.id(message.lane.id);
       if (!lane) {
@@ -37,7 +47,7 @@ module.exports = function (app, config, db) {
       // add the comment to the card
       var comment = message.comment;
       comment.createdOn = Date.now();
-      comment.userId = message.meta.userId;
+      comment.userId = message.meta.user.id;
       comment = card.comments[card.comments.push(comment) - 1];
 
       board.save(function (err, board) {

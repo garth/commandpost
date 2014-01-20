@@ -37,8 +37,10 @@ module.exports = function (app, config, db) {
   app.pubsub.subscribe('/server/boards/create', function (message) {
     // create a board with a default set of card types and lanes
     var board = new Board(message.board);
-    board.createdByUserId = message.meta.userId;
+    board.createdByUserId = message.meta.user.id;
     board.createdOn = Date.now();
+    // board creator is admin of the board
+    board.users.push({ userId: message.meta.user.id, role: 'admin' });
     board.cardTypes.push(
       { board: board, name: 'Story', icon: 'book', pointScale: '1,2,3,5,8' },
       { board: board, name: 'Bug', icon: 'bug', priority: 1 },
@@ -96,6 +98,16 @@ module.exports = function (app, config, db) {
           errorCode: err ? 500 : 404,
           message: err ? 'Failed to update board' : 'Board not found',
           details: err,
+          context: message
+        });
+      }
+
+      // check the user permissions
+      var role = board.getUserRole(message.meta.user);
+      if (role !== 'admin') {
+        return app.pubsub.publishError('/boards/update', '/boards/update', {
+          errorCode: 403,
+          message: 'Not authorised',
           context: message
         });
       }
@@ -180,7 +192,7 @@ module.exports = function (app, config, db) {
 
   app.pubsub.subscribe('/server/boards/delete', function (message) {
     // remove the board
-    Board.findByIdAndRemove(message.board.id, function (err, board) {
+    Board.findById(message.board.id, function (err, board) {
       if (err || !board) {
         return app.pubsub.publishError('/boards/delete', '/boards/delete', {
           errorCode: err ? 500 : 404,
@@ -189,19 +201,42 @@ module.exports = function (app, config, db) {
           context: message
         });
       }
-      recordHistory(message, 'board', 'delete', board.toJSON());
 
-      // notify the client
-      app.pubsub.publishToClient('/boards/delete', {}, message);
+      // check the user permissions
+      var role = board.getUserRole(message.meta.user);
+      if (role !== 'admin') {
+        return app.pubsub.publishError('/boards/delete', '/boards/delete', {
+          errorCode: 403,
+          message: 'Not authorised',
+          context: message
+        });
+      }
 
-      // notify all subscribers
-      app.pubsub.publish('/boards', {
-        action: 'delete',
-        board: { id: board.id }
-      });
-      app.pubsub.publish('/boards/' + board.id, {
-        action: 'delete',
-        board: { id: board.id }
+      board.remove(function (err, board) {
+        if (err || !board) {
+          return app.pubsub.publishError('/boards/delete', '/boards/delete', {
+            errorCode: err ? 500 : 404,
+            message: err ? 'Failed to remove board' : 'Board not found',
+            details: err,
+            context: message
+          });
+        }
+
+        recordHistory(message, 'board', 'delete', board.toJSON());
+
+        // notify the client
+        app.pubsub.publishToClient('/boards/delete', {}, message);
+
+        // notify all subscribers
+        app.pubsub.publish('/boards', {
+          action: 'delete',
+          board: { id: board.id }
+        });
+        app.pubsub.publish('/boards/' + board.id, {
+          action: 'delete',
+          board: { id: board.id }
+        });
+
       });
     });
   });

@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Session = mongoose.model('Session');
+var User = mongoose.model('User');
 var crypto = require('crypto');
 
 var serverSecret = crypto.randomBytes(256).toString();
@@ -67,6 +68,7 @@ module.exports = function (app, config, db) {
                 details: err,
                 context: message.data
               });
+              callback(message);
             }
             // check if session is not found or has expired
             else if (!session || session.expiresOn < Date.now()) {
@@ -77,26 +79,45 @@ module.exports = function (app, config, db) {
                 message: errorMessage,
                 context: message.data
               });
+              callback(message);
             }
             else {
               // accept this request
               message.data = message.data || {};
               message.data.meta = message.data.meta || {};
-              message.data.meta.userId = session.userId.toString();
 
-              // extend the session once per day
-              var ttl = new Date(new Date().getTime() + config.sessionTtl - 1000 * 60 * 60 * 24);
-              if (session.expiresOn < ttl) {
-                session.extend(function (err, session) {
+              // append the user doc to the message.data
+              User.findById(session.userId, function (err, user) {
+                if (err || !user) {
+                  errorMessage = 'Failed to lookup user';
+                  message.error = (err ? 500 : 404) +'::' + errorMessage;
                   app.pubsub.publishError('/session', '/server', {
-                    message: 'Failed to extend session',
+                    errorCode: err ? 500 : 404,
+                    message: errorMessage,
                     details: err,
                     context: message.data
                   });
-                });
-              }
+                }
+                else {
+                  message.data.meta.user = user.toJSON();
+
+                  // extend the session once per day
+                  var ttl = new Date(
+                    new Date().getTime() + config.sessionTtl - 1000 * 60 * 60 * 24);
+                  if (session.expiresOn < ttl) {
+                    session.extend(function (err, session) {
+                      app.pubsub.publishError('/session', '/server', {
+                        message: 'Failed to extend session',
+                        details: err,
+                        context: message.data
+                      });
+                    });
+                  }
+
+                }
+                callback(message);
+              });
             }
-            callback(message);
           });
         }
       }

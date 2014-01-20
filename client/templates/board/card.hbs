@@ -2,65 +2,86 @@
   <div class="editing">
     <i class="fa fa-chevron-circle-down opener" {{action "close"}}></i>
     {{card-icon icon=cardType.icon}}
-    <button class="btn btn-danger btn-xs delete" {{action 'delete'}}>
-      <i class="fa fa-times"></i>
-    </button>
-    <form class="form-horizontal" {{action "close" on="submit"}}>
-      <div class="first-row">
-        {{input class="form-control input-sm" value=title}}
-      </div>
-      <div class="form-group">
-        <div class="col-xs-6">
-          {{view Ember.Select
-            content=cardTypes
-            value=cardTypeId
-            optionValuePath="content.id"
-            optionLabelPath="content.name"
-            class="form-control input-sm"}}
+    {{#if canDelete}}
+      <button class="btn btn-danger btn-xs delete" {{action 'delete'}}>
+        <i class="fa fa-times"></i>
+      </button>
+    {{/if}}
+    {{#if isUser}}
+      <form class="form-horizontal" {{action "close" on="submit"}}>
+        <div class="first-row">
+          {{input class="form-control input-sm" value=title}}
         </div>
-        <div class="col-xs-6">
-          {{#if pointScale}}
+        <div class="form-group">
+          <div class="col-xs-6">
             {{view Ember.Select
-              content=pointScale
-              value=points
-              optionValuePath="content.points"
-              optionLabelPath="content.label"
+              content=cardTypes
+              value=cardTypeId
+              optionValuePath="content.id"
+              optionLabelPath="content.name"
               class="form-control input-sm"}}
-          {{/if}}
+          </div>
+          <div class="col-xs-6">
+            {{#if pointScale}}
+              {{view Ember.Select
+                content=pointScale
+                value=points
+                optionValuePath="content.points"
+                optionLabelPath="content.label"
+                class="form-control input-sm"}}
+            {{/if}}
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <div class="col-xs-12">
-          Details
-          {{textarea
-            class="form-control input-sm"
-            value=description}}
+        <div class="form-group">
+          <div class="col-xs-12">
+            <div class="text-muted">Details</div>
+            {{textarea
+              class="form-control input-sm"
+              value=description}}
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <div class="col-xs-12">
-          Tags
-          {{input-tags value=tags placeholder="tag" allTags=lane.tags}}
+        <div class="form-group">
+          <div class="col-xs-12">
+            <div class="text-muted">Tags</div>
+            {{input-tags value=tags placeholder="tag" allTags=lane.tags}}
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <div class="col-xs-12">
-          Assigned to
-          {{view Ember.Select
-            content=App.users
-            value=assignedToUserId
-            optionValuePath="content.id"
-            optionLabelPath="content.name"
-            prompt="Not Assigned"
-            class="form-control input-sm"}}
+        <div class="form-group">
+          <div class="col-xs-12">
+            <div class="text-muted">Assigned to</div>
+            {{view Ember.Select
+              content=App.users
+              value=assignedToUserId
+              optionValuePath="content.id"
+              optionLabelPath="content.name"
+              prompt="Not Assigned"
+              class="form-control input-sm"}}
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <div class="col-xs-12 text-right">
-          <button type="submit" class="btn btn-primary btn-xs">Done</button>
+        <div class="form-group">
+          <div class="col-xs-12 text-right">
+            <button type="submit" class="btn btn-primary btn-xs">Done</button>
+          </div>
         </div>
+      </form>
+    {{else}}
+      {{#if points}}
+        <span class="label label-default pull-right">{{points}}</span>
+      {{/if}}
+      <div class="first-row">
+        {{#each tag in tags}}
+          <span class="label label-primary tag">{{tag}}</span>
+        {{/each}}
+        {{title}}
+        {{#if assignedToUser}}
+          ({{assignedToUser.initials}})
+        {{/if}}
       </div>
-    </form>
+      {{#if description}}
+        <div class="text-muted">Details</div>
+        <div>{{description}}</div>
+      {{/if}}
+    {{/if}}
 
     {{#each comment in comments}}
       <div {{bind-attr
@@ -71,20 +92,23 @@
         </div>
       </div>
     {{/each}}
-    <div class="text-right">
-      {{#if showNewComment}}
-        <form class="form-horizontal" {{action "saveComment" on="submit"}}>
-          {{textarea
-            class="form-control input-sm"
-            value=newComment}}
-          <button type="submit" class="btn btn-primary btn-xs">Save</button>
-        </form>
-      {{else}}
-        <button class="btn btn-default btn-xs" {{action addComment}}>
-          <i class="fa fa-plus"></i> Comment
-        </button>
-      {{/if}}
-    </div>
+
+    {{#if isUser}}
+      <div class="text-right">
+        {{#if showNewComment}}
+          <form class="form-horizontal" {{action "saveComment" on="submit"}}>
+            {{textarea
+              class="form-control input-sm"
+              value=newComment}}
+            <button type="submit" class="btn btn-primary btn-xs">Save</button>
+          </form>
+        {{else}}
+          <button class="btn btn-default btn-xs" {{action addComment}}>
+            <i class="fa fa-plus"></i> Comment
+          </button>
+        {{/if}}
+      </div>
+    {{/if}}
 
     {{#if showHistory}}
       <button class="btn btn-default btn-xs" {{action toggleHistory}}>
@@ -107,7 +131,7 @@
     {{/if}}
   </div>
 {{else}}
-  <div class="closed">
+  <div {{bind-attr class=":closed isUser:moveable"}}>
     <i class="fa fa-chevron-circle-right opener" {{action "open"}}></i>
     {{card-icon icon=cardType.icon}}
     <div class="pull-right">

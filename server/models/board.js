@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.Types.ObjectId;
@@ -10,6 +11,10 @@ module.exports = function (config, db) {
     defaultCardTypeId: { type: ObjectId },
     createdByUserId: { type: ObjectId, required: true },
     createdOn: { type: Date, required: true, 'default': Date.now },
+    users: [new Schema({
+      userId: { type: ObjectId, required: true },
+      role: { type: String, enum: ['admin', 'user'], require: true, 'default': 'user' },
+    }, config.schemaOptions)],
     lanes: [new Schema({
       name: { type: String, required: true },
       type: { type: String, enum: ['hidden', 'queue', 'in-progress', 'done'],
@@ -44,6 +49,17 @@ module.exports = function (config, db) {
       isHidden: { type: Boolean, required: true, 'default': false }
     }, config.schemaOptions)]
   }, config.schemaOptions);
+
+  // get the users role for this board
+  Board.methods.getUserRole = function (user) {
+    if (user.role === 'admin') {
+      return 'admin';
+    }
+    var boardUser = _.find(this.users, function (boardUser) {
+      return boardUser.userId.toString() === user.id;
+    });
+    return boardUser ? boardUser.role : '';
+  };
 
   // register board with mongoose
   mongoose.model('Board', Board);

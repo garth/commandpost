@@ -5,19 +5,9 @@ var Session = mongoose.model('Session');
 module.exports = function (app, config, db) {
 
   app.pubsub.subscribe('/server/session/get', function (message) {
-    User.findById(message.meta && message.meta.userId, function (err, user) {
-      if (err || !user) {
-        return app.pubsub.publishError('/session/get', '/session/get', {
-          errorCode: err ? 500 : 404,
-          message: err ? 'Failed to lookup user' : 'User not found',
-          details: err,
-          context: message
-        });
-      }
-      app.pubsub.publishToClient('/session/get', {
-        user: user.toJSON()
-      }, message);
-    });
+    app.pubsub.publishToClient('/session/get', {
+      user: message.meta.user
+    }, message);
   });
 
   app.pubsub.subscribe('/server/session/create', function (message) {

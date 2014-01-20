@@ -7,16 +7,26 @@
     {{name}}
   </div>
   <div class="panel-body lane-container" {{bind-attr style="view.laneStyle"}}>
-    {{#sortable-list
-      collection=sortedCards
-      parent=model
-      childrenKey="cards"
-      parentKey="lane"
-      onMove=cardMoved
-      connectWith="board-lane-list"
-      class="list-group"
-      itemClass="list-group-item"}}
-      {{render "board/card" .}}
-    {{/sortable-list}}
+    {{#if isUser}}
+      {{#sortable-list
+        collection=sortedCards
+        parent=model
+        childrenKey="cards"
+        parentKey="lane"
+        onMove=cardMoved
+        connectWith="board-lane-list"
+        class="list-group"
+        itemClass="list-group-item"}}
+        {{render "board/card" .}}
+      {{/sortable-list}}
+    {{else}}
+      <ul class="list-group readonly">
+        {{#each sortedCards}}
+          <li class="list-group-item">
+            {{render "board/card" .}}
+          </li>
+        {{/each}}
+      </ul>
+    {{/if}}
   </div>
 </div>

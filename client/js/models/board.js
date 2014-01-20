@@ -1,3 +1,4 @@
+require('./board-user');
 require('./lane');
 require('./card-type');
 
@@ -9,6 +10,7 @@ App.BoardSummary = Ember.Object.extend({
 App.Board = App.BoardSummary.extend({
   createdByUserId: null,
   createdOn: null,
+  users: null,
   lanes: null,
   defaultCardTypeId: null,
   cardTypes: null,
@@ -18,7 +20,27 @@ App.Board = App.BoardSummary.extend({
     var self = this;
     this.laneIndex = {};
     this.cardIndex = {};
+    this.userIndex = {};
     this.cardTypeIndex = {};
+    var users = this.get('users');
+    if (users) {
+      var userId = App.get('user.id');
+      var isAdmin = App.get('user.role') === 'admin';
+      var isUser = isAdmin;
+      this.set('users', _.map(users, function (user) {
+        if (userId === user.userId) {
+          isAdmin = isAdmin || user.role === 'admin';
+          isUser = isUser || isAdmin || user.role === 'user';
+        }
+        user.board = self;
+        user.user = App.userIndex[user.userId];
+        var userObj = App.BoardUser.create(user);
+        self.userIndex[user.userId] = userObj;
+        return userObj;
+      }));
+      this.set('isAdmin', isAdmin);
+      this.set('isUser', isUser);
+    }
     var cardTypes = this.get('cardTypes');
     if (cardTypes) {
       this.set('cardTypes', _.map(cardTypes, function (cardType) {
@@ -38,6 +60,9 @@ App.Board = App.BoardSummary.extend({
       }));
     }
   },
+
+  isAdmin: null,
+  isUser: null,
 
   defaultCardType: function () {
     var defaultCardTypeId = this.get('defaultCardTypeId');

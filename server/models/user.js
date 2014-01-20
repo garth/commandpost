@@ -19,7 +19,8 @@ module.exports = function (config, db) {
       set: toUpper },
     login: { type: String, index: { unique: true, dropDups: true }, required: true,
       set: toLower },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    role: { type: String, enum: ['admin', 'user'], require: true, 'default': 'user' }
   }, config.schemaOptions);
 
   // hash the password before saving
