@@ -17,7 +17,7 @@ App.BoardViewController = App.ObjectController.extend({
 
     addCard: function (begining) {
       // find the first lane that defaults to being visible
-      var lane = this.get('model.sortedLanes').find(function (lane) {
+      var lane = this.get('model.lanes').find(function (lane) {
         return lane.get('defaultIsVisible');
       });
       var cards = lane.get('cards');
@@ -28,12 +28,12 @@ App.BoardViewController = App.ObjectController.extend({
         description: '',
         points: 0,
         tags: [],
-        order: begining ? -1 : cards.length,
+        order: begining ? -1 : cards.get('length'),
         comments: [],
         history: [],
         isEditing: true
       });
-      cards.pushObject(card);
+      cards.addObject(card);
     }
   }
 });

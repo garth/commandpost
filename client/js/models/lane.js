@@ -16,14 +16,20 @@ App.Lane = Ember.Object.extend({
     var self = this;
     var board = this.get('board');
     var cards = this.get('cards');
-    if (cards) {
-      this.set('cards', _.map(cards, function (card) {
-        card.lane = self;
-        var cardObj = App.Card.create(card);
-        board.cardIndex[card.id] = cardObj;
-        return cardObj;
-      }));
+    if (!cards) {
+      cards = [];
     }
+    cards = _.map(cards, function (card) {
+      card.lane = self;
+      var cardObj = App.Card.create(card);
+      board.cardIndex[card.id] = cardObj;
+      return cardObj;
+    });
+    this.set('cards',  Ember.ArrayController.create({
+      content: cards,
+      sortProperties: ['order'],
+      sortAscending: true
+    }));
   },
 
   isAdmin: function () {

@@ -21,10 +21,10 @@ App.BoardEditController = Ember.ObjectController.extend({
         board: board,
         name: 'New Lane',
         type: 'queue',
-        order: lanes.length,
+        order: lanes.get('length'),
         cards: []
       });
-      lanes.pushObject(lane);
+      lanes.addObject(lane);
     },
 
     deleteLane: function (lane) {

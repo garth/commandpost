@@ -9,9 +9,8 @@
   <div class="panel-body lane-container" {{bind-attr style="view.laneStyle"}}>
     {{#if isUser}}
       {{#sortable-list
-        collection=sortedCards
+        collection=cards
         parent=model
-        childrenKey="cards"
         parentKey="lane"
         onMove=cardMoved
         connectWith="board-lane-list"
@@ -21,7 +20,7 @@
       {{/sortable-list}}
     {{else}}
       <ul class="list-group readonly">
-        {{#each sortedCards}}
+        {{#each cards}}
           <li class="list-group-item">
             {{render "board/card" .}}
           </li>

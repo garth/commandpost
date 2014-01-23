@@ -77,11 +77,12 @@ App.BoardController = App.ObjectController.extend({
     message.card.lane = lane;
     var card = App.Card.create(message.card);
     board.cardIndex[message.card.id] = card;
-    lane.get('cards').pushObject(card);
+    lane.get('cards').addObject(card);
   },
 
   updateCard: function (message) {
     var card = this.get('model').cardIndex[message.card.id];
+    delete message.card.order; // only moveCards function should set order
     card.setProperties(message.card);
     var history = message.card.history;
     if (history) {
@@ -98,14 +99,13 @@ App.BoardController = App.ObjectController.extend({
     message.cards.forEach(function (card) {
       var cardObj = board.cardIndex[card.id];
       if (cardObj) {
-        cardObj.set('order', -1); // force observer to fire even if the order is the same
         cardObj.set('order', card.order);
         var oldLane = cardObj.get('lane');
         if (oldLane.get('id') !== message.lane.id) {
           oldLane.get('cards').removeObject(cardObj);
           var lane = board.laneIndex[message.lane.id];
           cardObj.set('lane', lane);
-          lane.get('cards').pushObject(cardObj);
+          lane.get('cards').addObject(cardObj);
           App.flash.info('"' + cardObj.get('title') + '" Card has moved from ' +
             oldLane.get('name') + ' to ' + lane.get('name'));
         }
@@ -133,7 +133,7 @@ App.BoardController = App.ObjectController.extend({
       var oldLane = oldBoard.laneIndex[lane.get('id')];
       if (oldLane) {
         var cards = oldLane.get('cards');
-        lane.set('cards', cards);
+        lane.get('cards').addObjects(cards);
         cards.forEach(function (card) {
           card.set('lane', lane);
           board.cardIndex[card.get('id')] = card;

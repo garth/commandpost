@@ -51,14 +51,20 @@ App.Board = App.BoardSummary.extend({
       }));
     }
     var lanes = this.get('lanes');
-    if (lanes) {
-      this.set('lanes', _.map(lanes, function (lane) {
-        lane.board = self;
-        var laneObj = App.Lane.create(lane);
-        self.laneIndex[lane.id] = laneObj;
-        return laneObj;
-      }));
+    if (!lanes) {
+      lanes = [];
     }
+    lanes = _.map(lanes, function (lane) {
+      lane.board = self;
+      var laneObj = App.Lane.create(lane);
+      self.laneIndex[lane.id] = laneObj;
+      return laneObj;
+    });
+    this.set('lanes', Ember.ArrayController.create({
+      content: lanes,
+      sortProperties: ['order'],
+      sortAscending: true
+    }));
   },
 
   isAdmin: null,
@@ -74,16 +80,11 @@ App.Board = App.BoardSummary.extend({
     return App.userIndex[createdByUserId];
   }.property('createdByUserId', 'App.users'),
 
-  sortedLanes: function () {
-    var lanes = this.get('lanes');
-    return lanes.sortBy('order');
-  }.property('lanes.@each.order'),
-
   visibleLanes: function () {
-    return this.get('sortedLanes').filter(function (lane) {
+    return this.get('lanes').filter(function (lane) {
       return lane.get('isVisible');
     });
-  }.property('sortedLanes.@each.isVisible'),
+  }.property('lanes.@each.isVisible'),
 
   visibleCardTypes: function () {
     return this.get('cardTypes').filter(function (cardType) {
