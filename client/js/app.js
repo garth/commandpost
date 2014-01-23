@@ -43,6 +43,7 @@ require('./models/user');
 require('./router');
 
 // components
+require('./components/string-pluralise');
 require('./components/card-icon');
 require('./components/input-tags');
 require('./components/input-text');

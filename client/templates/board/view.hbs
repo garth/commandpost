@@ -18,6 +18,13 @@
             </a>
           </li>
         {{/each}}
+        <li class="divider"></li>
+        <li>
+          <a href="#" {{action toggleLaneStats model}}>
+            <i {{bind-attr class=":fa showLaneStats:fa-check-square-o:fa-square-o :fa-fw"}}></i>
+            Show Stats
+          </a>
+        </li>
       </ul>
     </div>
     {{#if isAdmin}}

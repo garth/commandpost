@@ -1,12 +1,37 @@
 <div {{bind-attr class=":panel defaultIsVisible:panel-info:panel-default"}}>
   <div class="panel-heading">
     {{#if cards.length}}
-      <span class="badge pull-right">{{cards.length}} cards</span>
+      <span class="badge pull-right">
+        {{cards.length}}
+        {{string-pluralise number=cards.length singular="card"}}
+      </span>
     {{/if}}
     <i {{bind-attr class=":fa icon"}}></i>
     {{name}}
   </div>
   <div class="panel-body lane-container" {{bind-attr style="view.laneStyle"}}>
+    {{#if board.showLaneStats}}
+      <table class="lane-stats table table-condensed">
+        <tr class="active">
+          <td>{{string-pluralise number=cards.length singular="Card"}}</td>
+          <td>{{cards.length}}</td>
+        </tr>
+        <tr class="active">
+          <td>{{string-pluralise number=points singular="Point"}}</td>
+          <td>{{points}}</td>
+        </tr>
+        {{#each cardType in cardTypes}}
+          <tr class="active">
+            <td>{{string-pluralise number=cardType.count singular=cardType.name}}</td>
+            <td>{{cardType.count}}</td>
+          </tr>
+        {{/each}}
+        <tr class="active">
+          <td>Longest Tenancy</td>
+          <td>{{time-duration longestTenancy}}</td>
+        </tr>
+      </table>
+    {{/if}}
     {{#if isUser}}
       {{#sortable-list
         collection=cards

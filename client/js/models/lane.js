@@ -52,6 +52,42 @@ App.Lane = Ember.Object.extend({
     return allTags;
   }.property('cards.@each.tags'),
 
+  points: function () {
+    var points = 0;
+    this.get('cards').forEach(function (card) {
+      points += card.get('points');
+    });
+    return points;
+  }.property('cards.@each.points'),
+
+  cardTypes: function () {
+    var typeIndex = {};
+    var types = this.get('board.cardTypes').sortBy('name').map(function (cardType) {
+      var type = { name: cardType.get('name'), count: 0 };
+      typeIndex[cardType.get('id')] = type;
+      return type;
+    });
+    this.get('cards').forEach(function (card) {
+      typeIndex[card.get('cardTypeId')].count++;
+    });
+    return types;
+  }.property('cards.@each.cardTypeId'),
+
+  longestTenancy: function () {
+    var now = Date.now();
+    var date = now;
+    this.get('cards').forEach(function (card) {
+      var tenancy = card.get('history.lastObject.date');
+      if (tenancy) {
+        tenancy = Date.parse(tenancy);
+        if (tenancy < date) {
+          date = tenancy;
+        }
+      }
+    });
+    return date - now;
+  }.property('cards.@each.history'),
+
   icon: function () {
     switch (this.get('type')) {
     case 'hidden':
@@ -71,18 +107,19 @@ App.Lane = Ember.Object.extend({
 
   isVisible: function (key, value) {
     var id = this.get('id');
+    var storageKey = 'lane_' + id + '_isHidden';
     var defaultValue = this.get('defaultIsVisible');
     if (key && value !== undefined) {
       if (value === defaultValue) {
-        delete window.localStorage['lane_' + id + '_isHidden'];
+        delete window.localStorage[storageKey];
       }
       else {
-        window.localStorage['lane_' + id + '_isHidden'] = JSON.stringify(!value);
+        window.localStorage[storageKey] = JSON.stringify(!value);
       }
       return !!value;
     }
     else if (id) {
-      value = window.localStorage['lane_' + id + '_isHidden'];
+      value = window.localStorage[storageKey];
       return value ? value === 'false' : defaultValue;
     }
     return defaultValue;

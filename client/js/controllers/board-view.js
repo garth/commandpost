@@ -15,6 +15,10 @@ App.BoardViewController = App.ObjectController.extend({
       lane.set('isVisible', !lane.get('isVisible'));
     },
 
+    toggleLaneStats: function (board) {
+      board.set('showLaneStats', !board.get('showLaneStats'));
+    },
+
     addCard: function (begining) {
       // find the first lane that defaults to being visible
       var lane = this.get('model.lanes').find(function (lane) {

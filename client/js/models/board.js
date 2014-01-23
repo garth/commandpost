@@ -90,5 +90,24 @@ App.Board = App.BoardSummary.extend({
     return this.get('cardTypes').filter(function (cardType) {
       return !cardType.get('isHidden');
     });
-  }.property('cardTypes.@each.isHidden')
+  }.property('cardTypes.@each.isHidden'),
+
+  showLaneStats: function (key, value) {
+    var id = this.get('id');
+    var storageKey = 'board_' + id + '_showLaneStats';
+    if (key && value !== undefined) {
+      if (!value) {
+        delete window.localStorage[storageKey];
+      }
+      else {
+        window.localStorage[storageKey] = JSON.stringify(!value);
+      }
+      return !!value;
+    }
+    else if (id) {
+      value = window.localStorage[storageKey];
+      return value ? value === 'false' : false;
+    }
+    return false;
+  }.property()
 });
