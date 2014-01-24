@@ -5,9 +5,9 @@ App.BoardViewController = App.ObjectController.extend({
   modelBinding: 'controllers.board.model',
 
   laneStyle: function () {
-    var count = this.get('visibleLanes').length;
+    var count = this.get('model.lanes').filterBy('isVisible').length;
     return 'width: ' + (count > 0 ? 100.0 / count : 0) + '%';
-  }.property('visibleLanes'),
+  }.property('model.lanes.@each.isVisible'),
 
   actions: {
 

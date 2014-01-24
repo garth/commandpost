@@ -70,6 +70,8 @@ App.Board = App.BoardSummary.extend({
   isAdmin: null,
   isUser: null,
 
+  filter: null,
+
   defaultCardType: function () {
     var defaultCardTypeId = this.get('defaultCardTypeId');
     this.cardTypeIndex[defaultCardTypeId];
@@ -79,12 +81,6 @@ App.Board = App.BoardSummary.extend({
     var createdByUserId = this.get('createdByUserId');
     return App.userIndex[createdByUserId];
   }.property('createdByUserId', 'App.users'),
-
-  visibleLanes: function () {
-    return this.get('lanes').filter(function (lane) {
-      return lane.get('isVisible');
-    });
-  }.property('lanes.@each.isVisible'),
 
   visibleCardTypes: function () {
     return this.get('cardTypes').filter(function (cardType) {

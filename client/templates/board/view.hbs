@@ -59,9 +59,11 @@
 </div>
 
 <div class="board-lanes">
-  {{#each lane in visibleLanes}}
-    <div class="board-lane" {{bind-attr style="laneStyle"}}>
-      {{render "board/lane" lane}}
-    </div>
+  {{#each lane in lanes}}
+    {{#if lane.isVisible}}
+      <div class="board-lane" {{bind-attr style="laneStyle"}}>
+        {{render "board/lane" lane}}
+      </div>
+    {{/if}}
   {{/each}}
 </div>
