@@ -15,8 +15,11 @@ App.SortableListComponent = Ember.Component.extend({
   setup: function () {
     var root = this.$();
     root[0].sortableParent = this;
+    var itemClass = this.get('itemClass');
     var connectWith = this.get('connectWith');
     root.sortable({
+      placeholder: 'placeholder ' + itemClass,
+      forcePlaceholderSize: true,
       stop: function (event, ui) {
         var self = ui.item[0].parentElement.sortableParent;
         var list = self.getProperties('sortKey', 'onMove', 'parent', 'parentKey');
