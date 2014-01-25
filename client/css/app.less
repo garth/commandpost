@@ -116,6 +116,32 @@ footer {
   opacity: 0.4;
   border: dashed 1px;
 }
+.list-group-item.ui-sortable-helper {
+  animation: drag-animation 0.5s 1 ease;
+  -webkit-animation: drag-animation 0.5s 1 ease;
+  -moz-animation: drag-animation 0.5s 1 ease;
+  -o-animation: drag-animation 0.5s 1 ease;
+  transform: rotate(2deg) scale(1) skew(0deg) translate(0px);
+  -webkit-transform: rotate(2deg) scale(1) skew(0deg) translate(0px);
+  -moz-transform: rotate(2deg) scale(1) skew(0deg) translate(0px);
+  -o-transform: rotate(2deg) scale(1) skew(0deg) translate(0px);
+}
+@keyframes drag-animation {
+  from { transform: rotate(0deg) scale(1) skew(0deg) translate(0px); }
+  to { transform: rotate(2deg) scale(1) skew(0deg) translate(0px); }
+}
+@-webkit-keyframes drag-animation {
+  from { -webkit-transform: rotate(0deg) scale(1) skew(0deg) translate(0px); }
+  to { -webkit-transform: rotate(2deg) scale(1) skew(0deg) translate(0px); }
+}
+@-moz-keyframes drag-animation {
+  from { -moz-transform: rotate(0deg) scale(1) skew(0deg) translate(0px); }
+  to { -moz-transform: rotate(2deg) scale(1) skew(0deg) translate(0px); }
+}
+@-o-keyframes drag-animation {
+  from { -o-transform: rotate(0deg) scale(1) skew(0deg) translate(0px); }
+  to { -o-transform: rotate(2deg) scale(1) skew(0deg) translate(0px); }
+}
 .card {
   .opener {
     position: absolute;
