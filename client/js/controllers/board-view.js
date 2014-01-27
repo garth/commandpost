@@ -38,6 +38,10 @@ App.BoardViewController = App.ObjectController.extend({
         isEditing: true
       });
       cards.addObject(card);
+    },
+
+    clear: function () {
+      this.get('model.filter').clear();
     }
   }
 });

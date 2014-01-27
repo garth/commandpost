@@ -16,6 +16,7 @@ App.Lane = Ember.Object.extend({
     var self = this;
     var board = this.get('board');
     var cards = this.get('cards');
+    var index = board.get('index');
     if (!cards) {
       cards = [];
     }
@@ -23,6 +24,8 @@ App.Lane = Ember.Object.extend({
       card.lane = self;
       var cardObj = App.Card.create(card);
       board.cardIndex[card.id] = cardObj;
+      card.commentText = cardObj.get('commentText');
+      index.add(card);
       return cardObj;
     });
     this.set('cards',  Ember.ArrayController.create({

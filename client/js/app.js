@@ -38,6 +38,7 @@ require('./models/comment');
 require('./models/history');
 require('./models/lane');
 require('./models/user');
+require('./models/filter');
 
 // the router
 require('./router');

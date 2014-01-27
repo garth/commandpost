@@ -2,7 +2,28 @@
   <div class="col-sm-4">
     <h1><i class="fa fa-bar-chart-o fa-rotate-180"></i> {{name}} Board</h1>
   </div>
-  <div class="col-sm-8 text-right board-toolbar">
+  <div class="col-sm-4 board-search">
+    <form class="form-horizontal" {{action "search" on="submit"}}>
+      {{view Ember.Select
+        content=App.users
+        value=filter.userId
+        optionValuePath="content.id"
+        optionLabelPath="content.name"
+        prompt="All Users"
+        class="form-control input-sm"}}
+      {{view Ember.Select
+        content=cardTypes
+        value=filter.cardTypeId
+        optionValuePath="content.id"
+        optionLabelPath="content.name"
+        prompt="All Card Types"
+        class="form-control input-sm"}}
+      {{input-tags value=filter.tags placeholder="search tag" allTags=tags}}
+      {{input class="form-control input-sm" value=filter.text placeholder="search text"}}
+      <button class="btn btn-default btn-xs" {{action "clear"}}>Clear</button>
+    </form>
+  </div>
+  <div class="col-sm-4 text-right board-toolbar">
     <div class="btn-group text-left">
       <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
         <i class="fa fa-align-left fa-rotate-90"></i> Lanes <span class="caret"></span>

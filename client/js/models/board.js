@@ -18,10 +18,23 @@ App.Board = App.BoardSummary.extend({
   init: function() {
     this._super();
     var self = this;
+
+    // type index's for finding objects by id
     this.laneIndex = {};
     this.cardIndex = {};
     this.userIndex = {};
     this.cardTypeIndex = {};
+
+    // index and filter for searching
+    this.set('index', window.lunr(function () {
+      this.field('title', { boost: 3 });
+      this.field('description', { boost: 2 });
+      this.field('commentText', { boost: 1 });
+      this.ref('id');
+    }));
+    this.set('filter', App.Filter.create({ board: this }));
+
+    // prepare data
     var users = this.get('users');
     if (users) {
       var userId = App.get('user.id');
@@ -70,7 +83,9 @@ App.Board = App.BoardSummary.extend({
   isAdmin: null,
   isUser: null,
 
+  index: null,
   filter: null,
+  matches: null,
 
   defaultCardType: function () {
     var defaultCardTypeId = this.get('defaultCardTypeId');

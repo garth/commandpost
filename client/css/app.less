@@ -108,7 +108,10 @@ footer {
 
 // card styles
 .list-group-item {
-  padding: 5px 3px;
+  padding: 2px 3px;
+}
+.list-group-item * {
+  margin: 2px 0px;
 }
 .list-group-item.placeholder {
   padding: 2px;
@@ -145,18 +148,21 @@ footer {
 .card {
   .opener {
     position: absolute;
-    top: 8px;
+    top: 5px;
     left: 3px;
     cursor: pointer;
     color: #89b;
   }
   .card-icon {
     position: absolute;
-    top: 8px;
+    top: 5px;
     left: 18px;
   }
   .first-row {
     margin: 0 20px 0 21px;
+  }
+  .indicators {
+    margin-top: -3px;
   }
   .editing {
     margin: 0 0 0 15px;
@@ -184,6 +190,9 @@ footer {
     padding: 3px 5px;
     background-color: #fcfdff;
   }
+}
+.card.unmatched {
+  display: none;
 }
 
 // edit board styles

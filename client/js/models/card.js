@@ -20,7 +20,7 @@ App.Card = Ember.Object.extend({
   isEditing: false,
   showHistory: false,
 
-  init: function() {
+  init: function () {
     this._super();
     var self = this;
     var comments = this.get('comments');
@@ -37,6 +37,18 @@ App.Card = Ember.Object.extend({
         return App.History.create(history);
       }));
     }
+    var index = this.get('lane.board.index');
+    if (index) {
+      index.add(this.getProperties('id', 'title', 'description', 'commentText'));
+    }
+  },
+
+  willDestroy: function () {
+    var index = this.get('lane.board.index');
+    if (index) {
+      index.remove(this.getProperties('id'));
+    }
+    this._super();
   },
 
   isAdmin: function () {
@@ -65,5 +77,25 @@ App.Card = Ember.Object.extend({
 
   priority: function () {
     return (this.get('cardType.priority') || 0) * -1;
-  }.property()
+  }.property(),
+
+  matchesFilter: function () {
+    var matches = this.get('lane.board.matches');
+    return matches ? matches[this.get('id')] : true;
+  }.property('lane.board.matches'),
+
+  commentText: function () {
+    var comments = [];
+    this.get('comments').forEach(function (comment) {
+      comments.push(comment.get('text'));
+    });
+    return comments.join(' ');
+  }.property('comments.@each.text'),
+
+  updateIndex: function () {
+    var index = this.get('lane.board.index');
+    if (index) {
+      index.update(this.getProperties('id', 'title', 'description', 'commentText'));
+    }
+  }.observes('title', 'description', 'commentText')
 });
