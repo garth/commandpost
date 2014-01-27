@@ -247,9 +247,9 @@ module.exports = function (app, config, db) {
           laneName: lane.name
         });
 
-        // when moving to an 'active' lane, auto assign the
+        // when moving forwards to an 'active' lane, auto assign the
         // card to the user who moved it
-        if (lane.type === 'in-progress') {
+        if (lane.type === 'in-progress' && lane.order > oldLane.order) {
           card.assignedToUserId = message.meta.user.id;
         }
       }
