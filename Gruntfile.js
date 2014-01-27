@@ -26,6 +26,7 @@ var components = [
   'bower_components/typeahead.js/dist/typeahead.js',
   'bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js',
   'bower_components/keymaster/keymaster.js',
+  'bower_components/lunr.js/lunr.js',
   'node_modules/lodash/dist/lodash.js',
   'node_modules/faye/browser/faye-browser.js',
   'bower_components/momentjs/moment.js',
