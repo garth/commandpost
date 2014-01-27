@@ -6,12 +6,17 @@ App.Filter = Ember.Object.extend({
   tags: null,
   text: null,
 
-  search: function () {
+  isOn: function () {
     var filter = this.getProperties('userId', 'cardTypeId', 'tags', 'text');
+    return !!(filter.userId || filter.cardTypeId || filter.tags || filter.text);
+  }.property('userId', 'cardTypeId', 'tags', 'text'),
+
+  search: function () {
+    var filter = this.getProperties('isOn', 'userId', 'cardTypeId', 'tags', 'text');
     var board = this.get('board');
 
     // check that there is something to filter
-    if (!filter.userId && !filter.cardTypeId && !filter.tags && !filter.text) {
+    if (!filter.isOn) {
       board.set('matches', null);
       return;
     }

@@ -76,6 +76,12 @@ footer {
 }
 
 // board styles
+.dropdown-menu > form {
+  margin: 7px 20px;
+  .form-group {
+    margin: 4px 0;
+  }
+}
 .board-toolbar {
   padding-top: 15px;
   padding-bottom: 8px;
@@ -108,16 +114,16 @@ footer {
 
 // card styles
 .list-group-item {
-  padding: 2px 3px;
+  padding: 0;
+  border: none;
 }
 .list-group-item * {
   margin: 2px 0px;
 }
 .list-group-item.placeholder {
-  padding: 2px;
-  margin: 3px 0 2px 0;
-  opacity: 0.4;
-  border: dashed 1px;
+  padding: 0;
+  margin: 1px 0 -2px 0;
+  background-color: #eee;
 }
 .list-group-item.ui-sortable-helper {
   animation: drag-animation 0.5s 1 ease;
@@ -146,6 +152,7 @@ footer {
   to { -o-transform: rotate(2deg) scale(1) skew(0deg) translate(0px); }
 }
 .card {
+  margin: 0;
   .opener {
     position: absolute;
     top: 5px;
@@ -193,6 +200,10 @@ footer {
 }
 .card.unmatched {
   display: none;
+}
+.card.matched {
+  border: solid 1px #dcdcdc;
+  padding: 2px;
 }
 
 // edit board styles

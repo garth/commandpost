@@ -2,8 +2,14 @@
   <div class="panel-heading">
     {{#if cards.length}}
       <span class="badge pull-right">
-        {{cards.length}}
-        {{string-pluralise number=cards.length singular="card"}}
+        {{#if model.board.filter.isOn}}
+          <i class="fa fa-filter"}}></i>
+          {{matchCount}}
+          {{string-pluralise number=matchCount singular="card"}}
+        {{else}}
+          {{cards.length}}
+          {{string-pluralise number=cards.length singular="card"}}
+        {{/if}}
       </span>
     {{/if}}
     <i {{bind-attr class=":fa icon"}}></i>

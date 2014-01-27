@@ -9,7 +9,13 @@ App.BoardViewController = App.ObjectController.extend({
     return 'width: ' + (count > 0 ? 100.0 / count : 0) + '%';
   }.property('model.lanes.@each.isVisible'),
 
+  showFilter: false,
+
   actions: {
+
+    toggleFilter: function () {
+      this.toggleProperty('showFilter');
+    },
 
     toggleLane: function (lane) {
       lane.set('isVisible', !lane.get('isVisible'));

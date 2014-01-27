@@ -76,6 +76,16 @@ App.Lane = Ember.Object.extend({
     return types;
   }.property('cards.@each.cardTypeId'),
 
+  matchCount: function () {
+    var count = 0;
+    this.get('cards').forEach(function (card) {
+      if (card.get('matchesFilter')) {
+        count++;
+      }
+    });
+    return count;
+  }.property('cards.@each.matchesFilter'),
+
   longestTenancy: function () {
     var now = Date.now();
     var date = now;
