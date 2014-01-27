@@ -11,6 +11,7 @@ App.SortableListComponent = Ember.Component.extend({
   onMove: null,
   connectWith: null,
   itemClass: '',
+  handle: '*',
 
   setup: function () {
     var root = this.$();
@@ -18,6 +19,7 @@ App.SortableListComponent = Ember.Component.extend({
     var itemClass = this.get('itemClass');
     var connectWith = this.get('connectWith');
     root.sortable({
+      handle: this.get('handle'),
       placeholder: 'placeholder ' + itemClass,
       forcePlaceholderSize: true,
       stop: function (event, ui) {
