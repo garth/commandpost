@@ -51,6 +51,13 @@ App.InputTagsComponent = Ember.Component.extend({
     this.$('input.tags').tagsinput('destroy');
   }.on('willDestroyElement'),
 
+  valueObserver: function () {
+    var value = this.get('value');
+    if (!value) {
+      this.$('input.tags').tagsinput('removeAll');
+    }
+  }.observes('value'),
+
   allTagsObserver: function () {
     var input = this.$('input.tt-query');
     input.typeahead('destroy');

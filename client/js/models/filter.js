@@ -8,6 +8,7 @@ App.Filter = Ember.Object.extend({
 
   isOn: function () {
     var filter = this.getProperties('userId', 'cardTypeId', 'tags', 'text');
+    filter.tags = filter.tags ? filter.tags.length : null;
     return !!(filter.userId || filter.cardTypeId || filter.tags || filter.text);
   }.property('userId', 'cardTypeId', 'tags', 'text'),
 
