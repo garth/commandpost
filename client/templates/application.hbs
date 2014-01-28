@@ -19,6 +19,13 @@
               <i class="fa fa-bar-chart-o fa-rotate-180"></i> Boards
             {{/link-to}}
           </li>
+          {{#if App.user.isAdmin}}
+            <li>
+              {{#link-to 'users'}}
+                <i class="fa fa-users"></i> Users
+              {{/link-to}}
+            </li>
+          {{/if}}
         {{else}}
           <li>{{#link-to 'signup'}}<i class="fa fa-edit"></i> Sign up{{/link-to}}</li>
         {{/if}}
