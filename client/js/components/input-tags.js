@@ -43,7 +43,7 @@ App.InputTagsComponent = Ember.Component.extend({
       // sort and store the tags
       var tags = input.tagsinput('items');
       tags.sort();
-      self.set('value', tags);
+      self.set('value', _.toArray(tags));
       // ensure that the typeahead is cleared
       if (allTags) {
         tagsInput.typeahead('setQuery', '');
