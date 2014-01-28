@@ -43,17 +43,21 @@ App.Lane = Ember.Object.extend({
     return this.get('board.isUser');
   }.property('board.isUser'),
 
-  tags: function () {
-    var allTags = [];
+  tagsIndex: function () {
+    var index = {};
     this.get('cards').forEach(function (card) {
-      var tags = card.get('tags');
-      if (tags) {
-        allTags = _.union(allTags, tags);
-      }
+      card.get('tags').forEach(function (tag) {
+        index[tag] = true;
+      });
     });
-    allTags.sort();
-    return allTags;
+    return index;
   }.property('cards.@each.tags'),
+
+  tags: function () {
+    var tags = _.keys(this.get('tagsIndex'));
+    tags.sort();
+    return tags;
+  }.property('tagsIndex'),
 
   points: function () {
     var points = 0;

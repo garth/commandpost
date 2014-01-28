@@ -14,20 +14,17 @@ App.InputTagsComponent = Ember.Component.extend({
 
     // setup type ahead control
     var tagsInput = input.tagsinput('input');
-    var allTags = this.get('allTags');
-    if (allTags) {
-      tagsInput.typeahead({
-        local: allTags,
-        limit: 10
-      });
+    tagsInput.typeahead({
+      local: this.get('allTags') || [],
+      limit: 10
+    });
 
-      var autocomplete = function (object, datum) {
-        input.tagsinput('add', datum.value);
-        tagsInput.typeahead('setQuery', '');
-      };
-      tagsInput.on('typeahead:selected', autocomplete);
-      tagsInput.on('typeahead:autocompleted', autocomplete);
-    }
+    var autocomplete = function (object, datum) {
+      input.tagsinput('add', datum.value);
+      tagsInput.typeahead('setQuery', '');
+    };
+    tagsInput.on('typeahead:selected', autocomplete);
+    tagsInput.on('typeahead:autocompleted', autocomplete);
 
     // set the initial tags
     var value = this.get('value');
@@ -45,14 +42,21 @@ App.InputTagsComponent = Ember.Component.extend({
       tags.sort();
       self.set('value', _.toArray(tags));
       // ensure that the typeahead is cleared
-      if (allTags) {
-        tagsInput.typeahead('setQuery', '');
-      }
+      tagsInput.typeahead('setQuery', '');
     });
   }.on('didInsertElement'),
 
   teardown: function () {
     this.$('input.tt-query').typeahead('destroy');
     this.$('input.tags').tagsinput('destroy');
-  }.on('willDestroyElement')
+  }.on('willDestroyElement'),
+
+  allTagsObserver: function () {
+    var input = this.$('input.tt-query');
+    input.typeahead('destroy');
+    input.typeahead({
+      local: this.get('allTags') || [],
+      limit: 10
+    });
+  }.observes('allTags')
 });

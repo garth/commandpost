@@ -103,6 +103,20 @@ App.Board = App.BoardSummary.extend({
     });
   }.property('cardTypes.@each.isHidden'),
 
+  tagsIndex: function () {
+    var index = {};
+    this.get('lanes').forEach(function (lane) {
+      index = _.merge(index, lane.get('tagsIndex'));
+    });
+    return index;
+  }.property('lanes.@each.tagsIndex'),
+
+  tags: function () {
+    var tags = _.keys(this.get('tagsIndex'));
+    tags.sort();
+    return tags;
+  }.property('tagsIndex'),
+
   showLaneStats: function (key, value) {
     var id = this.get('id');
     var storageKey = 'board_' + id + '_showLaneStats';
