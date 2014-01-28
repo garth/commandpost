@@ -12,5 +12,5 @@ App.StringPluraliseComponent = Ember.Component.extend({
     return params.number === 1 ?
       params.singular :
       params.plural || inflection.pluralize(params.singular);
-  }.property('n', 's', 'p')
+  }.property('number', 'singular', 'plural')
 });
