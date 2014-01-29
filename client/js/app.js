@@ -56,6 +56,7 @@ require('./controllers/index');
 require('./controllers/error');
 require('./controllers/signin');
 require('./controllers/signup');
+require('./controllers/users');
 require('./controllers/profile');
 require('./controllers/boards');
 require('./controllers/boards-index');

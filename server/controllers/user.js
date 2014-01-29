@@ -67,7 +67,7 @@ module.exports = function (app, config, db) {
   app.pubsub.subscribe('/server/users/update', function (message) {
     // check the user permissions
     var role = message.meta.user.role;
-    if (role !== 'admin' || message.meta.user.id !== message.user.id) {
+    if (role !== 'admin' && message.meta.user.id !== message.user.id) {
       return app.pubsub.publishError('/users/update', '/users/update', {
         errorCode: 403,
         message: 'Not authorised',

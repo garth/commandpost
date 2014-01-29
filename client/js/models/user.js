@@ -4,7 +4,13 @@ App.User = Ember.Object.extend({
   initials: null,
   role: null,
 
+  roles: ['user', 'admin'],
+
   isAdmin: function () {
     return this.get('role') === 'admin';
-  }.property('role')
+  }.property('role'),
+
+  isCurrent: function () {
+    return App.get('user') === this;
+  }.property('App.user')
 });

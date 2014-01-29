@@ -9,8 +9,15 @@ App.IndexRoute = Ember.Route.extend({
     else {
       App.userIndex = {};
       App.pubsub.publishAwait('/users', function (message) {
+        var currentUserId = App.get('user.id');
         App.set('users', _.map(message.users, function (user) {
-          var userObj = App.User.create(user);
+          var userObj;
+          if (user.id === currentUserId) {
+            userObj = App.get('user');
+          }
+          else {
+            userObj = App.User.create(user);
+          }
           App.userIndex[user.id] = userObj;
           return userObj;
         }));

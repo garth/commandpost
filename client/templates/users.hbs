@@ -1,3 +1,21 @@
 <div class="container">
   <h1><i class="fa fa-users"></i> Users</h1>
+  <table class="table table-striped">
+    <thead><tr><th>Name</th><th>Initials</th><th>Role</th></tr></thead>
+    <tbody>
+      {{#each}}
+        <tr>
+          <td>{{name}}</td>
+          <td>{{initials}}</td>
+          <td>
+            {{#if isCurrent}}
+              {{role}}
+            {{else}}
+              {{view Ember.Select content=roles value=role}}
+            {{/if}}
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
 </div>
