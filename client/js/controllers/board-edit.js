@@ -59,6 +59,7 @@ App.BoardEditController = Ember.ObjectController.extend({
     save: function () {
       var board = this.get('content');
       var lanes = board.get('lanes');
+      var users = board.get('users');
       var cardTypes = board.get('cardTypes');
       var self = this;
       // prepare to save the board
@@ -71,6 +72,13 @@ App.BoardEditController = Ember.ObjectController.extend({
       board.cardTypes = cardTypes.map(function (cardType) {
         return cardType.getProperties('id', 'name', 'icon', 'pointScale', 'priority', 'isHidden');
       });
+      // save users
+      board.users = users.filter(function (boardUser) {
+        return boardUser.get('role') !== 'observer';
+      }).map(function (boardUser) {
+        return boardUser.getProperties('id', 'userId', 'role');
+      });
+      console.log(board);
       // save the board
       App.pubsub.publishAwait('/boards/update', {
         board: board

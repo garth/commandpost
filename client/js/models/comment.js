@@ -11,7 +11,6 @@ App.Comment = Ember.Object.extend({
   }.property('userId'),
 
   user: function () {
-    var userId = this.get('userId');
-    return App.userIndex[userId];
+    return App.userIndex[this.get('userId')];
   }.property('userId', 'App.users')
 });

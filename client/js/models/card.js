@@ -60,19 +60,15 @@ App.Card = Ember.Object.extend({
   }.property('lane.isUser'),
 
   cardType: function () {
-    var board = this.get('lane.board');
-    var cardTypeId = this.get('cardTypeId');
-    return board.cardTypeIndex[cardTypeId];
+    return this.get('lane.board').cardTypeIndex[this.get('cardTypeId')];
   }.property('cardTypeId', 'lane.board.cardTypes'),
 
   createdByUser: function () {
-    var createdByUserId = this.get('createdByUserId');
-    return App.userIndex[createdByUserId];
+    return App.userIndex[this.get('createdByUserId')];
   }.property('createdByUserId', 'App.users'),
 
   assignedToUser: function () {
-    var assignedToUserId = this.get('assignedToUserId');
-    return App.userIndex[assignedToUserId];
+    return App.userIndex[this.get('assignedToUserId')];
   }.property('assignedToUserId', 'App.users'),
 
   priority: function () {

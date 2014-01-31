@@ -3,5 +3,11 @@ App.BoardUser = Ember.Object.extend({
 
   id: null,
   role: null,
-  user: null
+  userId: null,
+
+  roles: ['observer', 'user', 'admin'],
+
+  user: function () {
+    return App.userIndex[this.get('userId')];
+  }.property('userId', 'App.users')
 });

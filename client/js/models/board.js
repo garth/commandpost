@@ -46,13 +46,15 @@ App.Board = App.BoardSummary.extend({
           isUser = isUser || isAdmin || user.role === 'user';
         }
         user.board = self;
-        user.user = App.userIndex[user.userId];
         var userObj = App.BoardUser.create(user);
         self.userIndex[user.userId] = userObj;
         return userObj;
       }));
       this.set('isAdmin', isAdmin);
       this.set('isUser', isUser);
+    }
+    else {
+      this.set('users', []);
     }
     var cardTypes = this.get('cardTypes');
     if (cardTypes) {
@@ -88,14 +90,37 @@ App.Board = App.BoardSummary.extend({
   matches: null,
 
   defaultCardType: function () {
-    var defaultCardTypeId = this.get('defaultCardTypeId');
-    this.cardTypeIndex[defaultCardTypeId];
+    this.cardTypeIndex[this.get('defaultCardTypeId')];
   }.property('defaultCardTypeId', 'cardTypes'),
 
   createdByUser: function () {
-    var createdByUserId = this.get('createdByUserId');
-    return App.userIndex[createdByUserId];
+    return App.userIndex[this.get('createdByUserId')];
   }.property('createdByUserId', 'App.users'),
+
+  boardUsers: function () {
+    var board = this;
+    var users = App.get('users');
+    var boardUsers = {};
+    board.get('users').forEach(function (boardUser) {
+      boardUser[boardUser.get('user.id')] = boardUser;
+    });
+    if (users) {
+      users.forEach(function (user) {
+        var userId = user.get('id');
+        if (!boardUsers[userId]) {
+          var boardUser = App.BoardUser.create({
+            board: board,
+            role: 'observer',
+            userId: userId
+          });
+          boardUsers[userId] = boardUser;
+          board.get('users').pushObject(boardUser);
+          board.userIndex[userId] = boardUser;
+        }
+      });
+    }
+    return _.values(boardUsers).sortBy('user.name');
+  }.property('users', 'App.users'),
 
   visibleCardTypes: function () {
     return this.get('cardTypes').filter(function (cardType) {

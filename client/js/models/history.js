@@ -8,7 +8,6 @@ App.History = Ember.Object.extend({
   action: null,
 
   user: function () {
-    var userId = this.get('userId');
-    return App.userIndex[userId];
+    return App.userIndex[this.get('userId')];
   }.property('userId', 'App.users')
 });
