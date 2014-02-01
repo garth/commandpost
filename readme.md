@@ -34,15 +34,26 @@ Command Post is in beta. Currently you can:
 * Create and configure boards
 * Manage board lanes
 * Manage board card types
+* Manage board permissions
 * Add, edit and order cards
 * Move cards between lanes
 * Add comments to cards
 * View changes by team members in near real-time
+* Filter cards displayed on the board
 
 If you find an bug, please open a github issue.
 
 Changelog
 ---------
+
+#### 1.0.0.beta.4
+
+* [fix] Moved flash messages to the bottom right
+* [fix] Disable drag and enable selection of text when card is being edited
+* [feature] Added roles for admin, board admin, board user
+* [feature] Added optional lane statistics
+* [feature] Various minor visual enhancements
+* [performance] Additional improvements to the performance of sorting and moving cards
 
 #### 1.0.0.beta.3
 
@@ -81,7 +92,6 @@ Roadmap
 
 The following features are planned (in no particular order):
 
-* Improved security constraints - Per board, roles, etc...
 * Add attachments to cards
 * Release management - Archive completed cards and create release notes
 * Velocity estimations based on history
