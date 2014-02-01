@@ -162,8 +162,8 @@ module.exports = function (app, config, db) {
         }
 
         // remove all cards from the board
-        board.lanes.forEach(function (lane) { delete lane.cards; });
         board = board.toJSON();
+        board.lanes.forEach(function (lane) { lane.cards = []; });
 
         // record the update
         recordHistory(message, 'board', 'update', board, oldValues);
