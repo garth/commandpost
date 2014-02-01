@@ -13,7 +13,7 @@ module.exports = function (config, db) {
     createdOn: { type: Date, required: true, 'default': Date.now },
     users: [new Schema({
       userId: { type: ObjectId, required: true },
-      role: { type: String, enum: ['admin', 'user'], require: true, 'default': 'user' },
+      role: { type: String, enum: ['admin', 'user'], require: true, 'default': 'user' }
     }, config.schemaOptions)],
     lanes: [new Schema({
       name: { type: String, required: true },

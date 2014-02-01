@@ -102,7 +102,7 @@ App.Board = App.BoardSummary.extend({
     var users = App.get('users');
     var boardUsers = {};
     board.get('users').forEach(function (boardUser) {
-      boardUser[boardUser.get('user.id')] = boardUser;
+      boardUsers[boardUser.get('userId')] = boardUser;
     });
     if (users) {
       users.forEach(function (user) {

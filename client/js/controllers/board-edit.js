@@ -78,7 +78,6 @@ App.BoardEditController = Ember.ObjectController.extend({
       }).map(function (boardUser) {
         return boardUser.getProperties('id', 'userId', 'role');
       });
-      console.log(board);
       // save the board
       App.pubsub.publishAwait('/boards/update', {
         board: board

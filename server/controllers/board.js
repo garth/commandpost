@@ -148,6 +148,9 @@ module.exports = function (app, config, db) {
         return canDelete;
       });
 
+      // update the users
+      oldValues.users = updateCollection(board.users, message.board.users, ['userId', 'role']);
+
       // save changes
       board.save(function (err, board) {
         if (err) {
