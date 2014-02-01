@@ -1,5 +1,3 @@
-var inflection = require( 'inflection' );
-
 App.StringPluraliseComponent = Ember.Component.extend({
   tagName: 'span',
 
@@ -11,6 +9,6 @@ App.StringPluraliseComponent = Ember.Component.extend({
     var params = this.getProperties('number', 'singular', 'plural');
     return params.number === 1 ?
       params.singular :
-      params.plural || inflection.pluralize(params.singular);
+      params.plural || window.inflection.pluralize(params.singular);
   }.property('number', 'singular', 'plural')
 });
