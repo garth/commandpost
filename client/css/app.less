@@ -114,27 +114,26 @@ footer {
 }
 
 // card styles
-.list-group-item {
-  padding: 0;
-  border: none;
-}
-.list-group-item * {
-  margin: 2px 0px;
-}
-.list-group-item.placeholder {
-  padding: 0;
-  margin: 1px 0 -2px 0;
-  background-color: #eee;
-}
-.list-group-item.ui-sortable-helper {
-  animation: drag-animation 0.5s 1 ease;
-  -webkit-animation: drag-animation 0.5s 1 ease;
-  -moz-animation: drag-animation 0.5s 1 ease;
-  -o-animation: drag-animation 0.5s 1 ease;
-  transform: rotate(2deg) scale(1) skew(0deg) translate(0px);
-  -webkit-transform: rotate(2deg) scale(1) skew(0deg) translate(0px);
-  -moz-transform: rotate(2deg) scale(1) skew(0deg) translate(0px);
-  -o-transform: rotate(2deg) scale(1) skew(0deg) translate(0px);
+.board-lanes {
+  .list-group-item {
+    padding: 0;
+    border: none;
+  }
+  .list-group-item.placeholder {
+    padding: 0;
+    margin: 1px 0 -2px 0;
+    background-color: #eee;
+  }
+  .list-group-item.ui-sortable-helper {
+    animation: drag-animation 0.5s 1 ease;
+    -webkit-animation: drag-animation 0.5s 1 ease;
+    -moz-animation: drag-animation 0.5s 1 ease;
+    -o-animation: drag-animation 0.5s 1 ease;
+    transform: rotate(2deg) scale(1) skew(0deg) translate(0px);
+    -webkit-transform: rotate(2deg) scale(1) skew(0deg) translate(0px);
+    -moz-transform: rotate(2deg) scale(1) skew(0deg) translate(0px);
+    -o-transform: rotate(2deg) scale(1) skew(0deg) translate(0px);
+  }
 }
 @keyframes drag-animation {
   from { transform: rotate(0deg) scale(1) skew(0deg) translate(0px); }
