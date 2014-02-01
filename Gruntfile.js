@@ -26,6 +26,7 @@ var components = [
   'bower_components/typeahead.js/dist/typeahead.js',
   'bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js',
   'bower_components/keymaster/keymaster.js',
+  'bower_components/inflection/lib/inflection.js',
   'bower_components/lunr.js/lunr.js',
   'node_modules/lodash/dist/lodash.js',
   'node_modules/faye/browser/faye-browser.js',
@@ -80,11 +81,8 @@ module.exports = function (grunt) {
         dest: 'public/js/vendor.js',
       }
     },
-    recess: {
+    less: {
       dist: {
-        options: {
-          compile: true
-        },
         files: {
           'public/css/app.css': ['client/css/app.less']
         }
@@ -153,7 +151,7 @@ module.exports = function (grunt) {
       },
       css: {
         files: ['client/**/*.less'],
-        tasks: ['recess', 'develop:server']
+        tasks: ['less', 'develop:server']
       },
       vendor: {
         files: ['components/**/*.js'],
@@ -236,7 +234,7 @@ module.exports = function (grunt) {
     }, 50);
   });
 
-  grunt.loadNpmTasks('grunt-recess');
+  grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-ember-templates');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-concat');
@@ -251,7 +249,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-cssmin');
 
   grunt.registerTask('build', [
-    'emberTemplates', 'recess', 'browserify', 'concat:debug', 'copy'
+    'emberTemplates', 'less', 'browserify', 'concat:debug', 'copy'
   ]);
   grunt.registerTask('server', [
     'jshint', 'build', 'develop:server', 'exec:runTests', 'watch'
