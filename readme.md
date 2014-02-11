@@ -112,7 +112,8 @@ Install
 6. `npm install -g grunt-cli`
 7. `grunt`
 
-For installation on Windows see the [iisnode readme](docs/iisnode/readme.md).
+For installation on Windows see the [iisnode readme](docs/iisnode/readme.md)
+or [node-windows](docs/node-windows.md).
 
 Configuration
 -------------
