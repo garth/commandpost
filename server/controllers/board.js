@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var uuid = require('node-uuid');
 var mongoose = require('mongoose');
 var Board = mongoose.model('Board');
 var updateProperties = require('../helpers/update').properties;
@@ -148,6 +149,12 @@ module.exports = function (app, config, db) {
         return canDelete;
       });
 
+      // ensure that new board users have an id
+      _.forEach(message.board.users, function (boardUser) {
+        if (!boardUser.id) {
+          boardUser.id = uuid.v4();
+        }
+      });
       // update the users
       oldValues.users = updateCollection(board.users, message.board.users, ['userId', 'role']);
 
