@@ -293,12 +293,11 @@
       var str_path = str.split( '/' );
       var i        = 0;
       var j        = str_path.length;
-      var str_arr, init_x, k, l;
+      var str_arr, init_x, k, l, first;
 
       for( ; i < j; i++ ){
         str_arr = str_path[ i ].split( '_' );
-        init_x  = (( lowFirstLetter && i + 1 === j ) ? ( 1 ) : ( 0 ));
-        k       = init_x;
+        k       = 0;
         l       = str_arr.length;
 
         for( ; k < l; k++ ){
@@ -306,7 +305,10 @@
             str_arr[ k ] = str_arr[ k ].toLowerCase();
           }
 
-          str_arr[ k ] = str_arr[ k ].charAt( 0 ).toUpperCase() + str_arr[ k ].substring( 1 );
+          first = str_arr[ k ].charAt( 0 );
+          first = lowFirstLetter && i === 0 && k === 0
+            ? first.toLowerCase() : first.toUpperCase();
+          str_arr[ k ] = first + str_arr[ k ].substring( 1 );
         }
 
         str_path[ i ] = str_arr.join( '' );
@@ -622,7 +624,7 @@
 /**
  * @public
  */
-  inflector.version = '1.3.3';
+  inflector.version = '1.3.5';
 
   // browser support
   // requirejs
