@@ -1,6 +1,6 @@
 /*!
 
- handlebars v1.1.2
+ handlebars v1.2.1
 
 Copyright (C) 2011 by Yehuda Katz
 
@@ -44,6 +44,7 @@ define(
   'handlebars/utils',["./safe-string","exports"],
   function(__dependency1__, __exports__) {
     
+    /*jshint -W004 */
     var SafeString = __dependency1__["default"];
 
     var escape = {
@@ -64,7 +65,7 @@ define(
 
     function extend(obj, value) {
       for(var key in value) {
-        if(value.hasOwnProperty(key)) {
+        if(Object.prototype.hasOwnProperty.call(value, key)) {
           obj[key] = value[key];
         }
       }
@@ -143,11 +144,10 @@ define(
   'handlebars/base',["./utils","./exception","exports"],
   function(__dependency1__, __dependency2__, __exports__) {
     
-    /*globals Exception, Utils */
     var Utils = __dependency1__;
     var Exception = __dependency2__["default"];
 
-    var VERSION = "1.1.2";
+    var VERSION = "1.2.1";
     __exports__.VERSION = VERSION;var COMPILER_REVISION = 4;
     __exports__.COMPILER_REVISION = COMPILER_REVISION;
     var REVISION_CHANGES = {
@@ -238,7 +238,7 @@ define(
             for(var j = context.length; i<j; i++) {
               if (data) {
                 data.index = i;
-                data.first = (i === 0)
+                data.first = (i === 0);
                 data.last  = (i === (context.length-1));
               }
               ret = ret + fn(context[i], { data: data });
@@ -246,7 +246,11 @@ define(
           } else {
             for(var key in context) {
               if(context.hasOwnProperty(key)) {
-                if(data) { data.key = key; }
+                if(data) { 
+                  data.key = key; 
+                  data.index = i;
+                  data.first = (i === 0);
+                }
                 ret = ret + fn(context[key], {data: data});
                 i++;
               }
@@ -324,7 +328,6 @@ define(
   'handlebars/runtime',["./utils","./exception","./base","exports"],
   function(__dependency1__, __dependency2__, __dependency3__, __exports__) {
     
-    /*global Utils */
     var Utils = __dependency1__;
     var Exception = __dependency2__["default"];
     var COMPILER_REVISION = __dependency3__.COMPILER_REVISION;
@@ -348,32 +351,27 @@ define(
       }
     }
 
-    // TODO: Remove this line and break up compilePartial
+    __exports__.checkRevision = checkRevision;// TODO: Remove this line and break up compilePartial
 
     function template(templateSpec, env) {
       if (!env) {
         throw new Error("No environment passed to template");
       }
 
-      var invokePartialWrapper;
-      if (env.compile) {
-        invokePartialWrapper = function(partial, name, context, helpers, partials, data) {
-          // TODO : Check this for all inputs and the options handling (partial flag, etc). This feels
-          // like there should be a common exec path
-          var result = invokePartial.apply(this, arguments);
-          if (result) { return result; }
+      // Note: Using env.VM references rather than local var references throughout this section to allow
+      // for external users to override these as psuedo-supported APIs.
+      var invokePartialWrapper = function(partial, name, context, helpers, partials, data) {
+        var result = env.VM.invokePartial.apply(this, arguments);
+        if (result != null) { return result; }
 
+        if (env.compile) {
           var options = { helpers: helpers, partials: partials, data: data };
           partials[name] = env.compile(partial, { data: data !== undefined }, env);
           return partials[name](context, options);
-        };
-      } else {
-        invokePartialWrapper = function(partial, name /* , context, helpers, partials, data */) {
-          var result = invokePartial.apply(this, arguments);
-          if (result) { return result; }
+        } else {
           throw new Exception("The partial " + name + " could not be compiled when running in runtime-only mode");
-        };
-      }
+        }
+      };
 
       // Just add water
       var container = {
@@ -399,8 +397,8 @@ define(
           }
           return ret;
         },
-        programWithDepth: programWithDepth,
-        noop: noop,
+        programWithDepth: env.VM.programWithDepth,
+        noop: env.VM.noop,
         compilerInfo: null
       };
 
@@ -422,7 +420,7 @@ define(
               options.data);
 
         if (!options.partial) {
-          checkRevision(container.compilerInfo);
+          env.VM.checkRevision(container.compilerInfo);
         }
 
         return result;
@@ -471,6 +469,7 @@ define(
   'handlebars.runtime',["./handlebars/base","./handlebars/safe-string","./handlebars/exception","./handlebars/utils","./handlebars/runtime","exports"],
   function(__dependency1__, __dependency2__, __dependency3__, __dependency4__, __dependency5__, __exports__) {
     
+    /*globals Handlebars: true */
     var base = __dependency1__;
 
     // Each of these augment the Handlebars object. No need to setup here.
