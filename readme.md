@@ -149,7 +149,7 @@ License
 
 Command Post - A tool for managing your Kanban process
 
-Copyright (C) 2013 Garth Williams
+Copyright (C) 2013-2014 Garth Williams
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
