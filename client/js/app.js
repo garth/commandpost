@@ -49,6 +49,7 @@ require('./components/card-icon');
 require('./components/input-tags');
 require('./components/input-text');
 require('./components/sortable-list');
+require('./components/modal-dialog');
 
 // controllers
 require('./controllers/application');
