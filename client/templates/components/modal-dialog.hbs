@@ -1,16 +1,27 @@
 <div class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" {{action 'close'}}>&times;</button>
-        <h4 class="modal-title">{{title}}</h4>
-      </div>
+      {{#if showHeader}}
+        <div class="modal-header">
+          {{#if closeAction}}
+            <button type="button" class="close" {{action 'close'}}>&times;</button>
+          {{/if}}
+          <h4 class="modal-title">{{title}}&nbsp;</h4>
+        </div>
+      {{/if}}
       <div class="modal-body">
         {{yield}}
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" {{action 'close'}}>Close</button>
-      </div>
+      {{#if showFooter}}
+        <div class="modal-footer">
+          {{#if closeTitle}}
+            <button type="button" class="btn btn-default" {{action 'close'}}>{{closeTitle}}</button>
+          {{/if}}
+          {{#if saveTitle}}
+            <button type="button" class="btn btn-primary" {{action 'save'}}>{{saveTitle}}</button>
+          {{/if}}
+        </div>
+      {{/if}}
     </div>
   </div>
 </div>
