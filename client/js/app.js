@@ -39,6 +39,7 @@ require('./models/history');
 require('./models/lane');
 require('./models/user');
 require('./models/filter');
+require('./models/release');
 
 // the router
 require('./router');
