@@ -75,6 +75,17 @@ App.Card = Ember.Object.extend({
     return (this.get('cardType.priority') || 0) * -1;
   }.property(),
 
+  returnedToLane: function () {
+    var lane = this.get('lane.name');
+    var count = 0;
+    if (lane) {
+      _.forEach(this.get('history'), function (history) {
+        if (history.get('laneName') === lane) { count++; }
+      });
+    }
+    return count > 1;
+  }.property('lane.name', 'history.@each.laneName'),
+
   matchesFilter: function () {
     var matches = this.get('lane.board.matches');
     return matches ? matches[this.get('id')] : true;
