@@ -143,6 +143,9 @@
       {{/if}}
     </div>
     <div class="first-row">
+      {{#if returnedToLane}}
+        <i class="fa fa-share fa-rotate-180"></i>
+      {{/if}}
       {{#each tag in tags}}
         <span class="label label-primary tag">{{tag}}</span>
       {{/each}}
