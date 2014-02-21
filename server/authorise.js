@@ -106,11 +106,13 @@ module.exports = function (app, config, db) {
                     new Date().getTime() + config.sessionTtl - 1000 * 60 * 60 * 24);
                   if (session.expiresOn < ttl) {
                     session.extend(function (err, session) {
-                      app.pubsub.publishError('/session', '/server', {
-                        message: 'Failed to extend session',
-                        details: err,
-                        context: message.data
-                      });
+                      if (err) {
+                        app.pubsub.publishError('/session', '/server', {
+                          message: 'Failed to extend session',
+                          details: err,
+                          context: message.data
+                        });
+                      }
                     });
                   }
 
