@@ -61,6 +61,7 @@ module.exports = function (app, config, db) {
 
         // notify all subscribers
         app.pubsub.publish('/boards/' + board.id + '/cards/comments', {
+          meta: message.meta,
           action: 'create',
           board: { id: board.id },
           lane: { id: lane.id },

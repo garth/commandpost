@@ -7,7 +7,7 @@ module.exports = function (app, config, db) {
 
   var recordHistory = require('../helpers/history')(app.pubsub);
 
-  var sortLane = function (board, lane, card, position) {
+  var sortLane = function (message, board, lane, card, position) {
     _.forEach(lane.cards, function (card) {
       card.cardTypePriority = board.cardTypes.id(card.cardTypeId).priority * -1;
     });
@@ -48,6 +48,7 @@ module.exports = function (app, config, db) {
     // notify subscribers
     if (newPositions.length) {
       app.pubsub.publish('/boards/' + board.id + '/cards', {
+        meta: message.meta,
         action: 'move',
         board: { id: board.id },
         lane: { id: lane.id },
@@ -96,7 +97,7 @@ module.exports = function (app, config, db) {
         action: 'create',
         laneName: lane.name
       });
-      sortLane(board, lane);
+      sortLane(message, board, lane);
 
       board.save(function (err, board) {
         if (err) {
@@ -114,6 +115,7 @@ module.exports = function (app, config, db) {
 
         // notify all subscribers
         app.pubsub.publish('/boards/' + board.id + '/cards', {
+          meta: message.meta,
           action: 'create',
           board: { id: board.id },
           lane: { id: lane.id },
@@ -162,7 +164,7 @@ module.exports = function (app, config, db) {
 
       // if card type changed, ensure that the order is still correct
       if (oldValues.cardTypeId) {
-        sortLane(board, lane);
+        sortLane(message, board, lane);
       }
 
       // save the changes
@@ -183,6 +185,7 @@ module.exports = function (app, config, db) {
 
         // notify all subscribers
         app.pubsub.publish('/boards/' + board.id + '/cards', {
+          meta: message.meta,
           action: 'update',
           board: { id: board.id },
           lane: { id: lane.id },
@@ -232,11 +235,11 @@ module.exports = function (app, config, db) {
       var card = oldLane.cards.id(message.card.id).remove();
       if (message.oldLane) {
         // sort the old lane
-        sortLane(board, oldLane);
+        sortLane(message, board, oldLane);
       }
 
       // sort the new lane and insert the card
-      sortLane(board, lane, card, message.card.order);
+      sortLane(message, board, lane, card, message.card.order);
 
       if (message.oldLane) {
         // store the move in the card history
@@ -270,6 +273,7 @@ module.exports = function (app, config, db) {
           card = card.toJSON();
           delete card.comments;
           app.pubsub.publish('/boards/' + board.id + '/cards', {
+            meta: message.meta,
             action: 'update',
             board: { id: board.id },
             lane: { id: lane.id },
@@ -313,7 +317,7 @@ module.exports = function (app, config, db) {
 
       // remove the card from the lane
       var card = lane.cards.id(message.card.id).remove();
-      sortLane(board, lane);
+      sortLane(message, board, lane);
 
       board.save(function (err, board) {
         if (err) {
@@ -331,6 +335,7 @@ module.exports = function (app, config, db) {
 
         // notify all subscribers
         app.pubsub.publish('/boards/' + board.id + '/cards', {
+          meta: message.meta,
           action: 'delete',
           board: { id: board.id },
           lane: { id: lane.id },
