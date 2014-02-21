@@ -69,6 +69,7 @@ module.exports = function (app, config, db) {
 
       // notify all subscribers
       app.pubsub.publish('/boards', {
+        meta: message.meta,
         action: 'create',
         board: { id: board.id, name: board.name }
       });
@@ -187,11 +188,13 @@ module.exports = function (app, config, db) {
 
         // notify all subscribers
         app.pubsub.publish('/boards/' + board.id, {
+          meta: message.meta,
           action: 'update',
           board: board
         });
         if (oldValues.name) {
           app.pubsub.publish('/boards', {
+            meta: message.meta,
             action: 'update',
             board: { id: board.id, name: board.name }
           });
@@ -239,10 +242,12 @@ module.exports = function (app, config, db) {
 
         // notify all subscribers
         app.pubsub.publish('/boards', {
+          meta: message.meta,
           action: 'delete',
           board: { id: board.id }
         });
         app.pubsub.publish('/boards/' + board.id, {
+          meta: message.meta,
           action: 'delete',
           board: { id: board.id }
         });
