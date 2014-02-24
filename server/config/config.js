@@ -36,7 +36,6 @@ module.exports = function (env) {
           delete ret.__v;
           delete ret._id;
           delete ret.password;
-          delete ret.login;
           transformDates(ret);
         }
       }

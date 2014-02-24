@@ -2,6 +2,7 @@ App.User = Ember.Object.extend({
   id: null,
   name: null,
   initials: null,
+  login: null,
   role: null,
 
   roles: ['user', 'admin'],
