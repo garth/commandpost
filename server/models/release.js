@@ -13,10 +13,8 @@ module.exports = function (config, db) {
     createdByUserId: { type: ObjectId, required: true },
     createdOn: { type: Date, required: true, 'default': Date.now },
     cards: [new Schema({
-      cardType: [new Schema({
-        name: { type: String, required: true },
-        icon: { type: String, required: true }
-      }, config.schemaOptions)],
+      cardType: { type: String, required: true },
+      cardIcon: { type: String, required: true },
       title: { type: String, required: true },
       description: { type: String },
       points: { type: Number },

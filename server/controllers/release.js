@@ -23,7 +23,7 @@ module.exports = function (app, config, db) {
 
   app.pubsub.subscribe('/server/releases/create', function (message) {
     // create new release
-    var release = new Release(message.release);
+    var release = new Release(_.pick(message.release, ['boardId', 'version', 'description']));
     release.createdByUserId = message.meta.user.id;
     release.createdOn = Date.now();
 
@@ -44,6 +44,10 @@ module.exports = function (app, config, db) {
         if (lane) {
           card = lane.cards.id(card.id).remove();
           if (card) {
+            card = card.toJSON();
+            var cardType = board.cardTypes.id(card.cardTypeId);
+            card.cardType = cardType.name;
+            card.cardIcon = cardType.icon;
             release.cards.push(card);
           }
         }
@@ -75,6 +79,7 @@ module.exports = function (app, config, db) {
 
           // notify all subscribers
           app.pubsub.publish('/boards/' + board.id + '/release', {
+            meta: message.meta,
             action: 'create',
             release: release
           });
