@@ -67,11 +67,11 @@ App.BoardController = App.ObjectController.extend({
     var card = this.get('model').cardIndex[message.card.id];
     var comment = App.Comment.create(message.comment);
     card.get('comments').pushObject(comment);
-    App.flash.info(comment.get('user.name') + ' commented on "' + card.get('title') + '"');
+    App.flash.info(card.get('title'), message.meta.user.name + ' Added a Comment to');
   },
 
   createCard: function (message) {
-    App.flash.info('"' + message.card.title + '" Card has been created');
+    App.flash.info(message.card.title, message.meta.user.name + ' Created a New Card');
     var board = this.get('model');
     var lane = board.laneIndex[message.lane.id];
     message.card.lane = lane;
@@ -106,8 +106,8 @@ App.BoardController = App.ObjectController.extend({
           var lane = board.laneIndex[message.lane.id];
           cardObj.set('lane', lane);
           lane.get('cards').addObject(cardObj);
-          App.flash.info('"' + cardObj.get('title') + '" Card has moved from ' +
-            oldLane.get('name') + ' to ' + lane.get('name'));
+          App.flash.info(cardObj.get('title'), message.meta.user.name +
+            ' Moved a Card from "' + oldLane.get('name') + '" to "' + lane.get('name') + '"');
         }
       }
     });
@@ -119,11 +119,11 @@ App.BoardController = App.ObjectController.extend({
     var card = board.cardIndex[message.card.id];
     lane.get('cards').removeObject(card);
     delete board.cardIndex[message.card.id];
-    App.flash.info('"' + card.get('title') + '" Card has been deleted');
+    App.flash.info(card.get('title'), message.meta.user.name + ' Deleted a Card');
   },
 
   updateBoard: function (message) {
-    App.flash.info(message.board.name + ' Board has been updated');
+    App.flash.info('Has updated the ' + message.board.name + ' board', message.meta.user.name);
     // make a new board
     var board = App.Board.create(message.board);
     // move the existing cards onto the new board
@@ -145,7 +145,7 @@ App.BoardController = App.ObjectController.extend({
   },
 
   deleteBoard: function (message) {
-    App.flash.info(this.get('model.name') + ' Board has been deleted');
+    App.flash.info('Has deleted the ' + this.get('model.name') + ' Board', message.meta.user.name);
     this.transitionToRoute('boards.index');
   }
 });
