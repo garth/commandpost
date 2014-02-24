@@ -16,7 +16,6 @@ describe('users api', function () {
         expect(message.user).to.exist;
         expect(message.user.id.length).to.equal(24);
         expect(message.user.name).to.equal('Greg');
-        expect(message.user.login).to.be.undefined;
         expect(message.user.password).to.be.undefined;
         done();
       }
