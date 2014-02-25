@@ -60,6 +60,14 @@ App.BoardController = App.ObjectController.extend({
       }
     };
 
+    subscriptions['/boards/' + boardId + '/releases'] = function (message) {
+      switch (message.action) {
+      case 'create':
+        self.createRelease(message);
+        break;
+      }
+    };
+
     this.subscribe(subscriptions);
   }.observes('model'),
 
@@ -147,5 +155,18 @@ App.BoardController = App.ObjectController.extend({
   deleteBoard: function (message) {
     App.flash.info('Has deleted the ' + this.get('model.name') + ' Board', message.meta.user.name);
     this.transitionToRoute('boards.index');
+  },
+
+  createRelease: function (message) {
+    var count = message.release.cards.length;
+    App.flash.info(count + ' card' + (count === 1 ? ' has' : 's have') + ' been released',
+      message.meta.user.name + ' Created Release ' + message.release.version);
+    // remove all released cards from the board
+    var board = this.get('model');
+    _.forEach(message.release.cards, function (card) {
+      var cardObj = board.cardIndex[card.id];
+      cardObj.get('lane.cards').removeObject(cardObj);
+      delete board.cardIndex[card.id];
+    });
   }
 });

@@ -78,7 +78,7 @@ module.exports = function (app, config, db) {
           app.pubsub.publishToClient('/releases/create', { release: release }, message);
 
           // notify all subscribers
-          app.pubsub.publish('/boards/' + board.id + '/release', {
+          app.pubsub.publish('/boards/' + board.id + '/releases', {
             meta: message.meta,
             action: 'create',
             release: release
