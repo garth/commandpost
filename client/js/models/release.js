@@ -1,12 +1,15 @@
 require('./card');
 
-App.Release = Ember.Object.extend({
+App.ReleaseSummary = Ember.Object.extend({
   id: null,
   boardId: null,
   version: null,
   description: null,
+  createdOn: null
+});
+
+App.Release = App.ReleaseSummary.extend({
   createdByUserId: null,
-  createdOn: null,
   cards: null,
 
   init: function() {

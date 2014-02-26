@@ -68,3 +68,4 @@ require('./controllers/board-view');
 require('./controllers/board-edit');
 require('./controllers/lane');
 require('./controllers/card');
+require('./controllers/releases-index');

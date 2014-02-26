@@ -1,0 +1,33 @@
+<div class="row">
+  <div class="col-sm-6">
+    <h1><i class="fa fa-tag"></i> {{board.name}} Releases</h1>
+  </div>
+  <div class="col-sm-6 text-right board-toolbar">
+    {{#link-to 'board.view'}}
+      <i class="fa fa-bar-chart-o fa-rotate-180"></i> Return to Board
+    {{/link-to}}
+  </div>
+</div>
+
+{{#if model}}
+  <table class="table table-striped">
+    <thead><tr><th>Version</th><th>Date</th><th>Description</th></tr></thead>
+    <tbody>
+      {{#each}}
+        <tr>
+          <td>{{#link-to 'release.view' this.id}}{{version}}{{/link-to}}</td>
+          <td>{{date}}</td>
+          <td>{{description}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+{{else}}
+  <p>No releases have yet been made for {{board.name}}.</p>
+{{/if}}
+
+{{#if board.isAdmin}}
+  {{#link-to 'releases.new' class="btn btn-default"}}
+    <i class="fa fa-plus"></i> New Release
+  {{/link-to}}
+{{/if}}
