@@ -6,6 +6,7 @@ App.ModalDialogComponent = Ember.Component.extend({
   closeAction: 'cancel',
   saveTitle: 'Save',
   saveAction: 'save',
+  isValid: true,
 
   setup: function () {
     var element = this.$('.modal');
@@ -19,17 +20,11 @@ App.ModalDialogComponent = Ember.Component.extend({
   actions: {
     close: function () {
       this.$('.modal').modal('hide');
-      var action = this.get('closeAction');
-      if (action) {
-        this.sendAction(action);
-      }
+      this.sendAction('closeAction');
     },
     save: function () {
       this.$('.modal').modal('hide');
-      var action = this.get('saveAction');
-      if (action) {
-        this.sendAction(action);
-      }
+      this.sendAction('saveAction');
     }
   },
 
@@ -39,5 +34,9 @@ App.ModalDialogComponent = Ember.Component.extend({
 
   showFooter: function () {
     return this.get('closeTitle') || this.get('saveTitle');
-  }.property('closeTitle', 'saveTitle')
+  }.property('closeTitle', 'saveTitle'),
+
+  showSave: function () {
+    return this.get('isValid') && this.get('saveTitle');
+  }.property('isValid', 'saveTitle')
 });

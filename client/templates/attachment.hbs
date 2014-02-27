@@ -1,0 +1,15 @@
+{{#modal-dialog
+  title="Add Attachment"
+  closeAction="cancel"
+  closeTitle="Cancel"
+  saveAction="save"
+  saveTitle="Save"
+  isValidBinding="model"}}
+  <div id="paste-image">
+    {{#if model}}
+      <img {{bind-attr src="model"}}>
+    {{else}}
+      <p>Paste Image</p>
+    {{/if}}
+  </div>
+{{/modal-dialog}}

@@ -25,6 +25,7 @@ App = Ember.Application.extend({
 //load helpers
 require('./helpers/handlebars');
 require('./helpers/helper-methods');
+require('./helpers/paste-image');
 App.pubsub = require('./helpers/pubsub')(
   App, window.Faye, Ember.RSVP, '/pubsub', App.createUuid(), localStorage);
 require('./helpers/controller');
@@ -35,6 +36,7 @@ require('./models/board-user');
 require('./models/card-type');
 require('./models/card');
 require('./models/comment');
+require('./models/attachment');
 require('./models/history');
 require('./models/lane');
 require('./models/user');
@@ -68,4 +70,5 @@ require('./controllers/board-view');
 require('./controllers/board-edit');
 require('./controllers/lane');
 require('./controllers/card');
+require('./controllers/attachment');
 require('./controllers/releases-index');
