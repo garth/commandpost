@@ -16,9 +16,7 @@ App.Router.map(function() {
         this.route('edit', { path: 'edit' });
         this.resource('releases', function () {
           this.route('new');
-          this.resource('release', { path: ':release_id' }, function () {
-            this.route('view', { path: '/' });
-          });
+          this.route('view', { path: ':release_id' });
         });
       });
     });
