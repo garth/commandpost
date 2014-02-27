@@ -4,10 +4,10 @@
   closeTitle="Cancel"
   saveAction="save"
   saveTitle="Save"
-  isValidBinding="model"}}
+  isValidBinding="model.image"}}
   <div id="paste-image">
-    {{#if model}}
-      <img {{bind-attr src="model"}}>
+    {{#if model.image}}
+      <img {{bind-attr src="model.image"}}>
     {{else}}
       <p>Paste Image</p>
     {{/if}}

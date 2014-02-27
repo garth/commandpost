@@ -83,6 +83,13 @@ App.BoardCardController = Ember.ObjectController.extend({
       this.set('showNewComment', true);
     },
 
+    addImage: function () {
+      var card = this.get('model');
+      this.send('openModal', 'attachment', App.Attachment.create({
+        card: card
+      }));
+    },
+
     saveComment: function () {
       var card = this.get('model');
 

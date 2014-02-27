@@ -1,7 +1,8 @@
-App.Attachement = Ember.Object.extend({
+App.Attachment = Ember.Object.extend({
   card: null,
 
   id: null,
+  image: null,
   userId: null,
   createdOn: null,
 

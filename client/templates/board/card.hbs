@@ -103,7 +103,10 @@
             <button type="submit" class="btn btn-primary btn-xs">Save</button>
           </form>
         {{else}}
-          <button class="btn btn-default btn-xs" {{action addComment}}>
+          <button class="btn btn-default btn-xs" {{action 'addImage'}}>
+            <i class="fa fa-picture-o"></i> Attach Image
+          </button>
+          <button class="btn btn-default btn-xs" {{action 'addComment'}}>
             <i class="fa fa-plus"></i> Comment
           </button>
         {{/if}}
@@ -111,7 +114,7 @@
     {{/if}}
 
     {{#if showHistory}}
-      <button class="btn btn-default btn-xs" {{action toggleHistory}}>
+      <button class="btn btn-default btn-xs" {{action 'toggleHistory'}}>
         <i class="fa fa-caret-down"></i> History
       </button>
       <table class="table table-condensed">
@@ -125,7 +128,7 @@
         {{/each}}
       </table>
     {{else}}
-      <button class="btn btn-default btn-xs" {{action toggleHistory}}>
+      <button class="btn btn-default btn-xs" {{action 'toggleHistory'}}>
         <i class="fa fa-caret-right"></i> History
       </button>
     {{/if}}
