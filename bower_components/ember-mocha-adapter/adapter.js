@@ -32,6 +32,7 @@
       if (done) {
         d = done;
         done = null;
+        clearTimeout(doneTimeout)
         d(error);
       } else {
         setTimeout(function() {
@@ -152,3 +153,5 @@
 
 
 }());
+
+Ember.Test.adapter = Ember.Test.MochaAdapter.create();

@@ -1,6 +1,6 @@
 {
   "name": "ember-mocha-adapter",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "main": "adapter.js",
   "description": "An adapter that makes ember-testing with Mocha easier",
   "keywords": [
@@ -13,13 +13,13 @@
   "ignore": [],
   "dependencies": {},
   "homepage": "https://github.com/teddyzeenny/ember-mocha-adapter",
-  "_release": "0.1.2",
+  "_release": "0.2.0",
   "_resolution": {
     "type": "version",
-    "tag": "0.1.2",
-    "commit": "654b87e390def81134ec59eb1bc88ac0fa5b1a96"
+    "tag": "0.2.0",
+    "commit": "2a4e92da64cfff3b8188aa571a4db2fc184d785b"
   },
   "_source": "git://github.com/teddyzeenny/ember-mocha-adapter.git",
-  "_target": "~0.1.2",
+  "_target": "~0.2.0",
   "_originalSource": "ember-mocha-adapter"
 }
