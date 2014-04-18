@@ -178,7 +178,7 @@ test('updating a document', function () {
 
 test('emitting update events', function () {
   var idx = new lunr.Index,
-      doc = {id: 1, body: 'foo'}
+      doc = {id: 1, body: 'foo'},
       addCallbackCalled = false,
       removeCallbackCalled = false,
       updateCallbackCalled = false,
@@ -217,7 +217,7 @@ test('emitting update events', function () {
 
 test('silencing update events', function () {
   var idx = new lunr.Index,
-      doc = {id: 1, body: 'foo'}
+      doc = {id: 1, body: 'foo'},
       callbackCalled = false
 
   idx.field('body')
@@ -303,4 +303,20 @@ test('idf cache with reserved words', function () {
   troublesomeTokens.forEach(function (token) {
     equal(typeof(idx.idf(token)), 'number', 'Using token: ' + token)
   })
+})
+
+test('using a plugin', function () {
+  var idx = new lunr.Index,
+      ctx, args,
+      plugin = function () {
+        ctx = this
+        args = Array.prototype.slice.call(arguments)
+        this.pluginLoaded = true
+      }
+
+  idx.use(plugin, 'foo', 'bar')
+
+  equal(ctx, idx)
+  deepEqual(args, [idx, 'foo', 'bar'])
+  ok(idx.pluginLoaded)
 })
