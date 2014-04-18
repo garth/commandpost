@@ -61,6 +61,7 @@ require('./controllers/error');
 require('./controllers/signin');
 require('./controllers/signup');
 require('./controllers/users');
+require('./controllers/password-reset');
 require('./controllers/profile');
 require('./controllers/boards');
 require('./controllers/boards-index');

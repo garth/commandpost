@@ -116,4 +116,44 @@ module.exports = function (app, config, db) {
       });
     });
   });
+
+  app.pubsub.subscribe('/server/users/reset-password', function (message) {
+    // check the user permissions
+    var role = message.meta.user.role;
+    if (role !== 'admin') {
+      return app.pubsub.publishError('/users/reset-password', '/users/reset-password', {
+        errorCode: 403,
+        message: 'Not authorised',
+        context: message
+      });
+    }
+
+    User.findById(message.user.id, function (err, user) {
+      if (err || !user) {
+        return app.pubsub.publishError('/users/reset-password', '/users/reset-password', {
+          errorCode: err ? 500 : 404,
+          message: err ? 'Failed to get user' : 'User not found',
+          details: err,
+          context: message
+        });
+      }
+
+      // update the password
+      user.password = message.user.password;
+
+      // save the changes
+      user.save(function (err, user) {
+        if (err) {
+          return app.pubsub.publishError('/users/reset-password', '/users/reset-password', {
+            message: 'Failed to reset the password',
+            details: err,
+            context: message
+          });
+        }
+
+        // notify the client
+        app.pubsub.publishToClient('/users/reset-password', {}, message);
+      });
+    });
+  });
 };
