@@ -9,6 +9,7 @@ App.Router.map(function() {
   this.resource('index', { path: '/' }, function () {
     this.resource('profile');
     this.resource('users');
+    this.resource('password-reset', { path: 'password-reset/:user_id' });
     this.resource('boards', function () {
       this.route('new');
       this.resource('board', { path: ':board_id' }, function () {

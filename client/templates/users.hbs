@@ -1,7 +1,7 @@
 <div class="container">
   <h1><i class="fa fa-users"></i> Users</h1>
   <table class="table table-striped">
-    <thead><tr><th>Name</th><th>Initials</th><th>Login</th><th>Role</th></tr></thead>
+    <thead><tr><th>Name</th><th>Initials</th><th>Login</th><th>Role</th><th></th></tr></thead>
     <tbody>
       {{#each}}
         <tr>
@@ -15,6 +15,7 @@
               {{view Ember.Select content=roles value=role}}
             {{/if}}
           </td>
+          <td>{{#link-to 'password-reset' .}}Password Reset{{/link-to}}</td>
         </tr>
       {{/each}}
     </tbody>
