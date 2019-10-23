@@ -9,7 +9,7 @@
   "dependencies": {
     "ejs": "~1.0.0",
     "express": "~3.4.8",
-    "mongoose": "~3.8.8",
+    "mongoose": "~5.7.6",
     "password-hash": "~1.2.2",
     "rsvp": "~3.0.6",
     "lodash": "~2.4.1",
